@@ -7,7 +7,7 @@ import TippyHeadless from '@tippyjs/react/headless';
 
 import styles from './Header.module.css';
 import images from '~/assets/images';
-import { routes } from '~/config';
+import { routes } from '~/configs';
 import Search from '~/components/Search/Search';
 import Navigation from '~/components/Navigation/Navigation';
 import { searchResult as cartResult } from '~/dataTemorary';
@@ -113,15 +113,15 @@ function Header() {
                         <img src={images.logo} alt="logo" className={cx('logo')} />
                     </Link>
                     <div className="flex justify-between mt-3 w-full">
-                        <Navigation burger /> 
-                        
+                        <Navigation burger />
+
                         <Search />
 
-                        <div className='flex gap-3'>
-                            <span className='flex items-center'>
+                        <div className="flex gap-3">
+                            <span className="flex items-center">
                                 <FontAwesomeIcon className={cx('icon')} icon={faCartShopping} />
                             </span>
-                            <span className='flex items-center'>
+                            <span className="flex items-center">
                                 <FontAwesomeIcon className={cx('icon')} icon={faUser} />
                             </span>
                         </div>
