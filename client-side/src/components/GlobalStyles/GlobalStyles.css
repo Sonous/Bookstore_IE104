@@ -1,13 +1,26 @@
-@import 'normalize.css';
+/* @import 'normalize.css'; */
 
 :root {
     /* Khai báo biến ở đây */
+    --default--layout-width: 1200px;
+    --main-color: #228b22;
+    --gray: #7a7e7f;
+    --light-gray: #f0f0f0;
 }
 
 * {
     padding: 0;
     margin: 0;
     box-sizing: border-box;
+}
+
+html {
+    height: 100vh;
+}
+
+html body {
+    overflow-y: auto;
+    height: 100vh;
 }
 
 input,
@@ -20,4 +33,20 @@ button,
 a {
     color: var(--text-color);
     text-decoration: none;
+}
+
+/* scrollbar */
+html ::-webkit-scrollbar {
+    border-radius: 0;
+    width: 8px;
+}
+
+html ::-webkit-scrollbar-thumb {
+    border-radius: 4px;
+    background-color: rgba(22, 24, 35, 0.06);
+}
+
+html ::-webkit-scrollbar-track {
+    border-radius: 0px;
+    background-color: rgba(0, 0, 0, 0);
 }

@@ -1,5 +1,11 @@
+import Header from '~/layouts/Header/Header';
+
 function HomePage() {
-    return ( <h1>HomePage</h1> );
+    return (
+        <>
+            <Header />
+        </>
+    );
 }
 
 export default HomePage;
