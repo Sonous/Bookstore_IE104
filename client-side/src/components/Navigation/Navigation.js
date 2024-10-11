@@ -19,6 +19,7 @@ function Navigation({ burger = false }) {
     const [collections, setCollections] = useState(categories);
     const [showCollection, setShowCollection] = useState();
     const [showCollections, setShowCollections] = useState(false);
+    const [showNews, setShowNews] = useState(false);
 
     const menuRef = useRef();
 
@@ -73,10 +74,23 @@ function Navigation({ burger = false }) {
                             </div>
                         )}
                         hideOnClick={false}
+                        onShow={() => setShowCollections(true)}
+                        onHide={() => setShowCollections(false)}
                     >
                         <div className={cx('category')}>
-                            <span>Danh mục</span>
-                            <FontAwesomeIcon icon={faChevronDown} className={cx('icon')} />
+                            <span
+                                className={classNames('transition-all', {
+                                    'text-primary-color': showCollections,
+                                })}
+                            >
+                                Danh mục
+                            </span>
+                            <FontAwesomeIcon
+                                icon={faChevronDown}
+                                className={cx('icon transition-all', {
+                                    'text-primary-color rotate-180': showCollections,
+                                })}
+                            />
                         </div>
                     </TippyHeadless>
 
@@ -96,10 +110,23 @@ function Navigation({ burger = false }) {
                             </div>
                         )}
                         hideOnClick={false}
+                        onShow={() => setShowNews(true)}
+                        onHide={() => setShowNews(false)}
                     >
                         <div className={cx('news')}>
-                            <span>Tin tức</span>
-                            <FontAwesomeIcon icon={faChevronDown} className={cx('icon')} />
+                            <span
+                                className={classNames('transition-all', {
+                                    'text-primary-color': showNews,
+                                })}
+                            >
+                                Tin tức
+                            </span>
+                            <FontAwesomeIcon
+                                icon={faChevronDown}
+                                className={cx('icon transition-all', {
+                                    'text-primary-color rotate-180': showNews,
+                                })}
+                            />
                         </div>
                     </TippyHeadless>
                 </nav>
