@@ -15,19 +15,19 @@
     cursor: pointer;
 }
 
-.category:hover,
+/* .category:hover,
 .news:hover {
     color: var(--main-color);
 }
 
 .icon {
     transition: transform 0.3s ease;
-}
+} */
 
-.category:hover .icon,
+/* .category:hover .icon,
 .news:hover .icon {
     transform: rotate(180deg);
-}
+} */
 /* category */
 .categories-popper {
     display: grid;

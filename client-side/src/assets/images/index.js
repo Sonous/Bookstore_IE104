@@ -9,6 +9,7 @@ const images = {
     onePieceBanner: require('./onePieceBanner.webp'),
     trinhThamCoTrangBanner: require('./trinhThamCoTrangBanner.webp'),
     boxSetTokyoBabylonBanner: require('./boxSetTokyoBabylonBanner.webp'),
+    blogImage: require('./blog_image_1.webp'),
 };
 
 export default images;
