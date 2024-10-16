@@ -14,16 +14,14 @@ const footerItems = [
     {
         title: 'Giới thiệu',
         options: [
-            { name: 'Về Bookstar', path: routes.dieuKhoan },
-            { name: 'Liên hệ với chúng tôi', path: routes.lienHe },
+            { name: 'Về Bookstar', path: routes.aboutus },
         ],
     },
     {
         title: 'Hỗ trợ',
         options: [
-            { name: 'Hướng dẫn đặt hàng', path: routes.huongDanDatHang },
-            { name: 'Chính sách đổi trả', path: routes.chinhSachDoiTra },
-            { name: 'Phương thức vận chuyển', path: routes.phuongThucVanChuyen },
+            { name: 'Hướng dẫn đặt hàng', path: routes.shoppingguide },
+            { name: 'Chính sách đổi trả', path: routes.refundpolicy },
         ],
     },
 ];
