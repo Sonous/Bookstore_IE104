@@ -1,7 +1,5 @@
-// src/AboutUs.js
 import React from 'react';
 import './AboutUs.css';
-import images from '~/assets/images'; // Giả sử bạn có hình ảnh cần sử dụng
 
 const AboutUs = () => {
     return (
