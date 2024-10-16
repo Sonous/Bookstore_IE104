@@ -12,6 +12,7 @@ const pages = [
     { path: routes.lienHe, Component: CollectionsPage },
     { path: routes.chinhSachDoiTra, Component: CollectionsPage },
     { path: routes.phuongThucVanChuyen, Component: CollectionsPage },
+    { path: routes.BlogPage, Component: CollectionsPage },
 ];
 
 export default pages;
