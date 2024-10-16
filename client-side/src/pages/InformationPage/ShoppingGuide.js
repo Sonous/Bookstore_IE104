@@ -1,4 +1,4 @@
-// src/ShoppingGuide.js
+
 import React from 'react';
 import './ShoppingGuide.css'; 
 
