@@ -1,6 +1,9 @@
 const routes = {
     home: '/',
-    collections: '/collections/:collection',
+    collections: '/collections',
+    aboutus: '/aboutus',
+    refundpolicy: '/refundpolicy',
+    shoppingguide: '/shoppingguide',
     signIn: '/signin'
 }
 
