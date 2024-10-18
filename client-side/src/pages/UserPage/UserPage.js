@@ -80,163 +80,165 @@ const UserPage = () => {
   return (
     <>
       <Header />
-      <div className="user-page">
-        <h2>Thông tin tài khoản</h2>
-        <hr className="ursp-hr"/>
-        <form onSubmit={handleSubmit}>
-          <div className="form-group">
-            <label>Ảnh đại diện:</label>
-            <img src={profile.avatar} alt="avatar" className="avatar" />
-            {editField === 'avatar' && (
-              <input 
-                type="file" 
-                accept="image/*" 
-                className="avatar-upload" 
-                onChange={handleAvatarChange} 
-              />
-            )}
-            <FontAwesomeIcon 
-              icon={faEdit} 
-              className={`edit-icon ${editField === 'avatar' ? 'editing' : ''}`} 
-              onClick={() => setEditField('avatar')} 
-            />
-          </div>
-
-          <div className="form-group">
-            <label>Tên đăng nhập:</label>
-            <input
-              type="text"
-              value={profile.username}
-              name="username"
-              disabled
-            />
-          </div>
-
-          <div className="form-group">
-            <label>Tên:</label>
-            <input
-              type="text"
-              value={profile.name}
-              name="name"
-              onChange={handleChange}
-              disabled={editField !== 'name'}
-            />
-            <FontAwesomeIcon 
-              icon={faEdit} 
-              className={`edit-icon ${editField === 'name' ? 'editing' : ''}`} 
-              onClick={() => setEditField('name')} 
-            />
-          </div>
-
-          <div className="form-group">
-            <label>Email:</label>
-            <input
-              type="email"
-              value={profile.email}
-              name="email"
-              onChange={handleChange}
-              disabled={editField !== 'email'}
-            />
-            <FontAwesomeIcon 
-              icon={faEdit} 
-              className={`edit-icon ${editField === 'email' ? 'editing' : ''}`} 
-              onClick={() => setEditField('email')} 
-            />
-          </div>
-
-          <div className="form-group">
-            <label>Số điện thoại:</label>
-            <input
-              type="text"
-              value={profile.phone}
-              name="phone"
-              onChange={handleChange}
-              disabled={editField !== 'phone'}
-            />
-            <FontAwesomeIcon 
-              icon={faEdit} 
-              className={`edit-icon ${editField === 'phone' ? 'editing' : ''}`} 
-              onClick={() => setEditField('phone')} 
-            />
-          </div>
-
-          <div className="form-group">
-            <label>Ngày sinh:</label>
-            <div className="date-group">
-              <input
-                type="text"
-                placeholder="Ngày"
-                name="birthDate.day"
-                value={profile.birthDate.day}
-                onChange={handleChange}
-                disabled={editField !== 'birthDate'}
-              />
-              <input
-                type="text"
-                placeholder="Tháng"
-                name="birthDate.month"
-                value={profile.birthDate.month}
-                onChange={handleChange}
-                disabled={editField !== 'birthDate'}
-              />
-              <input
-                type="text"
-                placeholder="Năm"
-                name="birthDate.year"
-                value={profile.birthDate.year}
-                onChange={handleChange}
-                disabled={editField !== 'birthDate'}
+      <main className='bg-main-bg-color flex justify-center items-center py-7'>
+        <div className="user-page">
+          <h2>Thông tin tài khoản</h2>
+          <hr className="ursp-hr"/>
+          <form onSubmit={handleSubmit}>
+            <div className="form-group">
+              <label>Ảnh đại diện:</label>
+              <img src={profile.avatar} alt="avatar" className="avatar" />
+              {editField === 'avatar' && (
+                <input 
+                  type="file" 
+                  accept="image/*" 
+                  className="avatar-upload" 
+                  onChange={handleAvatarChange} 
+                />
+              )}
+              <FontAwesomeIcon 
+                icon={faEdit} 
+                className={`edit-icon ${editField === 'avatar' ? 'editing' : ''}`} 
+                onClick={() => setEditField('avatar')} 
               />
             </div>
-            <FontAwesomeIcon 
-              icon={faEdit} 
-              className={`edit-icon ${editField === 'birthDate' ? 'editing' : ''}`} 
-              onClick={() => setEditField('birthDate')} 
-            />
-          </div>
-
-          <div className="form-group">
-            <label>Giới tính:</label>
-            <div className="radio-group">
+  
+            <div className="form-group">
+              <label>Tên đăng nhập:</label>
+              <input
+                type="text"
+                value={profile.username}
+                name="username"
+                disabled
+              />
+            </div>
+  
+            <div className="form-group">
+              <label>Tên:</label>
+              <input
+                type="text"
+                value={profile.name}
+                name="name"
+                onChange={handleChange}
+                disabled={editField !== 'name'}
+              />
+              <FontAwesomeIcon 
+                icon={faEdit} 
+                className={`edit-icon ${editField === 'name' ? 'editing' : ''}`} 
+                onClick={() => setEditField('name')} 
+              />
+            </div>
+  
+            <div className="form-group">
+              <label>Email:</label>
+              <input
+                type="email"
+                value={profile.email}
+                name="email"
+                onChange={handleChange}
+                disabled={editField !== 'email'}
+              />
+              <FontAwesomeIcon 
+                icon={faEdit} 
+                className={`edit-icon ${editField === 'email' ? 'editing' : ''}`} 
+                onClick={() => setEditField('email')} 
+              />
+            </div>
+  
+            <div className="form-group">
+              <label>Số điện thoại:</label>
+              <input
+                type="text"
+                value={profile.phone}
+                name="phone"
+                onChange={handleChange}
+                disabled={editField !== 'phone'}
+              />
+              <FontAwesomeIcon 
+                icon={faEdit} 
+                className={`edit-icon ${editField === 'phone' ? 'editing' : ''}`} 
+                onClick={() => setEditField('phone')} 
+              />
+            </div>
+  
+            <div className="form-group">
+              <label>Ngày sinh:</label>
+              <div className="date-group">
                 <input
-                  type="radio"
-                  value="Nam"
-                  checked={profile.gender === 'Nam'}
-                  name="gender"
+                  type="text"
+                  placeholder="Ngày"
+                  name="birthDate.day"
+                  value={profile.birthDate.day}
                   onChange={handleChange}
+                  disabled={editField !== 'birthDate'}
                 />
-              <label>
-                Nam
-              </label>
                 <input
-                  type="radio"
-                  value="Nữ"
-                  checked={profile.gender === 'Nữ'}
-                  name="gender"
+                  type="text"
+                  placeholder="Tháng"
+                  name="birthDate.month"
+                  value={profile.birthDate.month}
                   onChange={handleChange}
+                  disabled={editField !== 'birthDate'}
                 />
-             <label>
-                Nữ
-              </label>
                 <input
-                  type="radio"
-                  value="Khác"
-                  checked={profile.gender === 'Khác'}
-                  name="gender"
+                  type="text"
+                  placeholder="Năm"
+                  name="birthDate.year"
+                  value={profile.birthDate.year}
                   onChange={handleChange}
+                  disabled={editField !== 'birthDate'}
                 />
+              </div>
+              <FontAwesomeIcon 
+                icon={faEdit} 
+                className={`edit-icon ${editField === 'birthDate' ? 'editing' : ''}`} 
+                onClick={() => setEditField('birthDate')} 
+              />
+            </div>
+  
+            <div className="form-group">
+              <label>Giới tính:</label>
+              <div className="radio-group">
+                  <input
+                    type="radio"
+                    value="Nam"
+                    checked={profile.gender === 'Nam'}
+                    name="gender"
+                    onChange={handleChange}
+                  />
                 <label>
-                Khác
-              </label>
+                  Nam
+                </label>
+                  <input
+                    type="radio"
+                    value="Nữ"
+                    checked={profile.gender === 'Nữ'}
+                    name="gender"
+                    onChange={handleChange}
+                  />
+               <label>
+                  Nữ
+                </label>
+                  <input
+                    type="radio"
+                    value="Khác"
+                    checked={profile.gender === 'Khác'}
+                    name="gender"
+                    onChange={handleChange}
+                  />
+                  <label>
+                  Khác
+                </label>
+              </div>
             </div>
-          </div>
-
-          <button type="submit" className="save-btn">
-            Lưu
-          </button>
-          {showSuccessMessage && <span className="success-message">Lưu thành công</span>}
-        </form>
-      </div>
+  
+            <button type="submit" className="save-btn">
+              Lưu
+            </button>
+            {showSuccessMessage && <span className="success-message">Lưu thành công</span>}
+          </form>
+        </div>
+      </main>
       <Footer />
     </>
   );
