@@ -4,8 +4,10 @@ const routes = {
     aboutus: '/aboutus',
     refundpolicy: '/refundpolicy',
     shoppingguide: '/shoppingguide',
-    signIn: '/signin',
+    login: '/login',
     userpage:'/user',
+    register: '/register',
+    forgotpassword: '/forgotpassword',
 }
 
 export default routes
