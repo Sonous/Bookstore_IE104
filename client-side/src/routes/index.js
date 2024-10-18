@@ -4,6 +4,7 @@ import HomePage from '~/pages/HomePage/HomePage';
 import AboutUs from '~/pages/InformationPage/AboutUs';
 import RefundPolicy from '~/pages/InformationPage/RefundPolicy';
 import ShoppingGuide from '~/pages/InformationPage/ShoppingGuide';
+import UserPage from '~/pages/UserPage/UserPage';
 
 const pages = [
     { path: routes.home, Component: HomePage },
@@ -11,7 +12,8 @@ const pages = [
 
     { path: routes.aboutus, Component: AboutUs},
     { path: routes.refundpolicy, Component: RefundPolicy},
-    { path: routes.shoppingguide, Component: ShoppingGuide}
+    { path: routes.shoppingguide, Component: ShoppingGuide},
+    { path: routes.userpage, Component: UserPage}
 ];
 
 export default pages;

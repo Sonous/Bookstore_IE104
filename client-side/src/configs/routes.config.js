@@ -4,7 +4,8 @@ const routes = {
     aboutus: '/aboutus',
     refundpolicy: '/refundpolicy',
     shoppingguide: '/shoppingguide',
-    signIn: '/signin'
+    signIn: '/signin',
+    userpage:'/user',
 }
 
 export default routes
