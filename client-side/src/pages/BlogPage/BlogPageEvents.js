@@ -1,23 +1,35 @@
 import React from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import Header from '~/layouts/Header/Header';
 import Footer from '~/layouts/Footer/Footer';
-import styles from './EventDetail.module.css'; // Nếu cần thiết
+import styles from './BlogPageEvents.module.css'; // Import CSS module cho BlogPageEvents
 
-const EventDetail = () => {
+const BlogPageEvents = () => {
     const location = useLocation();
-    const { title, eventDate, location: eventLocation, eventImage } = location.state; // Lấy thông tin từ state
+    const navigate = useNavigate();
+
+    // Kiểm tra nếu state không tồn tại, điều hướng về trang sự kiện chính
+    if (!location.state) {
+        navigate('/events'); // Điều hướng về trang sự kiện nếu không có state
+        return null; // Không render nội dung khi điều hướng
+    }
+
+    // Đổi tên biến location thành eventLocation để tránh nhầm lẫn với useLocation
+    const { title, eventDate, location: eventLocation, eventImage } = location.state;
 
     return (
         <>
             <Header />
             <main className={styles.main}>
                 <div className={styles.eventDetail}>
-                    <img src={eventImage} alt={title} className="object-cover h-48 w-full rounded-lg" />
-                    <h1 className="text-2xl font-bold mt-4">{title}</h1>
-                    <p className="text-gray-500">Ngày diễn ra: {eventDate}</p>
-                    <p className="text-gray-500">Địa điểm: {eventLocation}</p>
-                    <p className="mt-4">Nội dung chi tiết cho sự kiện này...</p> {/* Thay bằng nội dung thật */}
+                    <img src={eventImage} alt={title} className={styles.image} />
+                    <h1 className={styles.title}>{title}</h1>
+                    <p className={styles.eventDate}>Ngày sự kiện: {eventDate}</p>
+                    <p className={styles.eventLocation}>Địa điểm: {eventLocation}</p>
+                    <p className={styles.content}>
+                        Đây là nội dung chi tiết cho sự kiện "{title}". Nội dung có thể bao gồm thông tin chi tiết, chương trình sự kiện, 
+                        và các thông tin bổ sung khác mà người tham gia quan tâm.
+                    </p>
                 </div>
             </main>
             <Footer />
@@ -25,4 +37,4 @@ const EventDetail = () => {
     );
 };
 
-export default EventDetail;
+export default BlogPageEvents;

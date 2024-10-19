@@ -1,8 +1,8 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import pages from "./routes";
-import BlogPage from '~/pages/BlogPage'; // Trang chính cho blog
-import BlogPageEvents from '~/pages/BlogPageEvents'; // Trang cho sự kiện
-import BlogPageNews from '~/pages/BlogPageNews'; // Trang cho tin tức
+import BlogPage from './pages/BlogPage/BlogPage';
+import BlogPageEvents from './pages/BlogPage/BlogPageEvents';
+import BlogPageNews from './pages/BlogPage/BlogPageNews';
 
 function App() {
     return (
@@ -12,10 +12,11 @@ function App() {
                     {pages.map((Page, index) => (
                         <Route key={index} path={Page.path} element={<Page.Component />} />
                     ))}
-                    <Route path="/blog" element={<BlogPage />} /> {/* Route cho trang blog chính */}
-                    <Route path="/blog/events" element={<BlogPageEvents />} /> {/* Route cho trang sự kiện */}
-                    <Route path="/blog/news" element={<BlogPageNews />} /> {/* Route cho trang tin tức */}
-                </Routes>
+
+                    <Route path="/blog/events" element={<BlogPageEvents />} />
+                    <Route path="/blog/news" element={<BlogPageNews />} />
+                    <Route path="/blog" element={<BlogPage />} />
+                </Routes> {/* Thêm thẻ đóng Routes */}
             </Router>
         </div>
     );

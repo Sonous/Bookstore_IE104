@@ -1,17 +1,16 @@
 import classNames from 'classnames/bind';
-import styles from './HomePage.module.css';
+import styles from './BlogPage.module.css';
 import Footer from '~/layouts/Footer/Footer';
 import Header from '~/layouts/Header/Header';
-import BookSelection from '~/components/BookSelection/BookSelection'; // Thay thế cho BookCollection
+import BookCollection from '~/components/BookCollection/BookCollection';
 import { useState } from 'react';
 import images from '~/assets/images';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCalendar, faMapMarkerAlt } from '@fortawesome/free-solid-svg-icons';
-import { useHistory } from 'react-router-dom'; // Thêm import này
+import { useNavigate } from 'react-router-dom';
 
 const cx = classNames.bind(styles);
 
-// Các chủ đề thay thế BookCollection
 const topics = ['Sách mới', 'Tin sách', 'Sự kiện'];
 
 // Dữ liệu sách
@@ -56,49 +55,51 @@ const events = [
         location: 'TP. Hồ Chí Minh',
         eventImage: images.event2,
     },
-    // Thêm các sự kiện khác nếu cần...
 ];
 
 function HomePage() {
-    const [currentTab, setCurrentTab] = useState('Sách mới'); // Quản lý tab hiện tại
-    const history = useHistory(); // Thêm dòng này để sử dụng useHistory
+    const [currentTab, setCurrentTab] = useState('Sách mới'); 
+    const navigate = useNavigate(); 
 
     return (
         <>
             <Header />
             <main className={cx('main-content')}>
-                {/* Section for navigation tabs */}
                 <div className={cx('section-tabs', 'w-full', 'mb-4')}>
                     <ul className="flex justify-center gap-8 bg-gray-100 p-4 rounded-md">
                         {topics.map((topic, index) => (
                             <li
                                 key={index}
-                                className={cx('cursor-pointer', { 'text-blue-500': currentTab === topic })}
+                                className={cx('cursor-pointer', { 'text-blue-500': currentTab === topic, 'underline': currentTab === topic })}
                                 onClick={() => setCurrentTab(topic)}
                             >
-                                {topic}
+                                <strong className="custom-font-size">{topic}</strong>
                             </li>
                         ))}
                     </ul>
                 </div>
 
-                {/* Nội dung chính dựa trên tab */}
-                <div className="max-w-main-width grid grid-cols-1 gap-6">
-                    {/* Nếu là tab "Sách mới" */}
+                <div className="flex justify-center max-w-main-width grid grid-cols-1 gap-6">
                     {currentTab === 'Sách mới' && (
-                        <div className="col-span-4 grid grid-cols-1 gap-6 w-full">
-                            <BookSelection books={books} /> {/* Hiển thị danh sách sách */}
+                        <div className="col-span-1 flex justify-center w-full">
+                            <div className="flex flex-wrap justify-center w-full">
+                                {books.map((book, index) => (
+                                    <div key={index} className="m-2">
+                                        <h2 className="text-xl font-bold mb-2">{book.title}</h2>
+                                        <BookCollection book={book} />
+                                    </div>
+                                ))}
+                            </div>
                         </div>
                     )}
 
-                    {/* Nếu là tab "Tin sách" */}
                     {currentTab === 'Tin sách' && (
                         <div className="col-span-4 grid grid-cols-1 gap-6 w-full">
                             {news.map((item, indx) => (
                                 <div
                                     key={indx}
-                                    className="flex items-center rounded-lg bg-white shadow-md p-4 h-36 cursor-pointer" // Thêm cursor-pointer
-                                    onClick={() => history.push('/news-detail', { ...item })} // Điều hướng đến trang chi tiết
+                                    className="flex items-center rounded-lg bg-white shadow-md p-4 h-36 cursor-pointer"
+                                    onClick={() => navigate('/blog/news', { state: { ...item } })}  // Thay đổi đường dẫn ở đây
                                 >
                                     <img
                                         src={item.image}
@@ -117,14 +118,14 @@ function HomePage() {
                         </div>
                     )}
 
-                    {/* Nếu là tab "Sự kiện" */}
+
                     {currentTab === 'Sự kiện' && (
                         <div className="w-full grid grid-cols-1 gap-6">
                             {events.map((event, indx) => (
                                 <div
                                     key={indx}
-                                    className="flex rounded-lg bg-white shadow-lg h-56 p-4 w-full cursor-pointer" // Thêm cursor-pointer
-                                    onClick={() => history.push('/event-detail', { ...event })} // Điều hướng đến trang chi tiết
+                                    className="flex rounded-lg bg-white shadow-lg h-56 p-4 w-full cursor-pointer"
+                                    onClick={() => navigate('/blog/events', { state: { ...event } })}
                                 >
                                     <img
                                         src={event.eventImage}
