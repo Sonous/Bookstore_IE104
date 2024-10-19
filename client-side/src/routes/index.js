@@ -3,7 +3,7 @@ import CollectionsPage from '~/pages/CollectionsPage';
 import HomePage from '~/pages/HomePage/HomePage';
 import AboutUs from '~/pages/InformationPage/AboutUs';
 import RefundPolicy from '~/pages/InformationPage/RefundPolicy';
-import ShoppingGuide from '~/pages/InformationPage/ShoppingGuide';
+import ShoppingGuide from '~/pages/InformationPage/ShoppingGuide'
 
 const pages = [
     { path: routes.home, Component: HomePage },
