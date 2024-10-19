@@ -54,7 +54,6 @@
   
   .error-message {
     color: red; /* Màu sắc thông báo lỗi */
-    height: 20px; /* Chiều cao cố định cho thông báo lỗi */
     margin-top: 10; /* Bỏ margin để không tạo khoảng cách thêm */
     word-wrap: break-word;
     max-width: 300px;

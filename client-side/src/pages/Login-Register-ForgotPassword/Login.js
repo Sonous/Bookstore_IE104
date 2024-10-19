@@ -86,7 +86,7 @@ function Login() {
                 position: 'absolute', 
                 right: '10px', 
                 top: '50%', 
-                transform: 'translateY(-100%)', 
+                transform: 'translateY(-50%)', 
                 background: 'none', 
                 border: 'none', 
                 cursor: 'pointer' 

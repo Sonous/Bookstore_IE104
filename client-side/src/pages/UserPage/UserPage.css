@@ -7,7 +7,7 @@
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-h2 {
+.user-page-header {
   font-weight: bold;
   font-size: 30px !important;
   text-align: center;

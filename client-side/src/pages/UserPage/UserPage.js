@@ -82,7 +82,7 @@ const UserPage = () => {
       <Header />
       <main className='bg-main-bg-color flex justify-center items-center py-7'>
         <div className="user-page">
-          <h2>Thông tin tài khoản</h2>
+          <h2 className='user-page-header'>Thông tin tài khoản</h2>
           <hr className="ursp-hr"/>
           <form onSubmit={handleSubmit}>
             <div className="form-group">
