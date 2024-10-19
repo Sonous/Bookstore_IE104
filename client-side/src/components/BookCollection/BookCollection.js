@@ -5,7 +5,6 @@ import styles from './BookCollection.module.css';
 import { searchResult } from '~/dataTemorary';
 import Book from '../Book/Book';
 import { useState } from 'react';
-// import { useNavigate } from 'react-router-dom';
 
 const cx = classNames.bind(styles);
 
