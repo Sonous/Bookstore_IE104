@@ -1,5 +1,10 @@
 const routes = {
     home: '/',
+    blog: '/blog',
+    blogEvent: '/blog/events/:id',
+    blogNews: '/blog/news/:id',
+    blogActivities: '/blog/activities/:id',
+
     collections: '/collections',
     aboutus: '/aboutus',
     refundpolicy: '/refundpolicy',
@@ -10,4 +15,5 @@ const routes = {
     forgotpassword: '/forgotpassword',
 }
 
-export default routes
+
+export default routes;
