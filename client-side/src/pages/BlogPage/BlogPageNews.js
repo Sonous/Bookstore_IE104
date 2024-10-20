@@ -1,5 +1,5 @@
 import React from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, Link } from 'react-router-dom';
 import Header from '~/layouts/Header/Header';
 import Footer from '~/layouts/Footer/Footer';
 import styles from './BlogPageNews.module.css';
@@ -21,6 +21,14 @@ const BlogPageNews = () => {
     return (
         <>
             <Header />
+            <nav className="breadcrumb mb-4 p-4 bg-gray-100">
+                <Link to="/" className="text-blue-500 hover:underline">Trang chủ</Link>
+                <span className="mx-2">/</span>
+                <Link to="/blog/news" className="text-blue-500 hover:underline">Tin tức</Link>
+                <span className="mx-2">/</span>
+                <span className="text-gray-500">{title}</span> {/* Hiển thị tiêu đề tin tức hiện tại */}
+            </nav>
+
             <main className={styles.main}>
                 <div className={styles.newsDetail}>
                     <h1 className={styles.title}>{title}</h1>

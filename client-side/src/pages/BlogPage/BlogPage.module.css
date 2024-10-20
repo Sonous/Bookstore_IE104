@@ -1,6 +1,6 @@
 .main-content {
     padding: 20px;
-    background-color: #f9f9f9;
+    background-color:  #f0f0f0;
 }
 
 .section-tabs {
@@ -64,7 +64,7 @@
 }
 
 .event-info {
-    color: gray;
+    color: black;
 }
 
 .img-cover {
