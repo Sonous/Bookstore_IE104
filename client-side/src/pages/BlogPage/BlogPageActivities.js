@@ -5,7 +5,7 @@ import Header from '~/layouts/Header/Header';
 import { useParams, Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCalendar, faMapMarkerAlt } from '@fortawesome/free-solid-svg-icons';
-import { activities } from '~/dataTemorary';
+import { activities, images } from '~/dataTemorary'; // Nhớ import images ở đây
 
 const cx = classNames.bind(styles);
 
@@ -17,6 +17,8 @@ function BlogPageActivities() {
         return <div>Không tìm thấy thông tin hoạt động.</div>;
     }
 
+    const imgSrc = images[`act_${activity.id}`];
+
     return (
         <>
             <Header />
@@ -26,7 +28,7 @@ function BlogPageActivities() {
                 <span className="mx-2">/</span>
                 <Link to="/blog/activities" className="text-blue-500 hover:underline">Hoạt động</Link>
                 <span className="mx-2">/</span>
-                <span className="text-gray-500">{activity.title}</span> {/* Hiển thị tiêu đề hoạt động hiện tại */}
+                <span className="text-gray-500">{activity.title}</span>
             </nav>
 
             <main className={cx('main-content')}>
@@ -38,6 +40,19 @@ function BlogPageActivities() {
                         <FontAwesomeIcon icon={faMapMarkerAlt} className="ml-4" />
                         <span className="pl-2">{activity.location}</span>
                     </div>
+
+                    {imgSrc ? (
+                        <img
+                            src={imgSrc}
+                            alt={activity.title}
+                            className="mt-4 w-full rounded-lg h-80 object-cover"
+                        />
+                    ) : (
+                        <div className="mt-4 w-full h-64 rounded-lg bg-gray-300 flex items-center justify-center">
+                            <span className="text-gray-600">Hình ảnh không có sẵn</span>
+                        </div>
+                    )}
+
                     <p className="text-gray-600 mt-4">{activity.description}</p>
                     <p className="text-gray-300 mt-2">Người tổ chức: {activity.organizer}</p>
                 </div>
