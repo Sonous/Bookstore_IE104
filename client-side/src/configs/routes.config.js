@@ -1,11 +1,19 @@
 const routes = {
     home: '/',
-    collections: '/collections/:collection',
-    signIn: '/signin',
     blog: '/blog',
     blogEvent: '/blog/events/:id',
     blogNews: '/blog/news/:id',
     blogActivities: '/blog/activities/:id',
-};
+
+    collections: '/collections',
+    aboutus: '/aboutus',
+    refundpolicy: '/refundpolicy',
+    shoppingguide: '/shoppingguide',
+    login: '/login',
+    userpage:'/user',
+    register: '/register',
+    forgotpassword: '/forgotpassword',
+}
+
 
 export default routes;
