@@ -4,6 +4,7 @@ const routes = {
     blogEvent: '/blog/events/:id',
     blogNews: '/blog/news/:id',
     blogActivities: '/blog/activities/:id',
+    paying: '/paying',
 
     collections: '/collections',
     aboutus: '/aboutus',

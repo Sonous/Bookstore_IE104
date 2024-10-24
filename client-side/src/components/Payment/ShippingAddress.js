@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import './ShippingAddress.module.css';
 
 function ShippingAddress() {
   const [form, setForm] = useState({
@@ -13,73 +14,106 @@ function ShippingAddress() {
   });
 
   const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    setForm((prevForm) => ({ ...prevForm, [name]: value }));
   };
 
   return (
     <div className="shipping-address">
       <h2>Địa chỉ giao hàng</h2>
       <form>
-        <label>Họ và tên người nhận:</label>
-        <input
-          type="text"
-          name="fullname"
-          value={form.fullname}
-          onChange={handleChange}
-        />
+        <div>
+          <label htmlFor="fullname">Họ và tên người nhận:</label>
+          <input
+            type="text"
+            id="fullname"
+            name="fullname"
+            value={form.fullname}
+            onChange={handleChange}
+            required
+          />
+        </div>
 
-        <label>Email:</label>
-        <input
-          type="email"
-          name="email"
-          value={form.email}
-          onChange={handleChange}
-        />
+        <div>
+          <label htmlFor="email">Email:</label>
+          <input
+            type="email"
+            id="email"
+            name="email"
+            value={form.email}
+            onChange={handleChange}
+            required
+          />
+        </div>
 
-        <label>Số điện thoại:</label>
-        <input
-          type="text"
-          name="phone"
-          value={form.phone}
-          onChange={handleChange}
-        />
+        <div>
+          <label htmlFor="phone">Số điện thoại:</label>
+          <input
+            type="text"
+            id="phone"
+            name="phone"
+            value={form.phone}
+            onChange={handleChange}
+            required
+          />
+        </div>
 
-        <label>Quốc gia:</label>
-        <select name="country" value={form.country} onChange={handleChange}>
-          <option value="vietnam">Việt Nam</option>
-        </select>
+        <div>
+          <label htmlFor="country">Quốc gia:</label>
+          <select
+            id="country"
+            name="country"
+            value={form.country}
+            onChange={handleChange}
+          >
+            <option value="vietnam">Việt Nam</option>
+          </select>
+        </div>
 
-        <label>Tỉnh/Thành phố:</label>
-        <input
-          type="text"
-          name="province"
-          value={form.province}
-          onChange={handleChange}
-        />
+        <div>
+          <label htmlFor="province">Tỉnh/Thành phố:</label>
+          <input
+            type="text"
+            id="province"
+            name="province"
+            value={form.province}
+            onChange={handleChange}
+          />
+        </div>
 
-        <label>Quận/Huyện:</label>
-        <input
-          type="text"
-          name="district"
-          value={form.district}
-          onChange={handleChange}
-        />
+        <div>
+          <label htmlFor="district">Quận/Huyện:</label>
+          <input
+            type="text"
+            id="district"
+            name="district"
+            value={form.district}
+            onChange={handleChange}
+          />
+        </div>
 
-        <label>Phường/Xã:</label>
-        <input
-          type="text"
-          name="ward"
-          value={form.ward}
-          onChange={handleChange}
-        />
+        <div>
+          <label htmlFor="ward">Phường/Xã:</label>
+          <input
+            type="text"
+            id="ward"
+            name="ward"
+            value={form.ward}
+            onChange={handleChange}
+          />
+        </div>
 
-        <label>Địa chỉ chi tiết:</label>
-        <input
-          type="text"
-          name="address"
-          value={form.address}
-          onChange={handleChange}
-        />
+        <div>
+          <label htmlFor="address">Địa chỉ chi tiết:</label>
+          <input
+            type="text"
+            id="address"
+            name="address"
+            value={form.address}
+            onChange={handleChange}
+            required
+          />
+        </div>
       </form>
     </div>
   );
