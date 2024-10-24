@@ -11,6 +11,7 @@ const routes = {
     shoppingguide: '/shoppingguide',
     login: '/login',
     userpage:'/user',
+    orderdetail: '/orderdetail',
     register: '/register',
     forgotpassword: '/forgotpassword',
 }
