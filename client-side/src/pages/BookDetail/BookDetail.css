@@ -1,0 +1,374 @@
+.product-page {
+  font-size: 16px;
+  color: #228B22;
+  text-align: left; /* Căn trái toàn bộ nội dung trong product-page */
+}
+
+.navmenu {
+  color: #228B22;
+  list-style: none;
+  padding-left: 0px;
+  margin-left: -25px;
+  font-weight: bold;
+}
+
+.navmenu li {
+  display: inline; 
+}
+
+.navmenu li + li::before {
+  content: " >";
+  padding: 0;
+}
+
+.image-container {
+  display: flex; /* Sử dụng flexbox để sắp xếp */
+  flex-direction: column; /* Sắp xếp theo cột */
+  align-items: center; /* Căn trái ảnh */
+  margin-bottom: 20px;
+}
+
+.img1 {
+  width: 300px;
+  height: 300px;
+  margin: 0; /* Không có margin để ảnh không bị lệch */
+}
+
+.dots {
+  display: flex;
+  justify-content: center; /* Căn giữa dấu chấm */
+  margin-top: 10px; /* Khoảng cách giữa ảnh và dấu chấm */
+  width: 100%; /* Để dấu chấm có thể căn giữa */
+}
+
+.dot {
+  height: 10px;
+  width: 10px;
+  margin: 0 5px;
+  background-color: gray;
+  border-radius: 50%;
+  display: inline-block;
+  cursor: pointer;
+}
+
+.dot.active {
+  background-color: blue; /* Màu cho dấu chấm đang được chọn */
+}
+
+.firstpart {
+  padding-right: 20px; /* Khoảng cách giữa các phần */
+  padding-left: 30px;
+}
+
+.secondpart {
+  padding-top: 50px; /* Khoảng cách giữa các phần */
+  padding-left: 50px;
+  padding-bottom: 10px;
+}
+
+.bookcontent {
+  color: black; 
+  text-align: justify;
+}
+
+.title1 {
+  font-weight: bold;
+  margin-top: 10px;
+  font-size: 20px;
+  display: inline-block;
+}
+.title2 {
+  font-weight: bold;
+  color: black;
+  font-size: 20px;
+}
+.title3 {
+  font-weight: bold;
+  display: inline-block;
+}
+
+.quantity-control {
+  display: flex;
+  align-items: center;
+  color: black;
+}
+
+.quantity-control button {
+  font-size: 20px;
+  margin: 0 10px;
+  padding: 5px 10px;
+}
+
+.quantity-control span {
+  font-size: 20px;
+  width: 40px;
+  text-align: center;
+}
+
+.checkout1 {
+  display: flex;
+  font-weight: bold;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
+  width: 180px;
+  padding: 10px 20px;
+  background-color: #228B22; /* Màu nền */
+  color: white; /* Màu chữ */
+  cursor: pointer;
+  border: 2px solid #228B22; /* Viền cùng màu xanh */
+  border-radius: 5px; /* Độ bo tròn ở các góc */
+  transition: background-color 0.3s, color 0.3s; /* Hiệu ứng chuyển đổi khi hover */
+}
+
+.checkout2 {
+  display: flex;
+  font-weight: bold;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
+  padding: 10px 20px;
+  background-color: white; /* Màu nền */
+  color: #228B22; /* Màu chữ */
+  cursor: pointer;
+  border: 2px solid #228B22; /* Viền cùng màu xanh */
+  border-radius: 5px; /* Độ bo tròn ở các góc */
+  transition: background-color 0.3s, color 0.3s; /* Hiệu ứng chuyển đổi khi hover */
+}
+
+.group1 {
+  display: flex; /* Sử dụng Flexbox để sắp xếp các nút */
+  justify-content: flex-start; /* Căn giữa nếu cần */
+  align-items: center;
+  gap: 10px; /* Khoảng cách giữa các nút */
+  margin-top: 20px;
+}
+
+.group2 {
+  display: flex; /* Sử dụng Flexbox để sắp xếp các nút */
+  justify-content: flex-start; /* Căn giữa nếu cần */
+  gap: 15px; /* Khoảng cách giữa các nút */
+  margin-top: 10px;
+}
+
+.group3 {
+  width: 400px;
+  margin-top: 20px;
+  padding: 20px;
+}
+
+.button-container {
+  display: flex; /* Sử dụng Flexbox để sắp xếp các nút */
+  justify-content: flex-start; /* Căn giữa nếu cần */
+  gap: 10px; /* Khoảng cách giữa các nút */
+}
+
+.login {
+    display: flex; /* Sử dụng Flexbox để sắp xếp các nút */
+    justify-content: flex-start; /* Căn giữa nếu cần */
+}
+
+.checkout1:hover {
+  background-color: white; /* Màu nền khi hover */
+  color: #228B22;
+}
+.checkout2:hover {
+  background-color: #228B22; /* Màu nền khi hover */
+  color: white;
+}
+
+.price {
+  font-weight: bold;
+}
+
+.rating {
+  display: flex;
+  align-items: flex-start; /* Căn trên để các ngôi sao ở trên cùng */
+  margin-left: 10px; /* Khoảng cách giữa giá và ngôi sao */
+}
+
+.star {
+  font-size: 20px; /* Kích thước của ngôi sao */
+  cursor: pointer; /* Con trỏ sẽ biến thành tay khi hover */
+  color: gray; /* Màu mặc định cho ngôi sao */
+  transition: color 0.2s; /* Hiệu ứng chuyển đổi màu */
+  margin-top: -4px; /* Nhích lên một chút */
+}
+
+.star.filled {
+  color: gold; /* Màu cho ngôi sao đã được chọn */
+}
+
+.dot2 {
+  margin-top: -4px; 
+  margin-right: -10px;
+  display: inline-block; 
+}
+
+.normal {
+  color: black;
+  font-size: 16px;
+}
+.normal2 {
+  color: black;
+  font-size: 16px;
+  margin-top: 20px;
+  display: block; /* Đảm bảo nó chiếm một dòng riêng */
+}
+.normal3 {
+  color: black;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.icon {
+  margin-top: 10px;
+}
+
+.normal li {
+  margin-left: -20px;
+}
+
+.comment-text {
+  margin-left: 5px; 
+}
+
+.aside {
+  display: flex;
+  flex-direction: column; /* Sắp xếp theo cột */
+  align-items: center; /* Căn giữa theo trục ngang */
+  text-align: center; /* Căn giữa văn bản */
+  word-wrap: break-word;
+}
+.suggestion-image {
+  width: 200px;
+  height: 200px;
+  padding-top: 20px;
+}
+
+
+.comment-item {
+  display: flex; /* Sử dụng Flexbox */
+  align-items: center; /* Căn giữa theo chiều dọc */
+  margin-bottom: 10px; /* Khoảng cách giữa các bình luận */
+}
+
+.comment-item:last-child {
+  border-bottom: none; 
+}
+
+.comment-input {
+  display: block;
+  width: 100%;
+  height: 100px;
+  margin-top: 10px; 
+}
+
+.average-rating {
+  margin-top: -5px;
+}
+
+.submit-comment {
+  margin-top: 5px;
+  background-color: #228B22; /* Màu nền xanh */
+  color: white; /* Màu chữ trắng */
+  border: 2px solid #228B22; /* Viền xanh */
+  padding: 5px 5px; /* Khoảng cách bên trong nút */
+  border-radius: 5px; /* Bo góc cho nút */
+  font-weight: bold; /* Chữ in đậm */
+  cursor: pointer; /* Con trỏ chuột khi di chuột qua nút */
+  transition: background-color 0.3s, border-color 0.3s; /* Hiệu ứng chuyển màu */
+}
+
+.comment-item .rating {
+  margin-left: 0px; /* Khoảng cách giữa chữ và sao */
+  margin-right: 20px;
+  padding-right: 50px;
+}
+
+.comment-item .rating div {
+  margin-left: 10px; /* Khoảng cách giữa sao và chữ */
+}
+
+.product-page {
+  font-size: 16px;
+  display: grid;
+  grid-template-columns: repeat(5,1fr);
+  color: #228B22;
+  text-align: left;
+}
+
+.nav {
+  margin-bottom: 20px;
+}
+
+.content {
+  flex: 1;
+  padding: 20px;
+}
+
+.country-filter {
+  margin-bottom: 20px;
+}
+
+.divider {
+  border: 1px solid #ccc;
+  margin: 20px 0;
+}
+
+.price-range {
+  position: relative;
+  width: 100%; /* Chiều rộng của thanh điều chỉnh */
+  margin-top: 20px; /* Khoảng cách từ các phần khác */
+}
+
+.price-display {
+  position: absolute;
+  top: -24px;
+  left: 0;
+}
+
+.slider-container {
+  position: relative;
+  height: 40px; /* Chiều cao của thanh điều chỉnh */
+}
+
+.track {
+  position: absolute;
+  width: 100%;
+  height: 4px;
+  background: #ccc; /* Màu của track */
+  top: 50%; /* Đặt track ở giữa */
+  transform: translateY(-50%);
+}
+
+.active-range {
+  position: absolute;
+  height: 4px;
+  background: #4CAF50; /* Màu cho dải đã chọn */
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.range-thumb {
+  -webkit-appearance: none; /* Ẩn thanh kéo mặc định */
+  appearance: none;
+  position: absolute; /* Đặt vị trí tuyệt đối */
+  height: 20px; /* Chiều cao của thanh kéo */
+  width: 20px; /* Chiều rộng của thanh kéo */
+  background: #4CAF50; /* Màu sắc của thanh kéo */
+  border-radius: 50%; /* Để nó tròn */
+  cursor: pointer; /* Con trỏ khi hover */
+  top: 50%; /* Đặt ở giữa */
+  transform: translateY(-50%); /* Căn giữa */
+  z-index: 2; /* Đảm bảo thanh này nằm trên track */
+}
+
+/* Điều chỉnh vị trí cho từng thanh kéo */
+.range-thumb.low {
+  left: calc((var(--low-price) / 200000) * 100%); /* Đảm bảo nằm ở vị trí chính xác */
+}
+
+.range-thumb.high {
+  left: calc((var(--low-price) / 200000) * 100%); /* Đảm bảo nằm ở vị trí chính xác */
+}
