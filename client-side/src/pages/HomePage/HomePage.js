@@ -1,18 +1,19 @@
+import { useContext, useEffect, useState } from 'react';
 import classNames from 'classnames/bind';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCalendar } from '@fortawesome/free-regular-svg-icons';
 
 import styles from './HomePage.module.css';
 import BannerSlider from '~/layouts/BannerSlider/BannerSlider';
 import Footer from '~/layouts/Footer/Footer';
 import Header from '~/layouts/Header/Header';
 import BookCollection from '~/components/BookCollection/BookCollection';
-import { useState } from 'react';
 import images from '~/assets/images';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCalendar } from '@fortawesome/free-regular-svg-icons';
+import { UserContext } from '~/context/UserContextProvider';
 
 const cx = classNames.bind(styles);
 
-const topics = ['Sách mới', 'Sách bán chạy', 'Manga - Comic', 'Doraemon', 'Wingsbooks'];
+const topics = ['Sách mới', 'Sách bán chạy', 'Manga - Comic', 'Tâm lí - Kĩ năng sống', 'Văn học'];
 
 const temporaryBlogs = [
     {
@@ -55,10 +56,12 @@ function HomePage() {
                                     <img
                                         src={images.blogImage}
                                         alt=""
-                                        className="w-36 object-cover rounded-l-lg max-lg:w-44"
+                                        className="w-36 object-cover rounded-l-lg max-lg:w-44 cursor-pointer"
                                     />
                                     <div className="p-2 flex flex-col gap-4">
-                                        <span className={cx('blog-title')}>{blog.title}</span>
+                                        <span className={cx('blog-title', 'cursor-pointer hover:text-primary-color')}>
+                                            {blog.title}
+                                        </span>
                                         <span>
                                             <FontAwesomeIcon icon={faCalendar} />
                                             <span className="pl-2">{blog.postDate}</span>

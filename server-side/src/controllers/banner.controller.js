@@ -1,18 +1,14 @@
 import { StatusCodes } from 'http-status-codes';
 import Banner from '../models/banner.model.js';
 
-class BannerController {
-    async getBanners(req, res) {
-        try {
-            const banners = await Banner.getBanners();
-
-            res.status(StatusCodes.OK).json(banners);
-        } catch (error) {
+const getBanners = (req, res) => {
+    Banner.findAll()
+        .then((banner) => res.status(StatusCodes.OK).json(banner))
+        .catch((err) =>
             res.status(StatusCodes.NOT_FOUND).json({
-                errors: error.message,
-            });
-        }
-    }
-}
+                message: err.message,
+            }),
+        );
+};
 
-export default new BannerController();
+export { getBanners };

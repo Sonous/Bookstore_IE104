@@ -1,7 +1,8 @@
 const routes = {
     home: '/',
-    collections: '/collections/:collection',
-    signIn: '/signin'
+    collections: '/collections/:collection/:genre?',
+    
+    results: '/results',
 }
 
 export default routes
