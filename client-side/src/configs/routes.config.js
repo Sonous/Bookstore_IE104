@@ -8,6 +8,7 @@ const routes = {
     userpage:'/user',
     register: '/register',
     forgotpassword: '/forgotpassword',
+    cartpage: '/cartpage',
 }
 
 export default routes

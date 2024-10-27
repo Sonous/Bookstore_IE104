@@ -11,10 +11,10 @@ const categories = [
 const searchResult = [
     {
         title: 'Hồi Kí Vanitas - Tập 10',
-        image: '',
-        currentPrice: 36000,
+        image: 'searchResult1',
+        currentPrice: 35000,
         quantity: 3,
-        rate: 4
+      
     },
     {
         title: 'Hồi Kí Vanitas - Tập 14 (Tái bản)',
@@ -315,5 +315,37 @@ const bannersSlider = [
         title: 'boxSetTokyoBabylonBanner',
     },
 ];
-
+const searchResult2 = [
+    {
+        title: 'Hồi Kí Vanitas - Tập 10',
+        image: 'searchResult1',
+        currentPrice: 36000,
+        quantity: 3,
+        rate: 4
+    },
+    {
+        title: 'Hồi Kí Vanitas - Tập 14 (Tái bản)',
+        image: 'searchResult1',
+        currentPrice: 36000,
+        quantity: 1,
+    },
+    {
+        title: 'Hồi Kí Vanitas - Tập 14 (Tái bản)',
+        image: 'searchResult1',
+        currentPrice: 36000,
+        quantity: 1,
+    },
+    {
+        title: 'Hồi Kí Vanitas - Tập 14 (Tái bản)',
+        image: 'searchResult1',
+        currentPrice: 36000,
+        quantity: 1,
+    },
+    {
+        title: 'Hồi Kí Vanitas - Tập 14 (Tái bản)',
+        image: 'searchResult1',
+        currentPrice: 36000,
+        quantity: 1,
+    }
+];
 export { categories, searchResult, bannersSlider };

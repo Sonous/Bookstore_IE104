@@ -8,6 +8,8 @@ import UserPage from '~/pages/UserPage/UserPage';
 import Login from '~/pages/Login-Register-ForgotPassword/Login';
 import ForgotPassword from '~/pages/Login-Register-ForgotPassword/ForgotPassword';
 import Register from '~/pages/Login-Register-ForgotPassword/Register';
+import CartPage from '~/pages/CartPage/CartPage';
+import { Component } from 'react';
 
 
 
@@ -22,7 +24,8 @@ const pages = [
     { path: routes.userpage, Component: UserPage},
     { path: routes.login, Component: Login},
     { path: routes.register, Component: Register},
-    { path: routes.forgotpassword, Component: ForgotPassword}
+    { path: routes.forgotpassword, Component: ForgotPassword},
+    { path: routes.cartpage, Component: CartPage}
 ];
 
 export default pages;
