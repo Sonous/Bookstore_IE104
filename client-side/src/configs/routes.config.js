@@ -14,6 +14,7 @@ const routes = {
     orderdetail: '/orderdetail',
     register: '/register',
     forgotpassword: '/forgotpassword',
+    cartpage: '/cartpage',
 }
 
 

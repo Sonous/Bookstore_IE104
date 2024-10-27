@@ -11,10 +11,10 @@ const categories = [
 const searchResult = [
     {
         title: 'Hồi Kí Vanitas - Tập 10',
-        image: '',
-        currentPrice: 36000,
+        image: 'searchResult1',
+        currentPrice: 35000,
         quantity: 3,
-        rate: 4
+      
     },
     {
         title: 'Hồi Kí Vanitas - Tập 14 (Tái bản)',
@@ -316,6 +316,7 @@ const bannersSlider = [
     },
 ];
 
+
 const images = {
     act_1: require('~/assets/images/act_1.webp'),
     act_2: require('~/assets/images/act_2.webp'),
@@ -394,3 +395,4 @@ const events = [
 
 
 export { images, categories, searchResult, bannersSlider, news, events, activities };
+
