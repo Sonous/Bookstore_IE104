@@ -327,6 +327,8 @@ const images = {
     news_4: require('~/assets/images/news_4.webp'),
     events_1: require('~/assets/images/events_1.webp'),
     events_2: require('~/assets/images/events_2.webp'),
+    Order_1: require('~/assets/images/Order_1.webp'),
+    Order_2: require('~/assets/images/Order_2.webp'),
 };
 
 const activities = [
@@ -392,5 +394,26 @@ const events = [
     },
 ];
 
+const orderData = {
+    items: [
+        {
+            id: '1',
+            title: 'Sách ABC',
+            price: 200000,
+            quantity: 1, // Giả sử số lượng là 1
+            imageUrl: images.Order_1, // Thay đổi từ 'image' thành 'imageUrl' để phù hợp
+        },
+        {
+            id: '2',
+            title: 'Sách XYZ',
+            price: 300000,
+            quantity: 1, // Giả sử số lượng là 1
+            imageUrl: images.Order_2, // Thay đổi từ 'image' thành 'imageUrl' để phù hợp
+        },
+    ],
+    shippingFee: 30000, // Thêm phí vận chuyển
+};
 
-export { images, categories, searchResult, bannersSlider, news, events, activities };
+
+
+export { images, categories, searchResult, bannersSlider, news, events, activities, orderData };

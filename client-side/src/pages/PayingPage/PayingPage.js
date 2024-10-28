@@ -1,9 +1,14 @@
-import React, { useState } from 'react';
+import React from 'react';
 import styles from './PayingPage.module.css';
 import Header from '~/layouts/Header/Header';
 import Footer from '~/layouts/Footer/Footer';
+import { orderData } from '~/dataTemorary/index';
 
 const PayingPage = () => {
+    // Tính tổng tiền sản phẩm
+    const totalPrice = orderData.items.reduce((sum, item) => sum + item.price * item.quantity, 0);
+    const grandTotal = totalPrice + orderData.shippingFee;
+
     return (
         <div className={styles.container}>
             {/* Header */}
@@ -45,11 +50,11 @@ const PayingPage = () => {
                     <div className={styles.sectionTitle}>Phương thức thanh toán</div>
                     <div className={styles.paymentMethods}>
                         <div>
-                            <input type="radio" id="vnpay" name="payment" value="vnpay" className='mr-2'/>
+                            <input type="radio" id="vnpay" name="payment" value="vnpay" className='mr-2' />
                             <label htmlFor="vnpay">Thanh toán khi nhận hàng</label>
                         </div>
                         <div>
-                            <input type="radio" id="momo" name="payment" value="momo" className='mr-2'/>
+                            <input type="radio" id="momo" name="payment" value="momo" className='mr-2' />
                             <label htmlFor="momo">Momo</label>
                         </div>
                     </div>
@@ -59,15 +64,33 @@ const PayingPage = () => {
                 <div className={styles.orderSummary}>
                     <div className={styles.sectionTitle}>Tóm tắt đơn hàng</div>
                     <div className={styles.orderDetail}>
-                        <span>Sản phẩm:</span>
-                        <span>1</span>
-                        <span>2</span>
-                        <span>Thành tiền:</span>
-                        <span>500,000 VNĐ</span>
-                        <span>Phí vận chuyển:</span>
-                        <span>30,000 VNĐ</span>
-                        <span>Tổng:</span>
-                        <span>530,000 VNĐ</span>
+                        {orderData.items.map(item => (
+                            <div key={item.id} className={styles.itemDetail}>
+                                <img src={item.imageUrl} alt={item.title} className={styles.itemImage} />
+                                <span>{item.title}</span>
+                                <span>Số lượng: {item.quantity}</span>
+                                <span>Giá: {item.price.toLocaleString('vi-VN')} VNĐ</span>
+                            </div>
+                        ))}
+                        <div className={styles.shippingFee}>
+                            <span>Phí vận chuyển:</span>
+                            <span>{orderData.shippingFee.toLocaleString('vi-VN')} VNĐ</span>
+                        </div>
+
+                        {/* Phần nhập mã giảm giá và nút áp dụng */}
+                        <div className={styles.discountContainer}>
+                            <input
+                                type="text"
+                                className={styles.discountInput}
+                                placeholder="Nhập mã giảm giá"
+                            />
+                            <span className={styles.applyDiscount}>Áp dụng</span>
+                        </div>
+
+                        <div className={styles.totalAmount}>
+                            <span>Tổng:</span>
+                            <span>{grandTotal.toLocaleString('vi-VN')} VNĐ</span>
+                        </div>
                     </div>
                 </div>
 

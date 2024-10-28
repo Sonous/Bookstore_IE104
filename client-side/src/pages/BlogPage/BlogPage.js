@@ -92,7 +92,7 @@ function BlogPage() {
                                     <div
                                         key={item.id}
                                         className="flex items-center rounded-lg bg-white shadow-md p-4 h-48 cursor-pointer"
-                                        onClick={() => navigate(`/blog/news/${item.id}`)}  // Sử dụng navigate
+                                        onClick={() => navigate(`/blog/news/${item.id}`)}
                                     >
                                         {imgSrc ? (
                                             <img

@@ -1,125 +1,158 @@
 .container {
   font-family: Arial, sans-serif;
   margin: 0 auto; /* Căn giữa container */
+  padding: 20px; /* Padding tổng thể */
+  background-color: #f4f4f4;
   max-width: 3000px; /* Kích thước tối đa của container */
   width: 100%; /* Chiều rộng của container */
 }
 
-.formSection {
-  background-color: #f4f4f4;
-  padding: 20px; /* Padding cho nội dung */
+.address-section {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   margin-bottom: 20px;
 }
 
-.personalInfoContainer,
-.addressInfoContainer,
-.shippingContainer,
-.paymentContainer,
-.promoContainer,
+h2 {
+  font-size: 24px;
+  margin-bottom: 20px;
+}
+
+.form-group {
+  margin-bottom: 15px; /* Khoảng cách giữa các trường */
+}
+
+label {
+  display: block; /* Hiển thị label dưới dạng khối */
+  margin-bottom: 5px; /* Khoảng cách dưới label */
+  font-weight: bold; /* In đậm */
+}
+
+input {
+  width: 100%; /* Chiều rộng 100% cho input */
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px; /* Bo góc cho input */
+  font-size: 16px; /* Kích thước chữ */
+}
+
+input::placeholder {
+  color: #888; /* Màu sắc cho placeholder */
+  font-style: italic; /* Kiểu chữ cho placeholder */
+}
+
+.formSection {
+  background-color: #fff;
+  padding: 20px; /* Padding cho nội dung */
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+  padding-left: 50px; /* Căn lề trái */
+  padding-right: 50px; /* Căn lề phải */
+  border-radius: 10px; /* Bo góc cho phần nội dung */
+  border: 1px solid #ccc; /* Viền cho phần nội dung */
+}
+
 .orderSummary {
-  background-color: #fff; /* Màu nền của container */
-  padding: 20px; /* Padding cho container */
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Hiệu ứng bóng */
-  margin-bottom: 20px; /* Khoảng cách dưới */
-  border-radius: 10px; /* Bo góc cho các container */
-  border: 1px solid #ccc; /* Viền cho các container */
-}
-
-.header {
-  color: #fff;
-  text-align: center;
-  padding: 10px 0;
-}
-
-.footer {
-  color: #fff;
-  text-align: center;
-  padding: 10px 0;
-  margin-top: 20px;
+  display: flex;
+  flex-direction: column; /* Xếp theo chiều dọc */
 }
 
 .sectionTitle {
-  font-size: 20px; /* Kích thước chữ */
-
+  font-size: 40px; /* Kích thước chữ */
   font-weight: bold; /* In đậm */
   margin-top: 20px; /* Khoảng cách trên */
   margin-bottom: 10px; /* Khoảng cách dưới */
   border-bottom: 2px solid black; /* Đường kẻ dưới màu đen */
   padding-bottom: 10px; /* Padding dưới */
-  width: 100%; /* Chiều rộng 100% */
 }
 
-.formGroup {
-  display: flex;
-  flex-direction: column;
-  margin-bottom: 15px;
+.orderDetail {
+  display: flex; /* Enable flexbox */
+  flex-direction: column; /* Stack items vertically */
 }
 
-label {
-  margin-bottom: 5px;
-  font-weight: bold;
+.itemDetail {
+  display: flex; /* Enable flexbox */
+  justify-content: space-between; /* Căn giữa nội dung */
+  align-items: center; /* Căn giữa dọc */
+  padding: 10px 0; /* Khoảng cách giữa các item */
+  border-bottom: 1px solid #ccc; /* Đường kẻ dưới */
 }
 
-input,
-select {
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 5px; /* Bo góc cho input và select */
-  font-size: 16px;
+.itemImage {
+  width: 80px; /* Chiều rộng ảnh */
+  height: 80px; /* Chiều cao ảnh */
+  object-fit: cover; /* Đảm bảo ảnh giữ nguyên tỉ lệ */
+  border-radius: 5px; /* Bo góc cho ảnh */
 }
 
-textarea {
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 5px; /* Bo góc cho textarea */
-  font-size: 16px;
-  width: 100%; /* Đảm bảo chiếm 100% chiều rộng của container */
-  resize: none; /* Ngăn chặn thay đổi kích thước */
+.itemInfo {
+  flex: 1; /* Để phần thông tin chiếm không gian còn lại */
+  display: flex; /* Enable flexbox */
+  flex-direction: column; /* Xếp chồng thông tin sách */
+  margin-left: 10px; /* Khoảng cách giữa ảnh và tên sách */
 }
 
-.shippingMethods,
-.paymentMethods {
-  gap: 20px;
-  margin-top: 10px;
+.itemQuantityPrice {
+  display: flex; /* Enable flexbox */
+  flex-direction: column; /* Xếp chồng số lượng và giá */
+  align-items: flex-end; /* Căn phải */
 }
 
+.itemQuantityPrice span {
+  margin: 5px 0; /* Khoảng cách giữa số lượng và giá */
+}
+
+.shippingFee,
+.totalAmount {
+  display: flex; /* Enable flexbox */
+  justify-content: space-between; /* Căn giữa nội dung */
+  padding: 5px 0; /* Khoảng cách giữa các dòng */
+  font-weight: bold; /* Đậm để nổi bật */
+}
+
+.totalAmount {
+  margin-top: 10px; /* Khoảng cách trên tổng tiền */
+}
+
+/* Thêm CSS cho phần mã giảm giá */
+.discountContainer {
+  display: flex; /* Sử dụng flexbox để căn giữa */
+  align-items: center; /* Căn giữa dọc */
+  margin-top: 10px; /* Khoảng cách trên */
+}
+
+.applyDiscount {
+  color: blue; /* Màu xanh cho chữ */
+  font-weight: bold; /* In đậm */
+  cursor: pointer; /* Hiệu ứng con trỏ tay khi hover */
+  margin-right: 10px; /* Khoảng cách giữa chữ và nút */
+}
+
+/* Định dạng cho ô nhập mã giảm giá */
+.discountInput {
+  flex: 1; /* Chiếm không gian còn lại */
+  margin-right: 10px; /* Khoảng cách bên phải */
+}
+
+/* Định dạng cho nút Đặt hàng */
 .orderButtonContainer {
-  display: flex;
-  justify-content: center; /* Canh giữa nút */
-  margin-top: 20px; /* Khoảng cách trên nút */
+  display: flex; /* Sử dụng flexbox */
+  justify-content: flex-end; /* Đưa nút sang bên phải */
 }
 
 .orderButton {
-  padding: 10px 20px; /* Padding cho nút */
-  background-color: #4CAF50; /* Màu nền */
-  color: white; /* Màu chữ */
-  border: none; /* Bỏ viền */
+  background-color: #28a745; /* Màu xanh lá cho nút */
+  color: white; /* Màu chữ trắng */
+  border: none; /* Không viền */
   border-radius: 5px; /* Bo góc cho nút */
-  cursor: pointer; /* Con trỏ khi di chuột */
+  padding: 10px 20px; /* Padding cho nút */
+  cursor: pointer; /* Hiệu ứng con trỏ tay */
   font-size: 16px; /* Kích thước chữ */
 }
 
 .orderButton:hover {
-  background-color: #45a049; /* Màu khi di chuột qua */
-}
-
-/* Căn lề phải cho Tóm tắt đơn hàng */
-.orderSummary {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end; /* Căn lề phải */
-}
-
-.orderSummary span {
-  display: flex;
-  justify-content: space-between; /* Căn giữa nội dung */
-  width: 100%; /* Đảm bảo chiều rộng */
-  padding: 5px 0; /* Khoảng cách giữa các dòng */
-}
-
-.orderSummaryTitle {
-  font-size: 40px; /* Kích thước chữ lớn hơn */
-  font-weight: bold; /* In đậm */
-  border-bottom: 2px solid #ccc; /* Đường kẻ dưới */
-  padding-bottom: 10px; /* Khoảng cách dưới đường kẻ */
+  background-color: #218838; /* Hiệu ứng khi hover */
 }
