@@ -9,6 +9,7 @@ import { useEffect, useState } from 'react';
 import { request } from '~/configs';
 
 function CollectionsPage() {
+
     const { collection, genre = '' } = useParams();
     const [selectedCollection, setSelectedCollection] = useState(collection);
     const [selectedGenres, setSelectedGeners] = useState([]);
@@ -112,3 +113,4 @@ function CollectionsPage() {
 }
 
 export default CollectionsPage;
+

@@ -1,0 +1,43 @@
+/* src/ShoppingGuide.css */
+.shopping-guide {
+    font-family: Arial, sans-serif;
+    padding: 20px;
+    max-width: 800px;
+    margin: auto;
+    background-color: #f9f9f9; /* Gray background */
+    border-radius: 8px; /* Rounded corners */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+}
+
+.guide-header {
+    text-align: left;
+    border-bottom: 1px solid black;
+    margin-bottom: 20px;
+    font-weight: bold;
+}
+
+.guide-header h1 {
+    font-size: 24px;
+    color: black;
+}
+
+.guide-content h2 {
+    font-size: 15px;
+    color: black;
+    margin-top: 20px;
+    font-weight: bold;
+}
+
+.guide-content p {
+    font-size: 16px;
+    line-height: 1.6;
+    color: black;
+    margin: 10px 0;
+    text-align: justify;
+}
+
+.guide-content ul.a {
+    margin: 10px 0;
+    padding-left: 20px;
+    list-style-type: circle;
+}

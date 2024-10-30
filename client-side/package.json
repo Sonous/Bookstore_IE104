@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+
       "@ant-design/icons": "^5.5.1",
       "@ant-design/react-slick": "^1.1.2",
       "@fortawesome/fontawesome-svg-core": "^6.6.0",
@@ -29,6 +30,7 @@
       "slick-carousel": "^1.8.1",
       "sweetalert2": "^11.14.3",
       "web-vitals": "^2.1.4"
+
   },
   "scripts": {
       "start": "react-app-rewired start",
