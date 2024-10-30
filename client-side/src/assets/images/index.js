@@ -10,6 +10,7 @@ const images = {
     trinhThamCoTrangBanner: require('./trinhThamCoTrangBanner.webp'),
     boxSetTokyoBabylonBanner: require('./boxSetTokyoBabylonBanner.webp'),
     blogImage: require('./blog_image_1.webp'),
+    nothingIcon: require('./nothing-icon.svg').default,
 };
 
 export default images;

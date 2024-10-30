@@ -1,8 +1,8 @@
-import BannerControler from '../controllers/banner.controller.js';
 import express from 'express';
+import * as BannerController from '../controllers/banner.controller.js';
 
 const bannerRouter = express.Router();
 
-bannerRouter.route('/').get(BannerControler.getBanners);
+bannerRouter.route('/').get(BannerController.getBanners);
 
 export default bannerRouter;

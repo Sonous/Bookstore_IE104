@@ -5,6 +5,9 @@ import BlogPageNews from '~/pages/BlogPage/BlogPageNews';
 import BlogPageActivities from '~/pages/BlogPage/BlogPageActivities';
 import CollectionsPage from '~/pages/CollectionsPage';
 import HomePage from '~/pages/HomePage/HomePage';
+
+import SearchResultPage from '~/pages/SearchResultPage';
+
 import AboutUs from '~/pages/InformationPage/AboutUs';
 import RefundPolicy from '~/pages/InformationPage/RefundPolicy';
 import ShoppingGuide from '~/pages/InformationPage/ShoppingGuide';
@@ -14,7 +17,7 @@ import Login from '~/pages/Login-Register-ForgotPassword/Login';
 import ForgotPassword from '~/pages/Login-Register-ForgotPassword/ForgotPassword';
 import Register from '~/pages/Login-Register-ForgotPassword/Register';
 import CartPage from '~/pages/CartPage/CartPage';
-import { Component } from 'react';
+
 
 
 
@@ -27,6 +30,9 @@ const pages = [
     { path: routes.blogNews, Component: BlogPageNews },
     { path: routes.blogActivities, Component: BlogPageActivities },
 
+
+    { path: routes.results, Component: SearchResultPage },
+
     { path: routes.aboutus, Component: AboutUs},
     { path: routes.refundpolicy, Component: RefundPolicy},
     { path: routes.shoppingguide, Component: ShoppingGuide},
@@ -36,6 +42,7 @@ const pages = [
     { path: routes.register, Component: Register},
     { path: routes.forgotpassword, Component: ForgotPassword},
     { path: routes.cartpage, Component: CartPage}
+
 ];
 
 export default pages;
