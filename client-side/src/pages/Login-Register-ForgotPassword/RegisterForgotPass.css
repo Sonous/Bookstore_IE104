@@ -3,29 +3,29 @@
     justify-content: center; /* Căn giữa theo chiều ngang */
     align-items: center; /* Căn giữa theo chiều dọc */
     height: 100vh; /* Chiều cao 100% viewport */
-  }
-  .Title {
+}
+.Title {
     text-align: center;
-    font-family: "Inter", sans-serif; /* Added a fallback font */
+    font-family: 'Inter', sans-serif; /* Added a fallback font */
     font-size: 30px;
-    color: #228B22;
-  }
-  
-  .Login {
+    color: #228b22;
+}
+
+.Login {
     display: flex;
     justify-content: flex-start; /* Căn bên trái */
     align-items: center; /* Giữ căn giữa theo chiều dọc */
     text-align: left; /* Căn trái */
     width: 100%;
-    color: #228B22;
-    font-size: 16px; 
+    color: #228b22;
+    font-size: 16px;
     margin: 0;
     padding: 5px;
-  }
-  
-  .LoginButton {
+}
+
+.LoginButton {
     margin-top: 15px;
-    background-color: #228B22;
+    background-color: #228b22;
     color: white;
     border: none;
     padding: 10px;
@@ -35,58 +35,57 @@
     cursor: pointer;
     width: 320px;
     display: block;
-  }
-  
-  .Inputtext {
+}
+
+.Inputtext {
     width: 300px;
     font-size: 16px; /* Added 'px' unit */
     padding: 10px;
-    border: 1px grey solid; 
+    border: 1px grey solid;
     display: block;
     margin: auto;
-  }
-  
-  .inputgroup {
+}
+
+.inputgroup {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-  }
-  
-  .error-message {
+}
+
+.error-message {
     color: red; /* Màu sắc thông báo lỗi */
     margin-top: 10; /* Bỏ margin để không tạo khoảng cách thêm */
     word-wrap: break-word;
     max-width: 300px;
     text-align: left;
     font-size: 13px;
-  }
-  
-  .login-container {
-    border: 2px solid black; 
-    padding: 5px; /* Khoảng cách bên trong khung */
+}
+
+.login-container {
+    padding: 10px; /* Khoảng cách bên trong khung */
     background-color: white;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 5px 20px #228b22;
+    border-radius: 10px;
     display: flex;
     justify-content: center;
     align-items: center;
     flex-direction: column;
+    gap: 5px;
     width: 400px;
-  }
-  
-  .forgot-password {
+}
+
+.forgot-password {
     text-align: right; /* Căn phải */
     width: 100%; /* Chiếm toàn bộ chiều rộng */
     margin-top: 0; /* Đặt khoảng cách trên bằng 0 để sát hơn */
-  }
-  
-  .Inputtext:disabled {
+}
+
+.Inputtext:disabled {
     background-color: #f0f0f0; /* Màu nền xám cho ô nhập */
-  
-  }
-  
-  .LoginButton.disabled {
+}
+
+.LoginButton.disabled {
     background-color: #f0f0f0;
     color: grey;
     cursor: not-allowed; /* Thay đổi con trỏ để người dùng biết nút không thể nhấn */
-  }
-  
+}
