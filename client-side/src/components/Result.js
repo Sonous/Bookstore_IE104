@@ -151,7 +151,7 @@ function Result({ category, selectedGenres, searchPage = false, data = [], setSe
     return (
         <div className="grid grid-cols-4 gap-4 mt-4 max-lg:grid-cols-2">
             {!otherPage && (
-                <div className="aside bg-white shadow-sm px-3 py-2 max-lg:col-span-2">
+                <div className="bg-white shadow-sm p-5 max-lg:col-span-2">
                     {!searchPage && (
                         <div className="genres pb-2 border-b-2">
                             <span className=" font-bold">THỂ LOẠI</span>

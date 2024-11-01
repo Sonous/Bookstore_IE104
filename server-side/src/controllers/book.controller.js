@@ -1,6 +1,6 @@
 import { StatusCodes } from 'http-status-codes';
-import { Book, BookImage, Category, Genre } from '../models/index.js';
-import { Op } from 'sequelize';
+import { Book, BookImage, Category, Genre, User } from '../models/index.js';
+import { Op, Sequelize } from 'sequelize';
 import sequelize from '../config/database.js';
 import BookGenre from '../models/bookGenre.model.js';
 
@@ -172,17 +172,16 @@ const getAllBooks = (req, res) => {
             break;
         default:
             Book.findAll({
+                ...properties,
                 include: [
                     {
                         model: BookImage,
                         attributes: ['book_image_url'],
-                    },
-                    {
-                        model: Genre,
-                        attributes: ['genre_name'],
-                        through: { attributes: [] },
+                        limit: 1,
                     },
                 ],
+                order: Sequelize.literal('RAND()'),
+                limit: parseInt(req.query.limit) || null,
             })
                 .then((books) => res.status(StatusCodes.OK).json(books))
                 .catch((err) =>
@@ -194,6 +193,9 @@ const getAllBooks = (req, res) => {
 };
 const getBookByName = (req, res) => {
     const name = req.params.name; // Get the book name from the route parameter
+
+    console.log(name);
+
     Book.findOne({
         where: {
             book_name: sequelize.where(sequelize.fn('LOWER', sequelize.col('book_name')), 'LIKE', name.toLowerCase()),
@@ -207,6 +209,18 @@ const getBookByName = (req, res) => {
                 model: Genre,
                 attributes: ['genre_name'],
                 through: { attributes: [] },
+                include: {
+                    model: Category,
+                    attributes: ['category_name'],
+                },
+            },
+            {
+                model: User,
+                attributes: ['user_name', 'user_avatar_url'],
+                through: {
+                    attributes: ['rating_star', 'rating_content', 'created_at'],
+                },
+                as: 'UsersWhoRated',
             },
         ],
     })

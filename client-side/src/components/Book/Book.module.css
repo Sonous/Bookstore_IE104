@@ -27,6 +27,10 @@
     text-overflow: ellipsis; /* Hiển thị dấu ba chấm */
     white-space: normal; /* Đảm bảo văn bản có thể xuống dòng */
 }
+.title:hover {
+    color: rgb(48, 173, 227);
+}
+
 .current-price {
     color: var(--main-color);
     font-weight: 500;

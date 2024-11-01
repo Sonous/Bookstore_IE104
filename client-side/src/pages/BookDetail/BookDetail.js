@@ -1,19 +1,53 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
+import { Link, useParams } from 'react-router-dom';
+import parse from 'html-react-parser';
+
 import './BookDetail.css';
 import Header from '~/layouts/Header/Header';
 import Footer from '~/layouts/Footer/Footer';
+import bookApi from '~/apis/bookApi';
+import Loading from '~/components/Loading';
+import { imageUrl } from '~/configs/axios.config';
+import { convertPriceToString } from '~/utils/functions';
+import { Rate, Input, Divider } from 'antd';
+import Book from '~/components/Book/Book';
+import Comment from '~/components/Comment';
 
 function BookDetail() {
-    const images1 = [
-        { src: require('./Tớ khôn lớn từng ngày.webp'), alt: 'Tớ khôn lớn từng ngày 1' },
-        { src: require('./to-khon-lon-tung-ngay-2.jpg'), alt: 'Tớ khôn lớn từng ngày 2' },
-    ];
+    const { book_name } = useParams();
+    const { TextArea } = Input;
 
+    const [book, setBook] = useState();
+    const [otherBooks, setOtherBooks] = useState();
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
-    const [quantity, setQuantity] = useState(0);
+    const [quantity, setQuantity] = useState(1);
     const [rating, setRating] = useState(0);
-    const [comments, setComments] = useState([]);
-    const commentInputRef = useRef(null);
+    const [comment, setComment] = useState('');
+    const commentInputRef = useRef();
+
+    useEffect(() => {
+        const fetchApi = async () => {
+            try {
+                const result = await bookApi.getBookByName(book_name);
+                const listBook = await bookApi.getBooksByLimit(6);
+
+                setBook(result);
+                setOtherBooks(listBook);
+            } catch (error) {
+                console.log(error);
+            }
+        };
+
+        const scrollToTop = () => {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth',
+            });
+        };
+
+        fetchApi();
+        scrollToTop();
+    }, [book_name]);
 
     const navigate = (index) => {
         setCurrentImageIndex(index);
@@ -27,19 +61,7 @@ function BookDetail() {
         setQuantity((prevQuantity) => (prevQuantity > 0 ? prevQuantity - 1 : 0));
     };
 
-    const handleCommentSubmit = () => {
-        const newComment = commentInputRef.current.value;
-        if (newComment) {
-            const combinedComment = { rating, text: newComment };
-            setComments([...comments, combinedComment]);
-            commentInputRef.current.value = '';
-            setRating(0);
-        }
-    };
-
-    const totalComments = comments.length;
-    const averageRating =
-        totalComments > 0 ? (comments.reduce((sum, comment) => sum + comment.rating, 0) / totalComments).toFixed(1) : 0;
+    const handleCommentSubmit = () => {};
 
     const focusCommentInput = () => {
         commentInputRef.current.focus();
@@ -47,166 +69,157 @@ function BookDetail() {
 
     return (
         <>
-            <Header />
-            <div className="bg-main-bg-color px-28 py-5">
-                <nav className="navmenu m-5">
-                    <ol>
-                        <li>
-                            <a href="#" onClick={() => navigate(0)}>
-                                Trang chủ
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#" onClick={() => navigate(1)}>
-                                Truyện thiếu nhi
-                            </a>
-                        </li>
-                        <li>Tớ khôn lớn từng ngày</li>
-                    </ol>
-                </nav>
-                <div className="product-page grid-cols-7 gap-3">
-                    <div className="firstpart col-span-3 bg-white rounded-lg p-5">
-                        <div className="image-container">
-                            <img
-                                className="img1"
-                                src={images1[currentImageIndex].src}
-                                alt={images1[currentImageIndex].alt}
-                            />
-                            <div className="dots">
-                                {images1.map((_, index) => (
-                                    <span
-                                        key={index}
-                                        className={`dot ${currentImageIndex === index ? 'active' : ''}`}
-                                        onClick={() => navigate(index)}
-                                    ></span>
-                                ))}
+            {book && otherBooks ? (
+                <>
+                    <Header />
+                    <div className="bg-main-bg-color px-28 py-5">
+                        <nav className="navmenu m-5">
+                            <ol>
+                                <li>
+                                    <Link to={'/'}>Trang chủ</Link>
+                                </li>
+                                <li>
+                                    <Link to={`/collections/${book.genres[0].category.category_name}`}>
+                                        {book.genres[0].category.category_name}
+                                    </Link>
+                                </li>
+                                <li>{book.book_name}</li>
+                            </ol>
+                        </nav>
+                        <div className="grid product-page grid-cols-7 gap-3 relative">
+                            <div className="firstpart col-span-3 bg-white rounded-lg p-5 self-start sticky top-3">
+                                <div className="image-container">
+                                    <img
+                                        className="img1 object-contain"
+                                        src={`${imageUrl}/${book.bookimages[currentImageIndex].book_image_url}`}
+                                        alt={book.book_name}
+                                    />
+                                    <div className="dots">
+                                        {book.bookimages.map((_, index) => (
+                                            <span
+                                                key={index}
+                                                className={`dot ${currentImageIndex === index ? 'active' : ''}`}
+                                                onClick={() => navigate(index)}
+                                            ></span>
+                                        ))}
+                                    </div>
+                                </div>
+                                <div className="button-container">
+                                    <button className="checkout1 flex-1">Mua ngay</button>
+                                    <button className="checkout2 flex-1">Thêm vào giỏ hàng</button>
+                                </div>
                             </div>
-                        </div>
-                        <span className="title1">GIỚI THIỆU SÁCH</span>
-                        <br />
-                        <div className="bookcontent">
-                            Qua các tình huống cụ thể và câu hỏi để con thảo luận cùng ba mẹ, cuốn sách này dạy trẻ 3-6
-                            tuổi kỹ năng sống quan trọng như ăn uống lành mạnh, chăm sóc cơ thể, đảm bảo an toàn, kết
-                            bạn, lắng nghe và chia sẻ, v...v... Với những kiến thức được trình bày khoa học cùng minh
-                            họa sống động, sách sẽ giúp con chủ động học kỹ năng sống để trở thành những bạn nhỏ tự tin
-                            và vững vàng, sẵn sàng giải quyết mọi vấn đề và biết tận hưởng niềm vui mỗi ngày.
-                        </div>
-                    </div>
-                    <div className="secondpart bg-white col-span-4 rounded-lg">
-                        <span className="title2">TỚ KHÔN LỚN TỪNG NGÀY</span>
-                        <br />
-                        <div className="group1">
-                            <div className="quantity-control ">
-                                <button onClick={handleDecrement}>-</button>
-                                <span>{quantity}</span>
-                                <button onClick={handleIncrement}>+</button>
-                            </div>
-                            <span className="normal">Còn 100 quyển trong kho</span>
-                        </div>
-                        <div className="group2">
-                            <span className="price">100.300đ</span>
-                            <span>|</span>
-                            <div className="average-rating">
-                                {[...Array(5)].map((_, index) => (
-                                    <span
-                                        key={index}
-                                        className={`star ${index < averageRating ? 'filled' : ''}`}
-                                        onClick={focusCommentInput}
-                                    >
-                                        ★
+                            <div className="secondpart bg-white col-span-4 rounded-lg">
+                                <span className="title2">{book.book_name}</span>
+                                <br />
+                                <div className="group1">
+                                    <div className="quantity-control ">
+                                        <button onClick={handleDecrement}>-</button>
+                                        <span>{quantity}</span>
+                                        <button onClick={handleIncrement}>+</button>
+                                    </div>
+                                    <span className="normal">{`Còn ${book.book_available} quyển trong kho`}</span>
+                                </div>
+                                <div className="group2">
+                                    <span className="price">{convertPriceToString(book.book_end_cost)}</span>
+                                    <span className="text-neutral-400 line-through">
+                                        {convertPriceToString(book.book_cost)}
                                     </span>
-                                ))}
+                                    <span>|</span>
+                                    <Rate
+                                        className="text-[14px] flex items-center"
+                                        disabled
+                                        value={book.book_star_rating}
+                                    />
+                                    <span className="dot2">.</span>
+                                    <span className="normal3" onClick={focusCommentInput}>
+                                        {book.UsersWhoRated.length} bình luận
+                                    </span>
+                                </div>
+
+                                <div className="group3 gap-3">
+                                    <span className="title1">THÔNG TIN CHI TIẾT</span>
+                                    <ul className="normal mb-5">
+                                        <li>
+                                            <strong>Tác giả:</strong> {`${book.book_author}`}
+                                        </li>
+                                        <li>
+                                            <strong>Hình thức:</strong> {`${book.book_format}`}
+                                        </li>
+                                        <li>
+                                            <strong>Số trang:</strong> {`${book.book_page_num}`}
+                                        </li>
+                                        <li>
+                                            <strong>Thể loại:</strong>{' '}
+                                            {`${book.genres.map((genre) => genre.genre_name).join(', ')}`}
+                                        </li>
+                                        <li>
+                                            <strong>Bộ sưu tập: </strong>
+                                            <span className="hover:text-blue-600 cursor-pointer">{`${book.book_collection}`}</span>
+                                        </li>
+                                    </ul>
+                                    <span className="title1">GIỚI THIỆU SÁCH</span>
+                                    <div className="bookcontent -ml-[20px]">{parse(book.book_description)}</div>
+                                </div>
                             </div>
-                            <span className="dot2">.</span>
-                            <span className="normal3" onClick={focusCommentInput}>
-                                {totalComments} bình luận
-                            </span>
                         </div>
-                        <div className="button-container">
-                            <button className="checkout1">Mua ngay</button>
-                            <button className="checkout2">Thêm vào giỏ hàng</button>
+
+                        <div className=" my-6 gap-3 ">
+                            <div className="col-span-5 self-start p-10 bg-white rounded-lg grid grid-cols-2 gap-5 ">
+                                <div className="flex flex-col gap-3 border-r-[1px] border-[#cecece] pr-5">
+                                    <span className="text-lg font-semibold">BÌNH LUẬN VÀ ĐÁNH GIÁ</span>
+                                    <Rate
+                                        className="text-[14px] flex items-center"
+                                        value={rating}
+                                        onChange={(value) => setRating(value)}
+                                    />
+                                    <TextArea
+                                        onChange={(e) => setComment(e.target.value)}
+                                        style={{
+                                            height: 120,
+                                            resize: 'none',
+                                        }}
+                                    />
+                                    <button className="submit-comment" onClick={handleCommentSubmit}>
+                                        Gửi
+                                    </button>
+                                </div>
+                                <div className="flex flex-col gap-3">
+                                    <h1 className="text-lg font-semibold uppercase">Các đánh giá hiện tại</h1>
+                                    {book.UsersWhoRated.length > 0 ? (
+                                        <>
+                                            {book.UsersWhoRated.map((comment, index) => (
+                                                <>
+                                                    <Comment key={index} comment={comment} />
+                                                    {index < book.UsersWhoRated.length - 1 && <Divider />}
+                                                </>
+                                            ))}
+                                        </>
+                                    ) : (
+                                        <h2>Chưa có đánh giá nào</h2>
+                                    )}
+                                </div>
+                            </div>
                         </div>
-                        <div className="group3">
-                            <span className="title1">THÔNG TIN CHI TIẾT</span>
-                            <ul className="normal">
-                                <li>Tác giả: Jennifer Morre-Mallinos, Annabel Spenceley</li>
-                                <li>Dịch giả: Nhui Nhui</li>
-                                <li>Nhà xuất bản: Dân Trí</li>
-                                <li>Kích thước: 20x23cm</li>
-                                <li>Số trang: 97</li>
-                                <li>Năm phát hành: 2024</li>
-                            </ul>
-                        </div>
+                        <aside className="flex flex-col col-span-1 bg-white px-8 py-7 rounded-lg gap-3">
+                            <span className="title3 text-xl text-[#228B22]">SÁCH GỢI Ý CHO BẠN</span>
+                            <div className="flex justify-center">
+                                <div className="flex gap-3">
+                                    {otherBooks.map((book, index) => (
+                                        <Book key={index} {...book} collection />
+                                    ))}
+                                </div>
+                            </div>
+                        </aside>
                     </div>
-                </div>
 
-                <div className='grid grid-cols-6 my-6 gap-3'>
-                  <div className="col-span-5 self-start p-5 bg-white rounded-lg grid grid-cols-2 gap-5">
-                      <div>
-                          <span className="title1">BÌNH LUẬN VÀ ĐÁNH GIÁ</span>
-                          <div className="rating">
-                              {[...Array(5)].map((_, index) => (
-                                  <span
-                                      key={index}
-                                      className={`star ${index < rating ? 'filled' : ''}`}
-                                      onClick={() => {
-                                          setRating(index + 1);
-                                          focusCommentInput(); // Gọi hàm focus khi click vào sao
-                                      }}
-                                  >
-                                      ★
-                                  </span>
-                              ))}
-                          </div>
-                          <textarea
-                              className="comment-input bg-main-bg-color"
-                              ref={commentInputRef}
-                              placeholder="Nhập bình luận của bạn..."
-                          ></textarea>
-                          <button className="submit-comment" onClick={handleCommentSubmit}>
-                              Gửi
-                          </button>
-                          <div className="comments-list">
-                              {comments.map((comment, index) => (
-                                  <div key={index} className="comment-item">
-                                      <div className="rating" onClick={focusCommentInput}>
-                                          {' '}
-                                          {/* Gọi hàm focus khi click vào bình luận */}
-                                          {[...Array(5)].map((_, starIndex) => (
-                                              <span
-                                                  key={starIndex}
-                                                  className={`star ${starIndex < comment.rating ? 'filled' : ''}`}
-                                              >
-                                                  ★
-                                              </span>
-                                          ))}
-                                          <div>{comment.text}</div>
-                                      </div>
-                                  </div>
-                              ))}
-                          </div>
-                      </div>
-                      <div>
-                          <h1>Các đánh giá hiện tại</h1>
-                      </div>
-                  </div>
-                  <aside className="aside col-span-1 bg-white px-2 py-7 rounded-lg">
-                      <span className="title3 text-[#228B22]">SÁCH GỢI Ý CHO BẠN</span>
-                      <img
-                          className="suggestion-image"
-                          src={require('./doraemon-tieu-thuyet_nobita-va-ban-giao-huong-dia-cau_bia.webp')}
-                          alt="Doraemon"
-                      />
-                      <span className="normal">Doraemon - Bản giao hưởng địa cầu</span>
-                      <span className="price">20.500đ</span>
-                      <img className="suggestion-image" src={require('./trovethegioikl.jpg')} alt="Khủng long" />
-                      <span className="normal">Trở về thế giới khủng long</span>
-                      <span className="price">23.000đ</span>
-                  </aside>
+                    <Footer />
+                </>
+            ) : (
+                <div className="h-svh flex justify-center items-center">
+                    <Loading />
                 </div>
-            </div>
-
-            <Footer />
+            )}
         </>
     );
 }
