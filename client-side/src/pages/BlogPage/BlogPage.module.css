@@ -1,6 +1,6 @@
 .main-content {
     padding: 20px;
-    background-color:  #f0f0f0;
+    background-color: #f0f0f0;
 }
 
 .section-tabs {
@@ -21,7 +21,7 @@
 }
 
 .section-tabs li:hover {
-    color:  #d1d5db;
+    color: #d1d5db;
 }
 
 .book-title {

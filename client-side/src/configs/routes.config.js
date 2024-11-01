@@ -3,10 +3,8 @@ const routes = {
     collections: '/collections/:collection/:genre?',
     results: '/results',
 
-    blog: '/blog',
-    blogEvent: '/blog/events/:id',
-    blogNews: '/blog/news/:id',
-    blogActivities: '/blog/activities/:id',
+    blog: '/blogs/:option',
+    blogDetail: '/blogs/:type/:blog_id',
 
     aboutus: '/aboutus',
     refundpolicy: '/refundpolicy',
