@@ -1,7 +1,5 @@
 import { DataTypes } from 'sequelize';
 import sequelize from '../config/database.js';
-import PayingMethod from './payingMethod.model.js';
-import TransportMethod from './transportMethod.model.js';
 
 const Order = sequelize.define(
     'order',
@@ -14,7 +12,10 @@ const Order = sequelize.define(
         },
         order_address_info: DataTypes.TEXT,
         order_books: DataTypes.TEXT,
-        order_status: DataTypes.STRING,
+        order_status: {
+            type: DataTypes.ENUM('Chờ thanh toán', 'Đang xử lý', 'Đang giao', 'Hoàn tất', 'Bị hủy', 'Đổi trả'),
+            defaultValue: 'Chờ thanh toán',
+        },
         books_total_prices: DataTypes.DECIMAL(20, 2),
         transport_name: DataTypes.STRING,
         transport_cost: DataTypes.DECIMAL(20, 2),
@@ -29,14 +30,5 @@ const Order = sequelize.define(
         freezeTableName: true,
     },
 );
-Order.belongsTo(PayingMethod, {
-    foreignKey: 'pay_method_id',
-    as: 'payingMethod', // Use this alias in your query
-});
-
-Order.belongsTo(TransportMethod, {
-    foreignKey: 'transport_id',
-    as: 'transportMethod', // Use this alias in your query
-});
 
 export default Order;

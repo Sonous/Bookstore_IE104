@@ -1,5 +1,5 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import React, { useState, useRef, useEffect, useContext } from 'react';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import parse from 'html-react-parser';
 
 import './BookDetail.css';
@@ -9,9 +9,13 @@ import bookApi from '~/apis/bookApi';
 import Loading from '~/components/Loading';
 import { imageUrl } from '~/configs/axios.config';
 import { convertPriceToString } from '~/utils/functions';
-import { Rate, Input, Divider } from 'antd';
+import { Rate, Input, Divider, Button } from 'antd';
 import Book from '~/components/Book/Book';
 import Comment from '~/components/Comment';
+import classNames from 'classnames';
+import userApi from '~/apis/userApi';
+import { UserContext } from '~/context/UserContextProvider';
+import Swal from 'sweetalert2';
 
 function BookDetail() {
     const { book_name } = useParams();
@@ -23,7 +27,9 @@ function BookDetail() {
     const [quantity, setQuantity] = useState(1);
     const [rating, setRating] = useState(0);
     const [comment, setComment] = useState('');
+    const { user } = useContext(UserContext);
     const commentInputRef = useRef();
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchApi = async () => {
@@ -49,7 +55,7 @@ function BookDetail() {
         scrollToTop();
     }, [book_name]);
 
-    const navigate = (index) => {
+    const navigateImage = (index) => {
         setCurrentImageIndex(index);
     };
 
@@ -61,7 +67,62 @@ function BookDetail() {
         setQuantity((prevQuantity) => (prevQuantity > 0 ? prevQuantity - 1 : 0));
     };
 
-    const handleCommentSubmit = () => {};
+    const handleCommentSubmit = async () => {
+        if (!user) {
+            const Toast = Swal.mixin({
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 1500,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                    toast.onmouseenter = Swal.stopTimer;
+                    toast.onmouseleave = Swal.resumeTimer;
+                },
+            });
+            Toast.fire({
+                icon: 'error',
+                title: 'Vui lòng đăng nhập',
+            });
+            return;
+        }
+        if (!user.user_id || !book.book_id || rating === 0 || comment === '') {
+            const Toast = Swal.mixin({
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 1500,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                    toast.onmouseenter = Swal.stopTimer;
+                    toast.onmouseleave = Swal.resumeTimer;
+                },
+            });
+            Toast.fire({
+                icon: 'error',
+                title: 'Vui lòng nhập đủ thông tin',
+            });
+            return;
+        }
+        try {
+            await userApi.submitComment(user.user_id, {
+                book_id: book.book_id,
+                rating_star: rating,
+                rating_content: comment,
+            });
+            await Swal.fire({
+                icon: 'success',
+                text: 'Nhận xét của bạn đã được lưu thành công',
+                confirmButtonText: 'Đã hiểu',
+            });
+
+            setComment('');
+            setRating(0);
+            navigate(0);
+        } catch (error) {
+            console.error(error);
+        }
+    };
 
     const focusCommentInput = () => {
         commentInputRef.current.focus();
@@ -99,14 +160,28 @@ function BookDetail() {
                                             <span
                                                 key={index}
                                                 className={`dot ${currentImageIndex === index ? 'active' : ''}`}
-                                                onClick={() => navigate(index)}
+                                                onClick={() => navigateImage(index)}
                                             ></span>
                                         ))}
                                     </div>
                                 </div>
                                 <div className="button-container">
-                                    <button className="checkout1 flex-1">Mua ngay</button>
-                                    <button className="checkout2 flex-1">Thêm vào giỏ hàng</button>
+                                    <Button
+                                        className={classNames('checkout1 flex-1', {
+                                            'opacity-80': book.book_status !== 'Còn hàng',
+                                        })}
+                                        disabled={book.book_status !== 'Còn hàng'}
+                                    >
+                                        Mua ngay
+                                    </Button>
+                                    <Button
+                                        className={classNames('checkout2 flex-1', {
+                                            'opacity-80': book.book_status !== 'Còn hàng',
+                                        })}
+                                        disabled={book.book_status !== 'Còn hàng'}
+                                    >
+                                        Thêm vào giỏ hàng
+                                    </Button>
                                 </div>
                             </div>
                             <div className="secondpart bg-white col-span-4 rounded-lg">
@@ -133,7 +208,7 @@ function BookDetail() {
                                     />
                                     <span className="dot2">.</span>
                                     <span className="normal3" onClick={focusCommentInput}>
-                                        {book.UsersWhoRated.length} bình luận
+                                        {book.ratingbooks.length} bình luận
                                     </span>
                                 </div>
 
@@ -174,6 +249,7 @@ function BookDetail() {
                                         onChange={(value) => setRating(value)}
                                     />
                                     <TextArea
+                                        value={comment}
                                         onChange={(e) => setComment(e.target.value)}
                                         style={{
                                             height: 120,
@@ -186,13 +262,13 @@ function BookDetail() {
                                 </div>
                                 <div className="flex flex-col gap-3">
                                     <h1 className="text-lg font-semibold uppercase">Các đánh giá hiện tại</h1>
-                                    {book.UsersWhoRated.length > 0 ? (
+                                    {book.ratingbooks.length > 0 ? (
                                         <>
-                                            {book.UsersWhoRated.map((comment, index) => (
-                                                <>
+                                            {book.ratingbooks.map((comment, index) => (
+                                                <div key={index}>
                                                     <Comment key={index} comment={comment} />
-                                                    {index < book.UsersWhoRated.length - 1 && <Divider />}
-                                                </>
+                                                    {index < book.ratingbooks.length - 1 && <Divider />}
+                                                </div>
                                             ))}
                                         </>
                                     ) : (

@@ -40,6 +40,12 @@ function Book({
             onMouseOver={() => setShowLike(true)}
             onMouseLeave={() => setShowLike(false)}
         >
+            {book_status !== 'Còn hàng' && (
+                <div className="border rounded-md px-3 font-bold text-center bg-blue-100 text-blue-500 absolute left-0 top-0">
+                    <span>{book_status}</span>
+                </div>
+            )}
+
             <Link to={enable ? `/books/${book_name}` : null}>
                 <img src={`${imageUrl}/${bookimages[0].book_image_url}`} alt={book_name} className={cx('image')} />
             </Link>

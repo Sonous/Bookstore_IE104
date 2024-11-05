@@ -159,15 +159,6 @@
     justify-content: flex-start; /* Căn giữa nếu cần */
 }
 
-.checkout1:hover {
-    background-color: white; /* Màu nền khi hover */
-    color: #228b22;
-}
-.checkout2:hover {
-    background-color: #228b22; /* Màu nền khi hover */
-    color: white;
-}
-
 .price {
     font-weight: bold;
 }

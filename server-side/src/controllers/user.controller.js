@@ -171,4 +171,44 @@ const getAddressOfUser = (req, res) => {
         );
 };
 
-export { getUserById, getUserByToken, getCartItems, addBookToCart, updateUser, getAddressOfUser };
+const addComment = async (req, res) => {
+    try {
+        const { userId } = req.params;
+        const { commentObj } = req.body;
+
+        await RatingBook.create({
+            user_id: userId,
+            ...commentObj,
+        });
+
+        const comments = await RatingBook.findAll({
+            where: {
+                book_id: commentObj.book_id,
+            },
+        });
+
+        const average = comments.reduce((avg, current) => avg + current.rating_star, 0) / comments.length;
+
+        await Book.update(
+            {
+                book_star_rating: average,
+                book_rating_num: comments.length,
+            },
+            {
+                where: {
+                    book_id: commentObj.book_id,
+                },
+            },
+        );
+
+        res.status(200).json({
+            message: 'success',
+        });
+    } catch (error) {
+        res.status(StatusCodes.BAD_REQUEST).json({
+            message: err.message,
+        });
+    }
+};
+
+export { getUserById, getUserByToken, getCartItems, addBookToCart, updateUser, getAddressOfUser, addComment };
