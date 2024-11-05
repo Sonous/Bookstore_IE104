@@ -5,6 +5,40 @@
 -- use ql_ban_sach;
 -- drop database ql_ban_sach;
 
+select * from ratingbook;
+
+-- RatingBook
+INSERT INTO RatingBook (review_id, user_id, book_id, rating_star, rating_content, review_status) VALUES
+ (150005, 10001, 60001, 5, N'Sách hay, tuyệt vời', 'pending');
+
+select * from notification;
+
+select * from `order`;
+
+INSERT INTO `order` (
+    order_id,
+    user_id,
+    order_status,
+    books_total_prices,
+    transport_name,
+    transport_cost,
+    pay_method_name,
+    order_total_cost,
+    order_address_info,
+    order_books
+) VALUES (
+    '1730611063350',
+    10001,
+    'Hoàn tất',
+    34560.00,
+    'Giao hàng tiêu chuẩn',
+    20000.00,
+    'Thanh toán khi nhận hàng',
+    54560.00,
+    '{"user_name":"Lâm Quốc Huy","user_phone":"0123456789","address":{"address_house_number":"abc123","address_ward":"Phường Tây Thạnh","address_district":"Quận Tân Phú","address_province":"Thành phố Hồ Chí Minh"}}',
+    '[{\"book_id\":60001,\"book_name\":\"Hồi Kí Vanitas - Tập 10\",\"book_cost\":\"36000.00\",\"book_discount\":\"0.04\",\"book_end_cost\":\"34560.00\",\"book_sold\":40,\"book_star_rating\":4,\"book_status\":\"Còn hàng\",\"created_at\":\"2024-11-02T11:59:34.000Z\",\"updated_at\":\"2024-11-02T05:07:50.000Z\",\"cart\":{\"quantity\":1},\"bookimages\":[{\"book_image_url\":\"hoi_ki_vanitas_10_1.webp\"}]}]'
+);
+
 
 INSERT INTO Book (book_id, book_name, book_cost, book_discount, book_end_cost, book_available, book_sold, book_star_rating, book_rating_num, book_description, book_author, book_format, book_page_num, book_collection, book_status) VALUES 
 (60031, N'"Cậu" Ma Nhà Xí Hanako - Sau Giờ Học - Tập 2 - Tặng Kèm 2 Giấy Nhắn Bập Bênh', 30000.00, 0.05, 28500, 200, 90, 0, 0, N'<div>
@@ -150,7 +184,7 @@ CREATE TABLE `Order` (
     order_id CHAR(36) NOT NULL,
     order_address_info text  NOT NULL,
     order_books text  NOT NULL,
-    order_status nvarchar(50)  NOT NULL,
+    order_status ENUM('Chờ thanh toán', 'Đang xác nhận', 'Đang xử lý', 'Đang giao', 'Hoàn tất', 'Bị hủy', 'Đổi trả') DEFAULT 'Chờ thanh toán',
     books_total_prices decimal(20,2)  NOT NULL,
     transport_name nvarchar(255)  NOT NULL,
     transport_cost decimal(20,2)  NOT NULL,
@@ -178,13 +212,15 @@ CREATE TABLE TransportMethod (
 
 -- Table: RatingBook
 CREATE TABLE RatingBook (
+    review_id int PRIMARY KEY AUTO_INCREMENT,
     user_id int  NOT NULL,
     book_id int  NOT NULL,
     rating_star int  NOT NULL,
     rating_content text  NOT NULL,
+    review_status ENUM('pending', 'approved', 'rejected') DEFAULT 'pending',
+    likes_count int DEFAULT 0,
     created_at datetime DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    updated_at datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP NOT NULL,
-    CONSTRAINT RatingBook_pk PRIMARY KEY (user_id,book_id)
+    updated_at datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP NOT NULL
 );
 
 -- Table: User
@@ -195,11 +231,25 @@ CREATE TABLE User (
     user_email varchar(255)  NOT NULL,
     user_password varchar(255)  NOT NULL,
     user_avatar_url varchar(255)  NOT NULL,
+    notification text,
     created_at datetime DEFAULT CURRENT_TIMESTAMP NOT NULL,
     updated_at datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP NOT NULL,
     address_id int,
     CONSTRAINT User_pk PRIMARY KEY (user_id)
 );
+
+CREATE TABLE notification (
+    notification_id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL, -- ID của người dùng nhận thông báo
+    title NVARCHAR(255) NOT NULL, -- Tiêu đề thông báo
+    message TEXT NOT NULL, -- Nội dung chi tiết của thông báo
+    type VARCHAR(255), -- Loại thông báo
+    status ENUM('Unread', 'Read') DEFAULT 'Unread', -- Trạng thái đã đọc hay chưa
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES user(user_id) -- Ràng buộc khoá ngoại tới bảng users
+);
+
 
 -- foreign keys
 -- Reference: Blog_BlogType (table: Blog)
@@ -1272,687 +1322,8 @@ VALUES
                     </p>
                 </div>
 ', 
-    'https://file.hstatic.net/200000343865/file/read_af16bc4688f247298a3fe5a568264cda_grande.jpg', 140001),
-    (130009, N'ƯU ĐÃI NGÀY KÉP 10.10', 
-    '<div>
-                    <p>
-                        <strong>
-                            Viện Pháp tại Việt Nam triển khai một loạt hoạt động nhằm thúc đẩy sự phát triển của truyện
-                            tranh tại Việt Nam như một lĩnh vực công nghiệp văn hóa.
-                        </strong>
-                    </p>
-                    <p>
-                        Nằm trong khuôn khổ dự án FEF - sáng tạo và dự án Công nghiệp văn hóa - sáng tạo khu vực “Ngành
-                        truyện tranh ở Việt Nam và Campuchia: Kết nối kinh nghiệm chuyên môn của Pháp”, Viện Pháp tại
-                        Việt Nam triển khai một loạt hoạt động nhằm thúc đẩy sự phát triển của truyện tranh tại Việt
-                        Nam.
-                    </p>
-                    <p>
-                        Theo đó, từ 23 đến 27/9, Viện Pháp tại Việt Nam và Nhà xuất bản Kim Đồng tổ chức master classe
-                        (lớp hướng dẫn) sáng tác truyện tranh dưới sự hướng dẫn của các họa sĩ Pháp và Việt Nam.
-                    </p>
-                    <p className="flex justify-center">
-                        <img
-                            src="//file.hstatic.net/200000343865/file/1-1100_33f4aa19ecb84dfbad240eb51d144ed4_grande.jpg"
-                            alt="Hình ảnh về truyện tranh"
-                        />
-                    </p>
-                    <p className="flex justify-center py-2">
-                        <span>
-                            <em className="font-bold">
-                                Angoulême là vùng đất xinh đẹp nổi tiếng ở Pháp với các tín đồ yêu thích truyện tranh.
-                                Ảnh: Angoulême tourist office
-                            </em>
-                        </span>
-                    </p>
-                    <p>
-                        Các họa sĩ tham gia hướng dẫn bao gồm các tên tuổi nổi bật trong lĩnh vực truyện tranh: Maxime
-                        Péroz, Clément Baloup, Tạ Huy Long ("Lược sử nước Việt" bằng tranh), Nguyễn Thành Phong ("Long
-                        thần tướng").
-                    </p>
-                    <p>
-                        Kết thúc chương trình, học viên sẽ có cơ hội trình bày một dự án từ 6 đến 10 trang truyện tranh
-                        để xuất bản. Chương trình tập trung khai thác các yếu tố cơ bản về nghệ thuật và sáng tạo, cũng
-                        như sự đa dạng hóa khả năng sử dụng đồ họa và kể chuyện.
-                    </p>
-                    <p>
-                        Một cuộc thi sáng tác truyện tranh do Viện Pháp tại Việt Nam phối hợp tổ chức cùng Nhà xuất bản
-                        Kim Đồng đang diễn ra cho đến hết ngày 1/11. Thí sinh đạt giải nhất sẽ cùng với đại diện 5 nhà
-                        xuất bản từ Việt Nam và Campuchia và một số họa sĩ truyện tranh tài năng sang Pháp tham gia
-                        Festival d’Angoulême - liên hoan truyện tranh tiếng Pháp lớn nhất thế giới về danh tiếng và quy
-                        mô.
-                    </p>
-                    <p>
-                        Ngoài ra, từ ngày 30/9 đến 2/10 tại Nhà xuất bản Kim Đồng, các dịch giả trẻ của Việt Nam và
-                        Campuchia sẽ được tham gia một chuỗi workshop với sự góp mặt của các tác giả, họa sĩ minh họa và
-                        biên tập viên từ Pháp, Việt Nam và Campuchia.
-                    </p>
-                    <p>
-                        Học viên sẽ có cơ hội dịch truyện tranh và trao đổi kinh nghiệm với các dịch giả hướng dẫn. Kết
-                        thúc chương trình, các tác phẩm do học viên dịch sẽ được các nhà xuất bản đối tác của dự án phát
-                        hành.
-                    </p>
-                    <p>
-                        Tiếp đó, hội thảo chuyên đề dành cho các nhà xuất bản truyện tranh 3 nước Pháp Việt Nam và
-                        Campuchia sẽ được tổ chức tại Phnom Penh ngày 23 đến 25/10, với sự hỗ trợ của Văn phòng Xuất bản
-                        Quốc tế Pháp (BIEF).
-                    </p>
-                    <p>
-                        Hội thảo sẽ tập trung vào vấn đề xuất bản truyện tranh ở Pháp, Việt Nam và Campuchia, xoay quanh
-                        xu hướng xuất bản; cái nhìn tổng quan về sự đa dạng của truyện tranh Pháp dành cho cả trẻ em lẫn
-                        người lớn…
-                    </p>
-                    <p>
-                        Chương trình có sự tham gia của các nhà xuất bản và tác giả người Pháp: Charlotte Moundlic, Giám
-                        đốc Nghệ thuật Nhà xuất bản Rue de Sèvre; François Le Bescond, Giám đốc xuất bản Dargaud France;
-                        và Wandrille Leroy, tác giả, biên tập viên truyện tranh và giảng viên tại Học viện Delcourt.
-                    </p>
-                    <p>
-                        Hội thảo này được kỳ vọng là sẽ đáp ứng nhu cầu được đào tạo về xuất bản truyện tranh của các
-                        nhà xuất bản địa phương, cung cấp những kiến thức chuyên sâu về kỹ thuật thiết kế và dàn trang
-                        truyện tranh, lĩnh vực mà Pháp có nhiều kinh nghiệm.
-                    </p>
-                    <p className="text-end">
-                        <em>Nguồn: congluan.vn</em>
-                    </p>
-                </div>
-', 
-    'https://file.hstatic.net/200000343865/file/y-kep-1010-banner-fb-post-1800_1200px_6daf20424c8d46139e654fe9547a7994_grande.png', 140002),
-    (130010, N'Viện Pháp thúc đẩy sự phát triển công nghiệp truyện tranh tại Việt Nam', 
-    '<div>
-                    <p>
-                        <strong>
-                            Viện Pháp tại Việt Nam triển khai một loạt hoạt động nhằm thúc đẩy sự phát triển của truyện
-                            tranh tại Việt Nam như một lĩnh vực công nghiệp văn hóa.
-                        </strong>
-                    </p>
-                    <p>
-                        Nằm trong khuôn khổ dự án FEF - sáng tạo và dự án Công nghiệp văn hóa - sáng tạo khu vực “Ngành
-                        truyện tranh ở Việt Nam và Campuchia: Kết nối kinh nghiệm chuyên môn của Pháp”, Viện Pháp tại
-                        Việt Nam triển khai một loạt hoạt động nhằm thúc đẩy sự phát triển của truyện tranh tại Việt
-                        Nam.
-                    </p>
-                    <p>
-                        Theo đó, từ 23 đến 27/9, Viện Pháp tại Việt Nam và Nhà xuất bản Kim Đồng tổ chức master classe
-                        (lớp hướng dẫn) sáng tác truyện tranh dưới sự hướng dẫn của các họa sĩ Pháp và Việt Nam.
-                    </p>
-                    <p className="flex justify-center">
-                        <img
-                            src="//file.hstatic.net/200000343865/file/1-1100_33f4aa19ecb84dfbad240eb51d144ed4_grande.jpg"
-                            alt="Hình ảnh về truyện tranh"
-                        />
-                    </p>
-                    <p className="flex justify-center py-2">
-                        <span>
-                            <em className="font-bold">
-                                Angoulême là vùng đất xinh đẹp nổi tiếng ở Pháp với các tín đồ yêu thích truyện tranh.
-                                Ảnh: Angoulême tourist office
-                            </em>
-                        </span>
-                    </p>
-                    <p>
-                        Các họa sĩ tham gia hướng dẫn bao gồm các tên tuổi nổi bật trong lĩnh vực truyện tranh: Maxime
-                        Péroz, Clément Baloup, Tạ Huy Long ("Lược sử nước Việt" bằng tranh), Nguyễn Thành Phong ("Long
-                        thần tướng").
-                    </p>
-                    <p>
-                        Kết thúc chương trình, học viên sẽ có cơ hội trình bày một dự án từ 6 đến 10 trang truyện tranh
-                        để xuất bản. Chương trình tập trung khai thác các yếu tố cơ bản về nghệ thuật và sáng tạo, cũng
-                        như sự đa dạng hóa khả năng sử dụng đồ họa và kể chuyện.
-                    </p>
-                    <p>
-                        Một cuộc thi sáng tác truyện tranh do Viện Pháp tại Việt Nam phối hợp tổ chức cùng Nhà xuất bản
-                        Kim Đồng đang diễn ra cho đến hết ngày 1/11. Thí sinh đạt giải nhất sẽ cùng với đại diện 5 nhà
-                        xuất bản từ Việt Nam và Campuchia và một số họa sĩ truyện tranh tài năng sang Pháp tham gia
-                        Festival d’Angoulême - liên hoan truyện tranh tiếng Pháp lớn nhất thế giới về danh tiếng và quy
-                        mô.
-                    </p>
-                    <p>
-                        Ngoài ra, từ ngày 30/9 đến 2/10 tại Nhà xuất bản Kim Đồng, các dịch giả trẻ của Việt Nam và
-                        Campuchia sẽ được tham gia một chuỗi workshop với sự góp mặt của các tác giả, họa sĩ minh họa và
-                        biên tập viên từ Pháp, Việt Nam và Campuchia.
-                    </p>
-                    <p>
-                        Học viên sẽ có cơ hội dịch truyện tranh và trao đổi kinh nghiệm với các dịch giả hướng dẫn. Kết
-                        thúc chương trình, các tác phẩm do học viên dịch sẽ được các nhà xuất bản đối tác của dự án phát
-                        hành.
-                    </p>
-                    <p>
-                        Tiếp đó, hội thảo chuyên đề dành cho các nhà xuất bản truyện tranh 3 nước Pháp Việt Nam và
-                        Campuchia sẽ được tổ chức tại Phnom Penh ngày 23 đến 25/10, với sự hỗ trợ của Văn phòng Xuất bản
-                        Quốc tế Pháp (BIEF).
-                    </p>
-                    <p>
-                        Hội thảo sẽ tập trung vào vấn đề xuất bản truyện tranh ở Pháp, Việt Nam và Campuchia, xoay quanh
-                        xu hướng xuất bản; cái nhìn tổng quan về sự đa dạng của truyện tranh Pháp dành cho cả trẻ em lẫn
-                        người lớn…
-                    </p>
-                    <p>
-                        Chương trình có sự tham gia của các nhà xuất bản và tác giả người Pháp: Charlotte Moundlic, Giám
-                        đốc Nghệ thuật Nhà xuất bản Rue de Sèvre; François Le Bescond, Giám đốc xuất bản Dargaud France;
-                        và Wandrille Leroy, tác giả, biên tập viên truyện tranh và giảng viên tại Học viện Delcourt.
-                    </p>
-                    <p>
-                        Hội thảo này được kỳ vọng là sẽ đáp ứng nhu cầu được đào tạo về xuất bản truyện tranh của các
-                        nhà xuất bản địa phương, cung cấp những kiến thức chuyên sâu về kỹ thuật thiết kế và dàn trang
-                        truyện tranh, lĩnh vực mà Pháp có nhiều kinh nghiệm.
-                    </p>
-                    <p className="text-end">
-                        <em>Nguồn: congluan.vn</em>
-                    </p>
-                </div>
-', 
-    'https://file.hstatic.net/200000343865/article/1-1100_a73b918912c442efa45293faba761192_large.jpg', 140002),
-    (130011, N'Phát triển truyện tranh Việt: Nhìn từ huyền thoại Đôrêmon', 
-    '<div>
-                    <p>
-                        <strong>
-                            Viện Pháp tại Việt Nam triển khai một loạt hoạt động nhằm thúc đẩy sự phát triển của truyện
-                            tranh tại Việt Nam như một lĩnh vực công nghiệp văn hóa.
-                        </strong>
-                    </p>
-                    <p>
-                        Nằm trong khuôn khổ dự án FEF - sáng tạo và dự án Công nghiệp văn hóa - sáng tạo khu vực “Ngành
-                        truyện tranh ở Việt Nam và Campuchia: Kết nối kinh nghiệm chuyên môn của Pháp”, Viện Pháp tại
-                        Việt Nam triển khai một loạt hoạt động nhằm thúc đẩy sự phát triển của truyện tranh tại Việt
-                        Nam.
-                    </p>
-                    <p>
-                        Theo đó, từ 23 đến 27/9, Viện Pháp tại Việt Nam và Nhà xuất bản Kim Đồng tổ chức master classe
-                        (lớp hướng dẫn) sáng tác truyện tranh dưới sự hướng dẫn của các họa sĩ Pháp và Việt Nam.
-                    </p>
-                    <p className="flex justify-center">
-                        <img
-                            src="//file.hstatic.net/200000343865/file/1-1100_33f4aa19ecb84dfbad240eb51d144ed4_grande.jpg"
-                            alt="Hình ảnh về truyện tranh"
-                        />
-                    </p>
-                    <p className="flex justify-center py-2">
-                        <span>
-                            <em className="font-bold">
-                                Angoulême là vùng đất xinh đẹp nổi tiếng ở Pháp với các tín đồ yêu thích truyện tranh.
-                                Ảnh: Angoulême tourist office
-                            </em>
-                        </span>
-                    </p>
-                    <p>
-                        Các họa sĩ tham gia hướng dẫn bao gồm các tên tuổi nổi bật trong lĩnh vực truyện tranh: Maxime
-                        Péroz, Clément Baloup, Tạ Huy Long ("Lược sử nước Việt" bằng tranh), Nguyễn Thành Phong ("Long
-                        thần tướng").
-                    </p>
-                    <p>
-                        Kết thúc chương trình, học viên sẽ có cơ hội trình bày một dự án từ 6 đến 10 trang truyện tranh
-                        để xuất bản. Chương trình tập trung khai thác các yếu tố cơ bản về nghệ thuật và sáng tạo, cũng
-                        như sự đa dạng hóa khả năng sử dụng đồ họa và kể chuyện.
-                    </p>
-                    <p>
-                        Một cuộc thi sáng tác truyện tranh do Viện Pháp tại Việt Nam phối hợp tổ chức cùng Nhà xuất bản
-                        Kim Đồng đang diễn ra cho đến hết ngày 1/11. Thí sinh đạt giải nhất sẽ cùng với đại diện 5 nhà
-                        xuất bản từ Việt Nam và Campuchia và một số họa sĩ truyện tranh tài năng sang Pháp tham gia
-                        Festival d’Angoulême - liên hoan truyện tranh tiếng Pháp lớn nhất thế giới về danh tiếng và quy
-                        mô.
-                    </p>
-                    <p>
-                        Ngoài ra, từ ngày 30/9 đến 2/10 tại Nhà xuất bản Kim Đồng, các dịch giả trẻ của Việt Nam và
-                        Campuchia sẽ được tham gia một chuỗi workshop với sự góp mặt của các tác giả, họa sĩ minh họa và
-                        biên tập viên từ Pháp, Việt Nam và Campuchia.
-                    </p>
-                    <p>
-                        Học viên sẽ có cơ hội dịch truyện tranh và trao đổi kinh nghiệm với các dịch giả hướng dẫn. Kết
-                        thúc chương trình, các tác phẩm do học viên dịch sẽ được các nhà xuất bản đối tác của dự án phát
-                        hành.
-                    </p>
-                    <p>
-                        Tiếp đó, hội thảo chuyên đề dành cho các nhà xuất bản truyện tranh 3 nước Pháp Việt Nam và
-                        Campuchia sẽ được tổ chức tại Phnom Penh ngày 23 đến 25/10, với sự hỗ trợ của Văn phòng Xuất bản
-                        Quốc tế Pháp (BIEF).
-                    </p>
-                    <p>
-                        Hội thảo sẽ tập trung vào vấn đề xuất bản truyện tranh ở Pháp, Việt Nam và Campuchia, xoay quanh
-                        xu hướng xuất bản; cái nhìn tổng quan về sự đa dạng của truyện tranh Pháp dành cho cả trẻ em lẫn
-                        người lớn…
-                    </p>
-                    <p>
-                        Chương trình có sự tham gia của các nhà xuất bản và tác giả người Pháp: Charlotte Moundlic, Giám
-                        đốc Nghệ thuật Nhà xuất bản Rue de Sèvre; François Le Bescond, Giám đốc xuất bản Dargaud France;
-                        và Wandrille Leroy, tác giả, biên tập viên truyện tranh và giảng viên tại Học viện Delcourt.
-                    </p>
-                    <p>
-                        Hội thảo này được kỳ vọng là sẽ đáp ứng nhu cầu được đào tạo về xuất bản truyện tranh của các
-                        nhà xuất bản địa phương, cung cấp những kiến thức chuyên sâu về kỹ thuật thiết kế và dàn trang
-                        truyện tranh, lĩnh vực mà Pháp có nhiều kinh nghiệm.
-                    </p>
-                    <p className="text-end">
-                        <em>Nguồn: congluan.vn</em>
-                    </p>
-                </div>
-', 
-    'https://file.hstatic.net/200000343865/file/viet-nhin-tu-huyen-thoai-doremon-6329_97bc30aeb485429c9700bf95c0189033_grande.jpg', 140001),
-    (130012, N'Tiết lộ bất ngờ về truyện "Doraemon"', 
-    '<div>
-                    <p>
-                        <strong>
-                            Viện Pháp tại Việt Nam triển khai một loạt hoạt động nhằm thúc đẩy sự phát triển của truyện
-                            tranh tại Việt Nam như một lĩnh vực công nghiệp văn hóa.
-                        </strong>
-                    </p>
-                    <p>
-                        Nằm trong khuôn khổ dự án FEF - sáng tạo và dự án Công nghiệp văn hóa - sáng tạo khu vực “Ngành
-                        truyện tranh ở Việt Nam và Campuchia: Kết nối kinh nghiệm chuyên môn của Pháp”, Viện Pháp tại
-                        Việt Nam triển khai một loạt hoạt động nhằm thúc đẩy sự phát triển của truyện tranh tại Việt
-                        Nam.
-                    </p>
-                    <p>
-                        Theo đó, từ 23 đến 27/9, Viện Pháp tại Việt Nam và Nhà xuất bản Kim Đồng tổ chức master classe
-                        (lớp hướng dẫn) sáng tác truyện tranh dưới sự hướng dẫn của các họa sĩ Pháp và Việt Nam.
-                    </p>
-                    <p className="flex justify-center">
-                        <img
-                            src="//file.hstatic.net/200000343865/file/1-1100_33f4aa19ecb84dfbad240eb51d144ed4_grande.jpg"
-                            alt="Hình ảnh về truyện tranh"
-                        />
-                    </p>
-                    <p className="flex justify-center py-2">
-                        <span>
-                            <em className="font-bold">
-                                Angoulême là vùng đất xinh đẹp nổi tiếng ở Pháp với các tín đồ yêu thích truyện tranh.
-                                Ảnh: Angoulême tourist office
-                            </em>
-                        </span>
-                    </p>
-                    <p>
-                        Các họa sĩ tham gia hướng dẫn bao gồm các tên tuổi nổi bật trong lĩnh vực truyện tranh: Maxime
-                        Péroz, Clément Baloup, Tạ Huy Long ("Lược sử nước Việt" bằng tranh), Nguyễn Thành Phong ("Long
-                        thần tướng").
-                    </p>
-                    <p>
-                        Kết thúc chương trình, học viên sẽ có cơ hội trình bày một dự án từ 6 đến 10 trang truyện tranh
-                        để xuất bản. Chương trình tập trung khai thác các yếu tố cơ bản về nghệ thuật và sáng tạo, cũng
-                        như sự đa dạng hóa khả năng sử dụng đồ họa và kể chuyện.
-                    </p>
-                    <p>
-                        Một cuộc thi sáng tác truyện tranh do Viện Pháp tại Việt Nam phối hợp tổ chức cùng Nhà xuất bản
-                        Kim Đồng đang diễn ra cho đến hết ngày 1/11. Thí sinh đạt giải nhất sẽ cùng với đại diện 5 nhà
-                        xuất bản từ Việt Nam và Campuchia và một số họa sĩ truyện tranh tài năng sang Pháp tham gia
-                        Festival d’Angoulême - liên hoan truyện tranh tiếng Pháp lớn nhất thế giới về danh tiếng và quy
-                        mô.
-                    </p>
-                    <p>
-                        Ngoài ra, từ ngày 30/9 đến 2/10 tại Nhà xuất bản Kim Đồng, các dịch giả trẻ của Việt Nam và
-                        Campuchia sẽ được tham gia một chuỗi workshop với sự góp mặt của các tác giả, họa sĩ minh họa và
-                        biên tập viên từ Pháp, Việt Nam và Campuchia.
-                    </p>
-                    <p>
-                        Học viên sẽ có cơ hội dịch truyện tranh và trao đổi kinh nghiệm với các dịch giả hướng dẫn. Kết
-                        thúc chương trình, các tác phẩm do học viên dịch sẽ được các nhà xuất bản đối tác của dự án phát
-                        hành.
-                    </p>
-                    <p>
-                        Tiếp đó, hội thảo chuyên đề dành cho các nhà xuất bản truyện tranh 3 nước Pháp Việt Nam và
-                        Campuchia sẽ được tổ chức tại Phnom Penh ngày 23 đến 25/10, với sự hỗ trợ của Văn phòng Xuất bản
-                        Quốc tế Pháp (BIEF).
-                    </p>
-                    <p>
-                        Hội thảo sẽ tập trung vào vấn đề xuất bản truyện tranh ở Pháp, Việt Nam và Campuchia, xoay quanh
-                        xu hướng xuất bản; cái nhìn tổng quan về sự đa dạng của truyện tranh Pháp dành cho cả trẻ em lẫn
-                        người lớn…
-                    </p>
-                    <p>
-                        Chương trình có sự tham gia của các nhà xuất bản và tác giả người Pháp: Charlotte Moundlic, Giám
-                        đốc Nghệ thuật Nhà xuất bản Rue de Sèvre; François Le Bescond, Giám đốc xuất bản Dargaud France;
-                        và Wandrille Leroy, tác giả, biên tập viên truyện tranh và giảng viên tại Học viện Delcourt.
-                    </p>
-                    <p>
-                        Hội thảo này được kỳ vọng là sẽ đáp ứng nhu cầu được đào tạo về xuất bản truyện tranh của các
-                        nhà xuất bản địa phương, cung cấp những kiến thức chuyên sâu về kỹ thuật thiết kế và dàn trang
-                        truyện tranh, lĩnh vực mà Pháp có nhiều kinh nghiệm.
-                    </p>
-                    <p className="text-end">
-                        <em>Nguồn: congluan.vn</em>
-                    </p>
-                </div>
-', 
-    'https://file.hstatic.net/200000343865/file/manga_aba3e04a7cc94e9481d35603d9ed2e37_grande.jpg', 140003),
-    (130013, N'Công nghiệp truyện tranh Việt Nam:Từ “Đôrêmon” tới “Doraemon”', 
-    '<div>
-                    <p>
-                        <strong>
-                            Viện Pháp tại Việt Nam triển khai một loạt hoạt động nhằm thúc đẩy sự phát triển của truyện
-                            tranh tại Việt Nam như một lĩnh vực công nghiệp văn hóa.
-                        </strong>
-                    </p>
-                    <p>
-                        Nằm trong khuôn khổ dự án FEF - sáng tạo và dự án Công nghiệp văn hóa - sáng tạo khu vực “Ngành
-                        truyện tranh ở Việt Nam và Campuchia: Kết nối kinh nghiệm chuyên môn của Pháp”, Viện Pháp tại
-                        Việt Nam triển khai một loạt hoạt động nhằm thúc đẩy sự phát triển của truyện tranh tại Việt
-                        Nam.
-                    </p>
-                    <p>
-                        Theo đó, từ 23 đến 27/9, Viện Pháp tại Việt Nam và Nhà xuất bản Kim Đồng tổ chức master classe
-                        (lớp hướng dẫn) sáng tác truyện tranh dưới sự hướng dẫn của các họa sĩ Pháp và Việt Nam.
-                    </p>
-                    <p className="flex justify-center">
-                        <img
-                            src="//file.hstatic.net/200000343865/file/1-1100_33f4aa19ecb84dfbad240eb51d144ed4_grande.jpg"
-                            alt="Hình ảnh về truyện tranh"
-                        />
-                    </p>
-                    <p className="flex justify-center py-2">
-                        <span>
-                            <em className="font-bold">
-                                Angoulême là vùng đất xinh đẹp nổi tiếng ở Pháp với các tín đồ yêu thích truyện tranh.
-                                Ảnh: Angoulême tourist office
-                            </em>
-                        </span>
-                    </p>
-                    <p>
-                        Các họa sĩ tham gia hướng dẫn bao gồm các tên tuổi nổi bật trong lĩnh vực truyện tranh: Maxime
-                        Péroz, Clément Baloup, Tạ Huy Long ("Lược sử nước Việt" bằng tranh), Nguyễn Thành Phong ("Long
-                        thần tướng").
-                    </p>
-                    <p>
-                        Kết thúc chương trình, học viên sẽ có cơ hội trình bày một dự án từ 6 đến 10 trang truyện tranh
-                        để xuất bản. Chương trình tập trung khai thác các yếu tố cơ bản về nghệ thuật và sáng tạo, cũng
-                        như sự đa dạng hóa khả năng sử dụng đồ họa và kể chuyện.
-                    </p>
-                    <p>
-                        Một cuộc thi sáng tác truyện tranh do Viện Pháp tại Việt Nam phối hợp tổ chức cùng Nhà xuất bản
-                        Kim Đồng đang diễn ra cho đến hết ngày 1/11. Thí sinh đạt giải nhất sẽ cùng với đại diện 5 nhà
-                        xuất bản từ Việt Nam và Campuchia và một số họa sĩ truyện tranh tài năng sang Pháp tham gia
-                        Festival d’Angoulême - liên hoan truyện tranh tiếng Pháp lớn nhất thế giới về danh tiếng và quy
-                        mô.
-                    </p>
-                    <p>
-                        Ngoài ra, từ ngày 30/9 đến 2/10 tại Nhà xuất bản Kim Đồng, các dịch giả trẻ của Việt Nam và
-                        Campuchia sẽ được tham gia một chuỗi workshop với sự góp mặt của các tác giả, họa sĩ minh họa và
-                        biên tập viên từ Pháp, Việt Nam và Campuchia.
-                    </p>
-                    <p>
-                        Học viên sẽ có cơ hội dịch truyện tranh và trao đổi kinh nghiệm với các dịch giả hướng dẫn. Kết
-                        thúc chương trình, các tác phẩm do học viên dịch sẽ được các nhà xuất bản đối tác của dự án phát
-                        hành.
-                    </p>
-                    <p>
-                        Tiếp đó, hội thảo chuyên đề dành cho các nhà xuất bản truyện tranh 3 nước Pháp Việt Nam và
-                        Campuchia sẽ được tổ chức tại Phnom Penh ngày 23 đến 25/10, với sự hỗ trợ của Văn phòng Xuất bản
-                        Quốc tế Pháp (BIEF).
-                    </p>
-                    <p>
-                        Hội thảo sẽ tập trung vào vấn đề xuất bản truyện tranh ở Pháp, Việt Nam và Campuchia, xoay quanh
-                        xu hướng xuất bản; cái nhìn tổng quan về sự đa dạng của truyện tranh Pháp dành cho cả trẻ em lẫn
-                        người lớn…
-                    </p>
-                    <p>
-                        Chương trình có sự tham gia của các nhà xuất bản và tác giả người Pháp: Charlotte Moundlic, Giám
-                        đốc Nghệ thuật Nhà xuất bản Rue de Sèvre; François Le Bescond, Giám đốc xuất bản Dargaud France;
-                        và Wandrille Leroy, tác giả, biên tập viên truyện tranh và giảng viên tại Học viện Delcourt.
-                    </p>
-                    <p>
-                        Hội thảo này được kỳ vọng là sẽ đáp ứng nhu cầu được đào tạo về xuất bản truyện tranh của các
-                        nhà xuất bản địa phương, cung cấp những kiến thức chuyên sâu về kỹ thuật thiết kế và dàn trang
-                        truyện tranh, lĩnh vực mà Pháp có nhiều kinh nghiệm.
-                    </p>
-                    <p className="text-end">
-                        <em>Nguồn: congluan.vn</em>
-                    </p>
-                </div>
-', 
-    'https://file.hstatic.net/200000343865/file/1-1042_4e610f3749f84a6284dedc7712901224_grande.jpg', 140001),
-    (130014, N'Tạo "đất diễn" cho truyện tranh Việt Nam', 
-    '<div>
-                    <p>
-                        <strong>
-                            Viện Pháp tại Việt Nam triển khai một loạt hoạt động nhằm thúc đẩy sự phát triển của truyện
-                            tranh tại Việt Nam như một lĩnh vực công nghiệp văn hóa.
-                        </strong>
-                    </p>
-                    <p>
-                        Nằm trong khuôn khổ dự án FEF - sáng tạo và dự án Công nghiệp văn hóa - sáng tạo khu vực “Ngành
-                        truyện tranh ở Việt Nam và Campuchia: Kết nối kinh nghiệm chuyên môn của Pháp”, Viện Pháp tại
-                        Việt Nam triển khai một loạt hoạt động nhằm thúc đẩy sự phát triển của truyện tranh tại Việt
-                        Nam.
-                    </p>
-                    <p>
-                        Theo đó, từ 23 đến 27/9, Viện Pháp tại Việt Nam và Nhà xuất bản Kim Đồng tổ chức master classe
-                        (lớp hướng dẫn) sáng tác truyện tranh dưới sự hướng dẫn của các họa sĩ Pháp và Việt Nam.
-                    </p>
-                    <p className="flex justify-center">
-                        <img
-                            src="//file.hstatic.net/200000343865/file/1-1100_33f4aa19ecb84dfbad240eb51d144ed4_grande.jpg"
-                            alt="Hình ảnh về truyện tranh"
-                        />
-                    </p>
-                    <p className="flex justify-center py-2">
-                        <span>
-                            <em className="font-bold">
-                                Angoulême là vùng đất xinh đẹp nổi tiếng ở Pháp với các tín đồ yêu thích truyện tranh.
-                                Ảnh: Angoulême tourist office
-                            </em>
-                        </span>
-                    </p>
-                    <p>
-                        Các họa sĩ tham gia hướng dẫn bao gồm các tên tuổi nổi bật trong lĩnh vực truyện tranh: Maxime
-                        Péroz, Clément Baloup, Tạ Huy Long ("Lược sử nước Việt" bằng tranh), Nguyễn Thành Phong ("Long
-                        thần tướng").
-                    </p>
-                    <p>
-                        Kết thúc chương trình, học viên sẽ có cơ hội trình bày một dự án từ 6 đến 10 trang truyện tranh
-                        để xuất bản. Chương trình tập trung khai thác các yếu tố cơ bản về nghệ thuật và sáng tạo, cũng
-                        như sự đa dạng hóa khả năng sử dụng đồ họa và kể chuyện.
-                    </p>
-                    <p>
-                        Một cuộc thi sáng tác truyện tranh do Viện Pháp tại Việt Nam phối hợp tổ chức cùng Nhà xuất bản
-                        Kim Đồng đang diễn ra cho đến hết ngày 1/11. Thí sinh đạt giải nhất sẽ cùng với đại diện 5 nhà
-                        xuất bản từ Việt Nam và Campuchia và một số họa sĩ truyện tranh tài năng sang Pháp tham gia
-                        Festival d’Angoulême - liên hoan truyện tranh tiếng Pháp lớn nhất thế giới về danh tiếng và quy
-                        mô.
-                    </p>
-                    <p>
-                        Ngoài ra, từ ngày 30/9 đến 2/10 tại Nhà xuất bản Kim Đồng, các dịch giả trẻ của Việt Nam và
-                        Campuchia sẽ được tham gia một chuỗi workshop với sự góp mặt của các tác giả, họa sĩ minh họa và
-                        biên tập viên từ Pháp, Việt Nam và Campuchia.
-                    </p>
-                    <p>
-                        Học viên sẽ có cơ hội dịch truyện tranh và trao đổi kinh nghiệm với các dịch giả hướng dẫn. Kết
-                        thúc chương trình, các tác phẩm do học viên dịch sẽ được các nhà xuất bản đối tác của dự án phát
-                        hành.
-                    </p>
-                    <p>
-                        Tiếp đó, hội thảo chuyên đề dành cho các nhà xuất bản truyện tranh 3 nước Pháp Việt Nam và
-                        Campuchia sẽ được tổ chức tại Phnom Penh ngày 23 đến 25/10, với sự hỗ trợ của Văn phòng Xuất bản
-                        Quốc tế Pháp (BIEF).
-                    </p>
-                    <p>
-                        Hội thảo sẽ tập trung vào vấn đề xuất bản truyện tranh ở Pháp, Việt Nam và Campuchia, xoay quanh
-                        xu hướng xuất bản; cái nhìn tổng quan về sự đa dạng của truyện tranh Pháp dành cho cả trẻ em lẫn
-                        người lớn…
-                    </p>
-                    <p>
-                        Chương trình có sự tham gia của các nhà xuất bản và tác giả người Pháp: Charlotte Moundlic, Giám
-                        đốc Nghệ thuật Nhà xuất bản Rue de Sèvre; François Le Bescond, Giám đốc xuất bản Dargaud France;
-                        và Wandrille Leroy, tác giả, biên tập viên truyện tranh và giảng viên tại Học viện Delcourt.
-                    </p>
-                    <p>
-                        Hội thảo này được kỳ vọng là sẽ đáp ứng nhu cầu được đào tạo về xuất bản truyện tranh của các
-                        nhà xuất bản địa phương, cung cấp những kiến thức chuyên sâu về kỹ thuật thiết kế và dàn trang
-                        truyện tranh, lĩnh vực mà Pháp có nhiều kinh nghiệm.
-                    </p>
-                    <p className="text-end">
-                        <em>Nguồn: congluan.vn</em>
-                    </p>
-                </div>
-', 
-    'https://file.hstatic.net/200000343865/file/son_goal_09bb337d7d05403aa834f1feba4a8e93_grande.jpg', 140001),
-    (130015, N'Sách cho trẻ em - Làm sao đủ sức hút?', 
-    '<div>
-                    <p>
-                        <strong>
-                            Viện Pháp tại Việt Nam triển khai một loạt hoạt động nhằm thúc đẩy sự phát triển của truyện
-                            tranh tại Việt Nam như một lĩnh vực công nghiệp văn hóa.
-                        </strong>
-                    </p>
-                    <p>
-                        Nằm trong khuôn khổ dự án FEF - sáng tạo và dự án Công nghiệp văn hóa - sáng tạo khu vực “Ngành
-                        truyện tranh ở Việt Nam và Campuchia: Kết nối kinh nghiệm chuyên môn của Pháp”, Viện Pháp tại
-                        Việt Nam triển khai một loạt hoạt động nhằm thúc đẩy sự phát triển của truyện tranh tại Việt
-                        Nam.
-                    </p>
-                    <p>
-                        Theo đó, từ 23 đến 27/9, Viện Pháp tại Việt Nam và Nhà xuất bản Kim Đồng tổ chức master classe
-                        (lớp hướng dẫn) sáng tác truyện tranh dưới sự hướng dẫn của các họa sĩ Pháp và Việt Nam.
-                    </p>
-                    <p className="flex justify-center">
-                        <img
-                            src="//file.hstatic.net/200000343865/file/1-1100_33f4aa19ecb84dfbad240eb51d144ed4_grande.jpg"
-                            alt="Hình ảnh về truyện tranh"
-                        />
-                    </p>
-                    <p className="flex justify-center py-2">
-                        <span>
-                            <em className="font-bold">
-                                Angoulême là vùng đất xinh đẹp nổi tiếng ở Pháp với các tín đồ yêu thích truyện tranh.
-                                Ảnh: Angoulême tourist office
-                            </em>
-                        </span>
-                    </p>
-                    <p>
-                        Các họa sĩ tham gia hướng dẫn bao gồm các tên tuổi nổi bật trong lĩnh vực truyện tranh: Maxime
-                        Péroz, Clément Baloup, Tạ Huy Long ("Lược sử nước Việt" bằng tranh), Nguyễn Thành Phong ("Long
-                        thần tướng").
-                    </p>
-                    <p>
-                        Kết thúc chương trình, học viên sẽ có cơ hội trình bày một dự án từ 6 đến 10 trang truyện tranh
-                        để xuất bản. Chương trình tập trung khai thác các yếu tố cơ bản về nghệ thuật và sáng tạo, cũng
-                        như sự đa dạng hóa khả năng sử dụng đồ họa và kể chuyện.
-                    </p>
-                    <p>
-                        Một cuộc thi sáng tác truyện tranh do Viện Pháp tại Việt Nam phối hợp tổ chức cùng Nhà xuất bản
-                        Kim Đồng đang diễn ra cho đến hết ngày 1/11. Thí sinh đạt giải nhất sẽ cùng với đại diện 5 nhà
-                        xuất bản từ Việt Nam và Campuchia và một số họa sĩ truyện tranh tài năng sang Pháp tham gia
-                        Festival d’Angoulême - liên hoan truyện tranh tiếng Pháp lớn nhất thế giới về danh tiếng và quy
-                        mô.
-                    </p>
-                    <p>
-                        Ngoài ra, từ ngày 30/9 đến 2/10 tại Nhà xuất bản Kim Đồng, các dịch giả trẻ của Việt Nam và
-                        Campuchia sẽ được tham gia một chuỗi workshop với sự góp mặt của các tác giả, họa sĩ minh họa và
-                        biên tập viên từ Pháp, Việt Nam và Campuchia.
-                    </p>
-                    <p>
-                        Học viên sẽ có cơ hội dịch truyện tranh và trao đổi kinh nghiệm với các dịch giả hướng dẫn. Kết
-                        thúc chương trình, các tác phẩm do học viên dịch sẽ được các nhà xuất bản đối tác của dự án phát
-                        hành.
-                    </p>
-                    <p>
-                        Tiếp đó, hội thảo chuyên đề dành cho các nhà xuất bản truyện tranh 3 nước Pháp Việt Nam và
-                        Campuchia sẽ được tổ chức tại Phnom Penh ngày 23 đến 25/10, với sự hỗ trợ của Văn phòng Xuất bản
-                        Quốc tế Pháp (BIEF).
-                    </p>
-                    <p>
-                        Hội thảo sẽ tập trung vào vấn đề xuất bản truyện tranh ở Pháp, Việt Nam và Campuchia, xoay quanh
-                        xu hướng xuất bản; cái nhìn tổng quan về sự đa dạng của truyện tranh Pháp dành cho cả trẻ em lẫn
-                        người lớn…
-                    </p>
-                    <p>
-                        Chương trình có sự tham gia của các nhà xuất bản và tác giả người Pháp: Charlotte Moundlic, Giám
-                        đốc Nghệ thuật Nhà xuất bản Rue de Sèvre; François Le Bescond, Giám đốc xuất bản Dargaud France;
-                        và Wandrille Leroy, tác giả, biên tập viên truyện tranh và giảng viên tại Học viện Delcourt.
-                    </p>
-                    <p>
-                        Hội thảo này được kỳ vọng là sẽ đáp ứng nhu cầu được đào tạo về xuất bản truyện tranh của các
-                        nhà xuất bản địa phương, cung cấp những kiến thức chuyên sâu về kỹ thuật thiết kế và dàn trang
-                        truyện tranh, lĩnh vực mà Pháp có nhiều kinh nghiệm.
-                    </p>
-                    <p className="text-end">
-                        <em>Nguồn: congluan.vn</em>
-                    </p>
-                </div>
-', 
-    'https://file.hstatic.net/200000343865/file/hep-vo-van-tan-1689137114989263029386_05a14d8c450a49489f1f9ee7cd0a5802_grande.jpg', 140003),
-    (130016, N'Nuôi dưỡng hệ sinh thái đọc sách cho trẻ em', 
-    '<div>
-                    <p>
-                        <strong>
-                            Viện Pháp tại Việt Nam triển khai một loạt hoạt động nhằm thúc đẩy sự phát triển của truyện
-                            tranh tại Việt Nam như một lĩnh vực công nghiệp văn hóa.
-                        </strong>
-                    </p>
-                    <p>
-                        Nằm trong khuôn khổ dự án FEF - sáng tạo và dự án Công nghiệp văn hóa - sáng tạo khu vực “Ngành
-                        truyện tranh ở Việt Nam và Campuchia: Kết nối kinh nghiệm chuyên môn của Pháp”, Viện Pháp tại
-                        Việt Nam triển khai một loạt hoạt động nhằm thúc đẩy sự phát triển của truyện tranh tại Việt
-                        Nam.
-                    </p>
-                    <p>
-                        Theo đó, từ 23 đến 27/9, Viện Pháp tại Việt Nam và Nhà xuất bản Kim Đồng tổ chức master classe
-                        (lớp hướng dẫn) sáng tác truyện tranh dưới sự hướng dẫn của các họa sĩ Pháp và Việt Nam.
-                    </p>
-                    <p className="flex justify-center">
-                        <img
-                            src="//file.hstatic.net/200000343865/file/1-1100_33f4aa19ecb84dfbad240eb51d144ed4_grande.jpg"
-                            alt="Hình ảnh về truyện tranh"
-                        />
-                    </p>
-                    <p className="flex justify-center py-2">
-                        <span>
-                            <em className="font-bold">
-                                Angoulême là vùng đất xinh đẹp nổi tiếng ở Pháp với các tín đồ yêu thích truyện tranh.
-                                Ảnh: Angoulême tourist office
-                            </em>
-                        </span>
-                    </p>
-                    <p>
-                        Các họa sĩ tham gia hướng dẫn bao gồm các tên tuổi nổi bật trong lĩnh vực truyện tranh: Maxime
-                        Péroz, Clément Baloup, Tạ Huy Long ("Lược sử nước Việt" bằng tranh), Nguyễn Thành Phong ("Long
-                        thần tướng").
-                    </p>
-                    <p>
-                        Kết thúc chương trình, học viên sẽ có cơ hội trình bày một dự án từ 6 đến 10 trang truyện tranh
-                        để xuất bản. Chương trình tập trung khai thác các yếu tố cơ bản về nghệ thuật và sáng tạo, cũng
-                        như sự đa dạng hóa khả năng sử dụng đồ họa và kể chuyện.
-                    </p>
-                    <p>
-                        Một cuộc thi sáng tác truyện tranh do Viện Pháp tại Việt Nam phối hợp tổ chức cùng Nhà xuất bản
-                        Kim Đồng đang diễn ra cho đến hết ngày 1/11. Thí sinh đạt giải nhất sẽ cùng với đại diện 5 nhà
-                        xuất bản từ Việt Nam và Campuchia và một số họa sĩ truyện tranh tài năng sang Pháp tham gia
-                        Festival d’Angoulême - liên hoan truyện tranh tiếng Pháp lớn nhất thế giới về danh tiếng và quy
-                        mô.
-                    </p>
-                    <p>
-                        Ngoài ra, từ ngày 30/9 đến 2/10 tại Nhà xuất bản Kim Đồng, các dịch giả trẻ của Việt Nam và
-                        Campuchia sẽ được tham gia một chuỗi workshop với sự góp mặt của các tác giả, họa sĩ minh họa và
-                        biên tập viên từ Pháp, Việt Nam và Campuchia.
-                    </p>
-                    <p>
-                        Học viên sẽ có cơ hội dịch truyện tranh và trao đổi kinh nghiệm với các dịch giả hướng dẫn. Kết
-                        thúc chương trình, các tác phẩm do học viên dịch sẽ được các nhà xuất bản đối tác của dự án phát
-                        hành.
-                    </p>
-                    <p>
-                        Tiếp đó, hội thảo chuyên đề dành cho các nhà xuất bản truyện tranh 3 nước Pháp Việt Nam và
-                        Campuchia sẽ được tổ chức tại Phnom Penh ngày 23 đến 25/10, với sự hỗ trợ của Văn phòng Xuất bản
-                        Quốc tế Pháp (BIEF).
-                    </p>
-                    <p>
-                        Hội thảo sẽ tập trung vào vấn đề xuất bản truyện tranh ở Pháp, Việt Nam và Campuchia, xoay quanh
-                        xu hướng xuất bản; cái nhìn tổng quan về sự đa dạng của truyện tranh Pháp dành cho cả trẻ em lẫn
-                        người lớn…
-                    </p>
-                    <p>
-                        Chương trình có sự tham gia của các nhà xuất bản và tác giả người Pháp: Charlotte Moundlic, Giám
-                        đốc Nghệ thuật Nhà xuất bản Rue de Sèvre; François Le Bescond, Giám đốc xuất bản Dargaud France;
-                        và Wandrille Leroy, tác giả, biên tập viên truyện tranh và giảng viên tại Học viện Delcourt.
-                    </p>
-                    <p>
-                        Hội thảo này được kỳ vọng là sẽ đáp ứng nhu cầu được đào tạo về xuất bản truyện tranh của các
-                        nhà xuất bản địa phương, cung cấp những kiến thức chuyên sâu về kỹ thuật thiết kế và dàn trang
-                        truyện tranh, lĩnh vực mà Pháp có nhiều kinh nghiệm.
-                    </p>
-                    <p className="text-end">
-                        <em>Nguồn: congluan.vn</em>
-                    </p>
-                </div>
-', 
-    'https://file.hstatic.net/200000343865/file/read_af16bc4688f247298a3fe5a568264cda_grande.jpg', 140001);
+    'https://file.hstatic.net/200000343865/file/read_af16bc4688f247298a3fe5a568264cda_grande.jpg', 140001)
+    ;
 
 -- Category
 INSERT INTO Category (category_id, category_name) VALUES 
@@ -2090,8 +1461,8 @@ INSERT INTO FavoriteBook (user_id, book_id) VALUES
 (10001, 60005);
 
 -- RatingBook
-INSERT INTO RatingBook (user_id, book_id, rating_star, rating_content) VALUES
- (10001, 60001, 5, N'Sách hay, tuyệt vời'),
- (10001, 60002, 4, N'Tình tiết truyện cuốn hút'),
- (10001, 60003, 5, N'Hóng tập tiếp theo');
+INSERT INTO RatingBook (review_id, user_id, book_id, rating_star, rating_content, review_status) VALUES
+ (150001, 10001, 60001, 5, N'Sách hay, tuyệt vời', 'approved'),
+ (150002, 10001, 60002, 4, N'Tình tiết truyện cuốn hút', 'approved'),
+ (150003, 10001, 60003, 5, N'Hóng tập tiếp theo', 'approved');
  
