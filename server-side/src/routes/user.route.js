@@ -11,4 +11,6 @@ userRouter.route('/:userId/cart/:bookId?').get(UserController.getCartItems).post
 
 userRouter.route('/:userId/address').get(UserController.getAddressOfUser);
 
+userRouter.route('/:userId/rating').post(UserController.addComment);
+
 export default userRouter;

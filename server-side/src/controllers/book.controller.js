@@ -1,8 +1,9 @@
 import { StatusCodes } from 'http-status-codes';
 import { Book, BookImage, Category, Genre, User } from '../models/index.js';
-import { Op, Sequelize } from 'sequelize';
+import { Op, Sequelize, where } from 'sequelize';
 import sequelize from '../config/database.js';
 import BookGenre from '../models/bookGenre.model.js';
+import RatingBook from '../models/ratingBook.model.js';
 
 const properties = {
     attributes: {
@@ -215,12 +216,11 @@ const getBookByName = (req, res) => {
                 },
             },
             {
-                model: User,
-                attributes: ['user_name', 'user_avatar_url'],
-                through: {
-                    attributes: ['rating_star', 'rating_content', 'created_at'],
+                model: RatingBook,
+                include: {
+                    model: User,
+                    attributes: ['user_avatar_url', 'user_name'],
                 },
-                as: 'UsersWhoRated',
             },
         ],
     })

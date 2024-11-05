@@ -8,9 +8,9 @@ export default function Comment({ comment }) {
     return (
         <div className="flex flex-col gap-3">
             <div className="flex gap-3 items-center">
-                {comment.user_avatar_url ? (
+                {comment.user.user_avatar_url ? (
                     <img
-                        src={`${imageUrl}/${comment.user_avatar_url}`}
+                        src={`${imageUrl}/${comment.user.user_avatar_url}`}
                         alt=""
                         className="w-[40px] h-[40px] rounded-full"
                     />
@@ -18,12 +18,12 @@ export default function Comment({ comment }) {
                     <Avatar icon={<UserOutlined />} size={40} />
                 )}
                 <div className="flex-1">
-                    <span>{comment.user_name}</span>
-                    <Rate className="text-[14px] flex items-center" disabled value={comment.ratingbook.rating_star} />
+                    <span>{comment.user.user_name}</span>
+                    <Rate className="text-[14px] flex items-center" disabled value={comment.rating_star} />
                 </div>
-                <span>{formatDate(comment.ratingbook.created_at)}</span>
+                <span>{formatDate(comment.created_at)}</span>
             </div>
-            <p>{comment.ratingbook.rating_content}</p>
+            <p>{comment.rating_content}</p>
         </div>
     );
 }
