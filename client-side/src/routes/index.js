@@ -19,7 +19,6 @@ import BookDetail from '~/pages/BookDetail/BookDetail';
 import BlogDetail from '~/pages/BlogPage/BlogDetail';
 import PrivateRoute from './PrivateRoute';
 
-
 const pages = [
     { path: routes.home, Component: HomePage },
     { path: routes.collections, Component: CollectionsPage },
@@ -38,11 +37,9 @@ const pages = [
     { path: routes.forgotpassword, Component: ForgotPassword },
     { path: routes.cartpage, Component: CartPage, PrivateRoute: PrivateRoute },
 
-
-    { path: routes.paying, Component: PayingPage}
+    { path: routes.paying, Component: PayingPage },
 
     { path: routes.book, Component: BookDetail },
-
 ];
 
 export default pages;
