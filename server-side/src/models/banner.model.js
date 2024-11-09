@@ -1,18 +1,22 @@
-import { pool } from '../server.js';
+import { DataTypes } from 'sequelize';
+import sequelize from '../config/database.js';
 
-class Banner {
-    async getBanners() {
-        try {
-            const [banners] = await pool.query(`
-                select banner_id, banner_image_name, book_name
-                from banner join book on banner.book_id = book.book_id
-            `);
+const Banner = sequelize.define(
+    'banner',
+    {
+        banner_id: {
+            type: DataTypes.INTEGER,
+            primaryKey: true,
+            autoIncrement: true,
+            defaultValue: sequelize.literal('DEFAULT'),
+        },
+        banner_image_url: DataTypes.STRING,
+        banner_link: DataTypes.STRING,
+    },
+    {
+        timestamps: false,
+        freezeTableName: true,
+    },
+);
 
-            return banners;
-        } catch (error) {
-            console.log(error);
-        }
-    }
-}
-
-export default new Banner();
+export default Banner;

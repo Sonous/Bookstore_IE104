@@ -7,16 +7,27 @@ import { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 
 import styles from './Navigation.module.css';
-import { categories } from '~/dataTemorary';
 import PopperWrapper from '../Popper/Popper';
-// import { convertToSlug } from '~/utils/functions';
+import { request } from '~/configs';
 
 const cx = classNamesBind.bind(styles);
 
 const news = ['Hoạt động', 'Tin sách', 'Sự kiện'];
 
+const mobileNews = [
+    {
+        genre_name: 'Hoạt động',
+    },
+    {
+        genre_name: 'Tin sách',
+    },
+    {
+        genre_name: 'Sự kiện',
+    },
+];
+
 function Navigation({ burger = false }) {
-    const [collections, setCollections] = useState(categories);
+    const [collections, setCollections] = useState([]);
     const [showCollection, setShowCollection] = useState();
     const [showCollections, setShowCollections] = useState(false);
     const [showNews, setShowNews] = useState(false);
@@ -28,9 +39,6 @@ function Navigation({ burger = false }) {
     };
 
     useEffect(() => {
-        // Call API to take categories
-        // Provide title to navigate to category details
-
         if (showCollections) {
             document.addEventListener('mousedown', handleClickOutside);
         } else {
@@ -38,61 +46,88 @@ function Navigation({ burger = false }) {
         }
     }, [showCollections]);
 
+    useEffect(() => {
+        const fetchApi = async () => {
+            try {
+                const result = await request.get('/category', {
+                    params: {
+                        limit: 5,
+                    },
+                });
+                setCollections(result);
+            } catch (error) {
+                throw new Error(error.message);
+            }
+        };
+
+        fetchApi();
+    }, []);
+
     return (
         <>
             {!burger && (
                 <nav className={cx('navigator')}>
-                    <TippyHeadless
-                        interactive
-                        offset={[50, 23]}
-                        placement="bottom"
-                        render={(attrs) => (
-                            <div tabIndex="-1" {...attrs}>
-                                <PopperWrapper className={cx('categories-popper')}>
-                                    {collections.map((collection, index) => {
-                                        return (
-                                            <div key={index}>
-                                                <h4 className={cx('title')}>{collection.title}</h4>
-                                                {collection.genres.map((genre, index) => (
-                                                    <li className={cx('genre')} key={index}>
-                                                        <Link to={`/collections/${collection.title}/${genre}`}>
-                                                            {genre}
+                    <div>
+                        <TippyHeadless
+                            interactive
+                            offset={[50, 23]}
+                            placement="bottom"
+                            render={(attrs) => (
+                                <div tabIndex="-1" {...attrs}>
+                                    <PopperWrapper className={cx('categories-popper')}>
+                                        {collections.map((collection, index) => {
+                                            return (
+                                                <div key={index}>
+                                                    <h4 className={cx('title', 'font-bold text-xl')}>
+                                                        {collection.category_name}
+                                                    </h4>
+                                                    {collection.genres.map((genre, index) => {
+                                                        return (
+                                                            index < 4 && (
+                                                                <li className={cx('genre')} key={index}>
+                                                                    <Link
+                                                                        to={`/collections/${collection.category_name}/${genre.genre_name}`}
+                                                                    >
+                                                                        {genre.genre_name}
+                                                                    </Link>
+                                                                </li>
+                                                            )
+                                                        );
+                                                    })}
+                                                    {collection.genres.length > 4 ? (
+                                                        <Link to={`/collections/${collection.category_name}`}>
+                                                            <span className={cx('more')}>Xem thêm</span>
                                                         </Link>
-                                                    </li>
-                                                ))}
-                                                {collection.isContinue ? (
-                                                    <Link to={`/collections/${collection.title}`}>
-                                                        <span className={cx('more')}>Xem thêm</span>
-                                                    </Link>
-                                                ) : (
-                                                    []
-                                                )}
-                                            </div>
-                                        );
+                                                    ) : (
+                                                        []
+                                                    )}
+                                                </div>
+                                            );
+                                        })}
+                                    </PopperWrapper>
+                                </div>
+                            )}
+                            hideOnClick={false}
+                            onShow={() => setShowCollections(true)}
+                            onHide={() => setShowCollections(false)}
+                        >
+                            <div className={cx('category')}>
+                                <span
+                                    className={classNames('transition-all', {
+                                        'text-primary-color': showCollections,
                                     })}
-                                </PopperWrapper>
+                                >
+                                    Danh mục
+                                </span>
+                                <FontAwesomeIcon
+                                    icon={faChevronDown}
+                                    className={cx('icon transition-all', {
+                                        'text-primary-color rotate-180': showCollections,
+                                    })}
+                                />
                             </div>
-                        )}
-                        hideOnClick={false}
-                        onShow={() => setShowCollections(true)}
-                        onHide={() => setShowCollections(false)}
-                    >
-                        <div className={cx('category')}>
-                            <span
-                                className={classNames('transition-all', {
-                                    'text-primary-color': showCollections,
-                                })}
-                            >
-                                Danh mục
-                            </span>
-                            <FontAwesomeIcon
-                                icon={faChevronDown}
-                                className={cx('icon transition-all', {
-                                    'text-primary-color rotate-180': showCollections,
-                                })}
-                            />
-                        </div>
-                    </TippyHeadless>
+                        </TippyHeadless>
+                    </div>
 
                     <TippyHeadless
                         interactive
@@ -147,36 +182,54 @@ function Navigation({ burger = false }) {
                                         onClick={() => setShowCollections(false)}
                                     />
                                 </div>
-                                {[...collections, { title: 'Tin tức', genres: [...news] }].map((collection, index) => {
-                                    return (
-                                        <div key={index}>
-                                            <div
-                                                className={classNames('flex items-center', {
-                                                    'text-primary-color': index === showCollection,
-                                                })}
-                                                onClick={() =>
-                                                    setShowCollection((prev) => (prev === index ? null : index))
-                                                }
-                                            >
-                                                <span className="flex-1 text-lg font-semibold">{collection.title}</span>
-                                                {index === showCollection ? (
-                                                    <FontAwesomeIcon icon={faChevronUp} />
-                                                ) : (
-                                                    <FontAwesomeIcon icon={faChevronDown} />
+                                {[...collections, { category_name: 'Tin tức', genres: [...mobileNews] }].map(
+                                    (collection, index) => {
+                                        return (
+                                            <div key={index}>
+                                                <div
+                                                    className={classNames('flex items-center', {
+                                                        'text-primary-color': index === showCollection,
+                                                    })}
+                                                    onClick={() =>
+                                                        setShowCollection((prev) => (prev === index ? null : index))
+                                                    }
+                                                >
+                                                    <span className="flex-1 text-lg font-semibold">
+                                                        {collection.category_name}
+                                                    </span>
+                                                    {index === showCollection ? (
+                                                        <FontAwesomeIcon icon={faChevronUp} />
+                                                    ) : (
+                                                        <FontAwesomeIcon icon={faChevronDown} />
+                                                    )}
+                                                </div>
+                                                {index === showCollection && (
+                                                    <div className="pl-4">
+                                                        {collection.genres.map((genre, index) => {
+                                                            return collection.category_name !== 'Tin tức' ? (
+                                                                <li className={cx('genre', 'list-none')} key={index}>
+                                                                    <Link
+                                                                        to={`/collections/${collection.category_name}/${genre.genre_name}`}
+                                                                    >
+                                                                        {genre.genre_name}
+                                                                    </Link>
+                                                                </li>
+                                                            ) : (
+                                                                <Link
+                                                                    to={`/blogs/${genre.genre_name}`}
+                                                                    key={index}
+                                                                    className={cx('genre', 'list-none')}
+                                                                >
+                                                                    <li>{genre.genre_name}</li>
+                                                                </Link>
+                                                            );
+                                                        })}
+                                                    </div>
                                                 )}
                                             </div>
-                                            {index === showCollection && (
-                                                <div className="pl-4">
-                                                    {collection.genres.map((genre, index) => (
-                                                        <div key={index} className="cursor-pointer">
-                                                            {genre}
-                                                        </div>
-                                                    ))}
-                                                </div>
-                                            )}
-                                        </div>
-                                    );
-                                })}
+                                        );
+                                    },
+                                )}
                             </div>
                             <div className="fixed top-0 left-0 bottom-0 right-0 bg-outside-menu-bg z-40"></div>
                         </>

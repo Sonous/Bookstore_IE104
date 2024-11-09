@@ -1,0 +1,242 @@
+.cart-page {
+    display: flex;
+    padding: 20px;
+    background-color: var(--light-gray);
+    flex-direction: column;
+    align-items: center;
+}
+
+.cart-page-container {
+    height: 100%;
+    max-width: 1200px;
+    min-height: 500px;
+    padding-left: 15px;
+    padding-right: 15px;
+    border-radius: 20px; /* Rounded corners */
+}
+
+.cart-header-text {
+    align-items: left;
+    margin-bottom: 10px;
+}
+
+.cart-content-wrapper {
+    display: flex;
+    background-color: transparent;
+    padding-left: 20px;
+    padding-right: 20px;
+    padding-top: 20px;
+    padding-bottom: 20px;
+}
+
+.cart-content-header-wrapper {
+    display: flex;
+    width: 500px;
+    background-color: white;
+    margin-bottom: 15px;
+    border-radius: 8px; /* Rounded corners */
+}
+
+.cart-content-header-col {
+    flex-basis: 40%;
+    width: fit-content;
+
+    justify-content: center;
+}
+
+.cart-content-left-col-wrapper {
+    flex-basis: 70%;
+}
+
+.cart-content-right-col-wrapper {
+    margin-left: 10px;
+    height: fit-content;
+    border-radius: 8px; /* Rounded corners */
+    background-color: white;
+    position: sticky;
+    top: 0;
+    right: 0;
+    /*box-shadow: 2px 2px 2px 2px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+}
+
+.cart-content-item-wrapper {
+    border-radius: 8px; /* Rounded corners */
+    background-color: white;
+}
+
+.header-check-box-col {
+    display: flex;
+    flex-basis: 8%;
+    padding: 5px;
+    width: 100%;
+    justify-content: center;
+}
+
+.header-select-all-text-col {
+    padding: 5px;
+    flex-basis: 16%;
+    align-items: left;
+    width: fit-content;
+    min-width: 150px;
+}
+
+.header-empty-col1 {
+    padding: 5px;
+    flex-basis: 40%;
+    align-items: left;
+    width: fit-content;
+}
+
+.header-quantity-col {
+    font-size: 15px;
+    padding: 5px;
+    flex-basis: 10%;
+    align-items: left;
+    width: fit-content;
+}
+
+.header-total-price-col {
+    display: flex;
+    font-size: 15px;
+    padding: 5px;
+    flex-basis: 18%;
+    align-items: center;
+    justify-content: center;
+}
+
+.header-empty-col {
+    padding: 5px;
+    flex-basis: 10%;
+    align-items: left;
+    width: fit-content;
+}
+
+.cart-content-product-item-col {
+    flex-basis: 40%;
+    width: fit-content;
+    min-height: 120px;
+    justify-content: center;
+}
+
+.cart-product-item {
+    display: flex;
+    width: 100%;
+    /*justify-content: space-between;*/
+    align-items: center;
+    border-bottom: 1px solid #f0f0f0;
+    padding: 20px 0;
+}
+
+.cart-header {
+    text-align: center;
+    margin-bottom: 20px;
+    font-weight: bold;
+}
+
+.cart-header h1 {
+    font-size: 24px;
+    color: #333;
+}
+
+.cart-content-wrapper {
+    display: flex;
+    height: 100%;
+    position: relative;
+    justify-content: space-between;
+}
+
+.cart-content {
+    flex-grow: 1;
+}
+
+.item-info {
+    display: flex;
+    align-items: center;
+}
+
+.item-info img {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    margin-right: 20px;
+}
+
+.item-info h3 {
+    font-size: 18px;
+    color: #333;
+    margin-bottom: 5px;
+}
+
+.item-info p {
+    font-size: 14px;
+    color: #666;
+    margin: 5px 0;
+}
+
+.item-actions button {
+    background-color: #f0f0f0;
+    border: none;
+    padding: 5px 10px;
+    margin: 0 5px;
+    cursor: pointer;
+}
+
+.item-actions .remove-btn {
+    color: #c00;
+}
+
+.order-summary {
+    padding-left: 20px;
+    text-align: left;
+}
+
+.order-summary p {
+    font-size: 16px;
+    color: #333;
+    margin: 10px 0;
+}
+
+.order-summary .checkout-btn {
+    background-color: #c00;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.total-price-lower {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+#payment-button {
+    display: block;
+    background-color: #c00;
+    color: #f0f0f0;
+    border-radius: 8px;
+    font-size: 18px;
+    width: 90%;
+    margin: 10%;
+}
+
+.total-price-upper-2 {
+    display: flex;
+}
+
+.total-price-wrapper {
+    padding: 5%;
+}
+
+.total-price-upper-1 {
+    padding-bottom: 10px;
+    border-bottom: black;
+}
+
+.border-product {
+    display: block;
+    justify-self: center;
+    height: 1px;
+    width: 95%;
+    border: 0.1px solid rgb(235, 232, 232);
+}

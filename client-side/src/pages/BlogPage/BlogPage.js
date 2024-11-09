@@ -1,11 +1,17 @@
-import { news, events, activities, images } from '~/dataTemorary';
 import classNames from 'classnames/bind';
+import { Pagination } from 'antd';
+import { useEffect, useState } from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCalendar } from '@fortawesome/free-solid-svg-icons';
+import { useNavigate, Link, useParams } from 'react-router-dom';
+
 import styles from './BlogPage.module.css';
 import Footer from '~/layouts/Footer/Footer';
 import Header from '~/layouts/Header/Header';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCalendar, faMapMarkerAlt } from '@fortawesome/free-solid-svg-icons';
-import { Link, useLocation, useNavigate } from 'react-router-dom';  // Thêm useNavigate
+
+import blogApi from '~/apis/blogApi';
+import Loading from '~/components/Loading';
+import { formatDate } from '~/utils/functions';
 
 const cx = classNames.bind(styles);
 const topics = [
@@ -15,148 +21,112 @@ const topics = [
 ];
 
 function BlogPage() {
-    const location = useLocation();
-    const navigate = useNavigate();  // Sử dụng useNavigate
-    
+
+    const { option } = useParams();
+    const [currentTab, setCurrentTab] = useState(option);
+    const [blogs, setBlogs] = useState();
+    const navigate = useNavigate();
+
+    const getBlogsOfPage = async (page) => {
+        try {
+            const blogs = await blogApi.getBlogsByName(option, page, 5);
+
+            setBlogs(blogs);
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
+    useEffect(() => {
+        setCurrentTab(option);
+
+        getBlogsOfPage(1);
+    }, [option]);
+
     return (
         <>
-            <Header />
-            <nav className="breadcrumb mb-4 p-4 bg-gray-100">
-                <Link to="/" className="text-blue-500 hover:underline">Trang chủ</Link>
-                <span className="mx-2">/</span>
-                <span className="text-gray-500">Blog</span>
-            </nav>
+            {blogs ? (
+                <>
+                    <Header />
+                    <nav className="breadcrumb mb-4 p-4 bg-gray-100">
+                        <Link to="/" className="text-blue-500 hover:underline">
+                            Trang chủ
+                        </Link>
+                        <span className="mx-2">/</span>
+                        <span className="text-gray-500">{currentTab}</span>
+                    </nav>
 
-            <main className={cx('main-content')}>
-                <div className={cx('section-tabs', 'w-full', 'mb-4')}>
-                    <ul className="flex justify-center gap-8 bg-gray-100 p-4 rounded-md">
-                        {topics.map((topic, index) => (
-                            <li key={index}>
-                                <Link
-                                    to={topic.path}
-                                    className={cx('cursor-pointer', { 'text-blue-500': location.pathname === topic.path, 'underline': location.pathname === topic.path })}
-                                >
-                                    <strong className="custom-font-size">{topic.name}</strong>
-                                </Link>
-                            </li>
-                        ))}
-                    </ul>
-                </div>
 
-                <div className="flex justify-center max-w-main-width grid grid-cols-1 gap-6">
-                    {location.pathname === '/blog/activities' && (
-                        <div className="w-full grid grid-cols-1 gap-6">
-                            {activities.map((activity) => {
-                                const imgSrc = images[`act_${activity.id}`];
-
-                                return (
-                                    <div
-                                        key={activity.id}
-                                        className="flex rounded-lg bg-white shadow-lg h-56 p-4 w-full cursor-pointer"
-                                        onClick={() => navigate(`/blog/activities/${activity.id}`)}  // Sử dụng navigate
+                    <main className={cx('main-content')}>
+                        <div className={cx('section-tabs', 'w-full', 'mb-4')}>
+                            <ul className="flex justify-center gap-8 bg-gray-100 p-4 rounded-md">
+                                {topics.map((topic, index) => (
+                                    <li
+                                        key={index}
+                                        className={cx('cursor-pointer', {
+                                            'text-blue-500': currentTab === topic,
+                                            underline: currentTab === topic,
+                                        })}
+                                        onClick={() => navigate(`/blogs/${topic}`)}
                                     >
-                                        {imgSrc ? (
+                                        <strong className="custom-font-size">{topic}</strong>
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
+
+
+                        <div className="flex flex-col gap-6">
+                            <div className="w-full grid grid-cols-1 gap-6">
+                                {blogs.data.map((blog, index) => {
+                                    return (
+                                        <div
+                                            key={index}
+                                            className="flex rounded-lg bg-white shadow-lg h-56 p-4 w-full cursor-pointer"
+                                            onClick={() => navigate(`/blogs/${option}/${blog.blog_id}`)}
+                                        >
+
                                             <img
-                                                src={imgSrc}
-                                                alt={activity.title}
+                                                src={blog.blog_thumbnail}
+                                                alt=""
                                                 className="w-58 h-42 object-cover rounded-lg"
                                             />
-                                        ) : (
-                                            <div className="w-58 h-42 rounded-lg bg-gray-300 flex items-center justify-center">
-                                                <span className="text-gray-600">Hình ảnh không có sẵn</span>
-                                            </div>
-                                        )}
-                                        <div className="ml-4 flex flex-col justify-between w-full">
-                                            <span className="block font-semibold text-lg">{activity.title}</span>
-                                            <div className="text-gray-500">
-                                                <FontAwesomeIcon icon={faCalendar} />
-                                                <span className="pl-2">{activity.activityDate}</span>
-                                                <FontAwesomeIcon icon={faMapMarkerAlt} className="ml-4" />
-                                                <span className="pl-2">{activity.location}</span>
-                                            </div>
-                                            <p className="text-gray-600">{activity.description}</p>
-                                            <p className="text-gray-500">{activity.organizer}</p>
-                                        </div>
-                                    </div>
-                                );
-                            })}
-                        </div>
-                    )}
 
-                    {location.pathname === '/blog/news' && (
-                        <div className="grid grid-cols-1 gap-6 w-full">
-                            {news.map((item) => {
-                                const imgSrc = images[`news_${item.id}`];
-
-                                return (
-                                    <div
-                                        key={item.id}
-                                        className="flex items-center rounded-lg bg-white shadow-md p-4 h-48 cursor-pointer"
-                                        onClick={() => navigate(`/blog/news/${item.id}`)}
-                                    >
-                                        {imgSrc ? (
-                                            <img
-                                                src={imgSrc}
-                                                alt={item.title}
-                                                className="w-56 h-42 object-cover rounded-lg"
-                                            />
-                                        ) : (
-                                            <div className="w-56 h-42 rounded-lg bg-gray-300 flex items-center justify-center">
-                                                <span className="text-gray-600">Hình ảnh không có sẵn</span>
-                                            </div>
-                                        )}
-                                        <div className="ml-4 flex flex-col justify-between h-full w-full">
-                                            <span className="block font-semibold text-lg">{item.title}</span>
-                                            <span className="text-gray-500">
-                                                <FontAwesomeIcon icon={faCalendar} />
-                                                Ngày đăng: {item.postDate}
-                                            </span>
-                                        </div>
-                                    </div>
-                                );
-                            })}
-                        </div>
-                    )}
-
-                    {location.pathname === '/blog/events' && (
-                        <div className="w-full grid grid-cols-1 gap-6">
-                            {events.map((item) => {
-                                const imgSrc = images[`events_${item.id}`];
-
-                                return (
-                                    <div
-                                        key={item.id}
-                                        className="flex rounded-lg bg-white shadow-lg h-56 p-4 w-full cursor-pointer"
-                                        onClick={() => navigate(`/blog/events/${item.id}`)}  // Sử dụng navigate
-                                    >
-                                        {imgSrc ? (
-                                            <img
-                                                src={imgSrc}
-                                                alt={item.title}
-                                                className="w-58 h-42 object-cover rounded-lg"
-                                            />
-                                        ) : (
-                                            <div className="w-58 h-42 rounded-lg bg-gray-300 flex items-center justify-center">
-                                                <span className="text-gray-600">Hình ảnh không có sẵn</span>
-                                            </div>
-                                        )}
-                                        <div className="ml-4 flex flex-col justify-between w-full">
-                                            <span className="block font-semibold text-lg">{item.title}</span>
-                                            <div className="text-gray-500">
-                                                <FontAwesomeIcon icon={faCalendar} />
-                                                <span className="pl-2">{item.eventDate}</span>
-                                                <FontAwesomeIcon icon={faMapMarkerAlt} className="ml-4" />
-                                                <span className="pl-2">{item.location}</span>
+                                            <div className="ml-4 flex flex-col w-full gap-3">
+                                                <span className="block font-semibold text-lg">{blog.blog_title}</span>
+                                                <div className="text-gray-500">
+                                                    <FontAwesomeIcon icon={faCalendar} />
+                                                    <span className="pl-2">{formatDate(blog.created_at)}</span>
+                                                </div>
+                                                <p className="text-gray-600">
+                                                    Viện Pháp tại Việt Nam triển khai một loạt hoạt động nhằm thúc đẩy
+                                                    sự phát triển của truyện tranh tại Việt Nam như một lĩnh vực công
+                                                    nghiệp văn hóa. Nằm trong khuôn khổ dự án FEF - sáng tạo và dự án
+                                                    Công nghiệp văn hóa - sáng tạo khu vực “Ngành truyện tranh ở Việt
+                                                    Nam và Campuchia: Kết nối kinh nghiệm...
+                                                </p>
                                             </div>
                                         </div>
-                                    </div>
-                                );
-                            })}
+                                    );
+                                })}
+                            </div>
+                            <Pagination
+                                total={blogs.pagination.blogsCount}
+                                pageSize={5}
+                                align="center"
+                                onChange={(page) => {
+                                    getBlogsOfPage(page);
+                                }}
+                            />
                         </div>
-                    )}
+                    </main>
+                    <Footer />
+                </>
+            ) : (
+                <div className="h-svh flex justify-center items-center">
+                    <Loading />
                 </div>
-            </main>
-            <Footer />
+            )}
         </>
     );
 }

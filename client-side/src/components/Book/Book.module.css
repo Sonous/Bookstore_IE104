@@ -1,4 +1,5 @@
 .book {
+    position: relative;
     display: flex;
     align-items: center;
     gap: 15px;
@@ -7,22 +8,29 @@
 .image {
     height: 80px;
     width: 80px;
+    max-width: none;
+    padding: 5px;
+    object-fit: contain;
 }
 .info {
     display: flex;
     flex-direction: column;
-    gap: 5px;
+    gap: 10px;
     padding: 10px 0;
 }
 .title {
     font-weight: 400;
     display: -webkit-box;
-    -webkit-line-clamp: 2; /* Giới hạn hiển thị trong 2 dòng */
+    line-clamp: 2; /* Giới hạn hiển thị trong 2 dòng */
     -webkit-box-orient: vertical; /* Thiết lập cách chia hộp theo chiều dọc */
     overflow: hidden; /* Ẩn phần văn bản vượt quá */
     text-overflow: ellipsis; /* Hiển thị dấu ba chấm */
     white-space: normal; /* Đảm bảo văn bản có thể xuống dòng */
 }
+.title:hover {
+    color: rgb(48, 173, 227);
+}
+
 .current-price {
     color: var(--main-color);
     font-weight: 500;
@@ -56,8 +64,5 @@
     flex: 1;
 }
 .rate {
-    font-size: 12px;
-}
-.rate .ant-rate-star {
-    margin-inline-end: 5px;
+    font-size: 14px;
 }
