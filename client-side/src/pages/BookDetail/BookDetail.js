@@ -1,6 +1,9 @@
 import React, { useState, useRef, useEffect, useContext } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import parse from 'html-react-parser';
+import { Rate, Input, Divider } from 'antd';
+import classNames from 'classnames';
+import Swal from 'sweetalert2';
 
 import './BookDetail.css';
 import Header from '~/layouts/Header/Header';
@@ -9,13 +12,10 @@ import bookApi from '~/apis/bookApi';
 import Loading from '~/components/Loading';
 import { imageUrl } from '~/configs/axios.config';
 import { convertPriceToString } from '~/utils/functions';
-import { Rate, Input, Divider, Button } from 'antd';
 import Book from '~/components/Book/Book';
 import Comment from '~/components/Comment';
-import classNames from 'classnames';
 import userApi from '~/apis/userApi';
 import { UserContext } from '~/context/UserContextProvider';
-import Swal from 'sweetalert2';
 
 function BookDetail() {
     const { book_name } = useParams();
@@ -27,7 +27,8 @@ function BookDetail() {
     const [quantity, setQuantity] = useState(1);
     const [rating, setRating] = useState(0);
     const [comment, setComment] = useState('');
-    const { user } = useContext(UserContext);
+    const { user, setIsReloadCart, alertExpiredLogin } = useContext(UserContext);
+    const [inputValue, setInputValue] = useState(1);
     const commentInputRef = useRef();
     const navigate = useNavigate();
 
@@ -61,10 +62,12 @@ function BookDetail() {
 
     const handleIncrement = () => {
         setQuantity((prevQuantity) => prevQuantity + 1);
+        setInputValue((prevQuantity) => prevQuantity + 1);
     };
 
     const handleDecrement = () => {
         setQuantity((prevQuantity) => (prevQuantity > 0 ? prevQuantity - 1 : 0));
+        setInputValue((prevQuantity) => (prevQuantity > 0 ? prevQuantity - 1 : 0));
     };
 
     const handleCommentSubmit = async () => {
@@ -128,6 +131,38 @@ function BookDetail() {
         commentInputRef.current.focus();
     };
 
+    const handleAddBookToCart = async () => {
+        try {
+            if (quantity > book.book_available) {
+                await Swal.fire({
+                    toast: true,
+                    icon: 'warning',
+                    showConfirmButton: false,
+                    timer: 1500,
+                    timerProgressBar: true,
+                    position: 'top-end',
+                    text: `Số lượng yêu cầu cho ${quantity} không có sẵn.`,
+                });
+                return;
+            }
+            await userApi.addBookToCart(user.user_id, book.book_id, quantity);
+
+            await Swal.fire({
+                title: 'Thêm sách vào giỏ hàng thành công!',
+                icon: 'success',
+                timer: 1500,
+                showConfirmButton: false,
+            });
+
+            setIsReloadCart(true);
+        } catch (error) {
+            if (error.message === 'Unauthorized!') {
+                alertExpiredLogin();
+            }
+            console.error(error);
+        }
+    };
+
     return (
         <>
             {book && otherBooks ? (
@@ -137,14 +172,19 @@ function BookDetail() {
                         <nav className="navmenu m-5">
                             <ol>
                                 <li>
-                                    <Link to={'/'}>Trang chủ</Link>
+                                    <Link to={'/'} className="hover:text-primary-color">
+                                        Trang chủ
+                                    </Link>
                                 </li>
                                 <li>
-                                    <Link to={`/collections/${book.genres[0].category.category_name}`}>
+                                    <Link
+                                        to={`/collections/${book.genres[0].category.category_name}`}
+                                        className="hover:text-primary-color"
+                                    >
                                         {book.genres[0].category.category_name}
                                     </Link>
                                 </li>
-                                <li>{book.book_name}</li>
+                                <li className="text-primary-color font-semibold">{book.book_name}</li>
                             </ol>
                         </nav>
                         <div className="grid product-page grid-cols-7 gap-3 relative">
@@ -166,31 +206,57 @@ function BookDetail() {
                                     </div>
                                 </div>
                                 <div className="button-container">
-                                    <Button
-                                        className={classNames('checkout1 flex-1', {
-                                            'opacity-80': book.book_status !== 'Còn hàng',
+                                    <button
+                                        className={classNames('checkout1 flex-1 hover:opacity-80', {
+                                            'bg-neutral-400 hover:opacity-100 hover: cursor-not-allowed':
+                                                book.book_status !== 'Còn hàng',
                                         })}
                                         disabled={book.book_status !== 'Còn hàng'}
                                     >
                                         Mua ngay
-                                    </Button>
-                                    <Button
-                                        className={classNames('checkout2 flex-1', {
-                                            'opacity-80': book.book_status !== 'Còn hàng',
+                                    </button>
+                                    <button
+                                        className={classNames('checkout2 flex-1 hover:opacity-80', {
+                                            'text-neutral-400 border-neutral-400 hover:opacity-100 hover: cursor-not-allowed':
+                                                book.book_status !== 'Còn hàng',
                                         })}
                                         disabled={book.book_status !== 'Còn hàng'}
+                                        onClick={handleAddBookToCart}
                                     >
                                         Thêm vào giỏ hàng
-                                    </Button>
+                                    </button>
                                 </div>
                             </div>
-                            <div className="secondpart bg-white col-span-4 rounded-lg">
+                            <div className="bg-white col-span-4 rounded-lg p-10">
                                 <span className="title2">{book.book_name}</span>
                                 <br />
                                 <div className="group1">
                                     <div className="quantity-control ">
                                         <button onClick={handleDecrement}>-</button>
-                                        <span>{quantity}</span>
+                                        <input
+                                            className="w-[40px] text-center"
+                                            type="text"
+                                            pattern="[1-9]*"
+                                            value={inputValue}
+                                            onChange={(e) => {
+                                                const value = parseInt(e.target.value); // Chuyển đổi sang số nguyên
+
+                                                console.log(value);
+                                                if (value >= 1) {
+                                                    console.log('fisadji');
+                                                    setQuantity(value);
+                                                    setInputValue(value);
+                                                } else if (e.target.value === '') {
+                                                    setInputValue(e.target.value);
+                                                }
+                                            }}
+                                            onBlur={(e) => {
+                                                if (e.target.value === '') {
+                                                    setQuantity(1);
+                                                    setInputValue(1);
+                                                }
+                                            }}
+                                        />
                                         <button onClick={handleIncrement}>+</button>
                                     </div>
                                     <span className="normal">{`Còn ${book.book_available} quyển trong kho`}</span>
@@ -211,9 +277,14 @@ function BookDetail() {
                                         {book.ratingbooks.length} bình luận
                                     </span>
                                 </div>
-
+                                {book.book_status !== 'Còn hàng' && (
+                                    <div className="border rounded-md px-3 font-bold bg-red-100 text-red-500 mt-3">
+                                        <span>Sản phẩm tạm hết hàng</span>
+                                    </div>
+                                )}
+                                <Divider />
                                 <div className="group3 gap-3">
-                                    <span className="title1">THÔNG TIN CHI TIẾT</span>
+                                    <span className="title1 font-semibold">THÔNG TIN CHI TIẾT</span>
                                     <ul className="normal mb-5">
                                         <li>
                                             <strong>Tác giả:</strong> {`${book.book_author}`}
@@ -233,8 +304,8 @@ function BookDetail() {
                                             <span className="hover:text-blue-600 cursor-pointer">{`${book.book_collection}`}</span>
                                         </li>
                                     </ul>
-                                    <span className="title1">GIỚI THIỆU SÁCH</span>
-                                    <div className="bookcontent -ml-[20px]">{parse(book.book_description)}</div>
+                                    <span className="title1 font-semibold">GIỚI THIỆU SÁCH</span>
+                                    <div className="bookcontent ">{parse(book.book_description)}</div>
                                 </div>
                             </div>
                         </div>

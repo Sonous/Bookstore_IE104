@@ -5,11 +5,9 @@
 }
 
 .navmenu {
-    color: #228b22;
     list-style: none;
     padding-left: 0px;
     margin-left: -25px;
-    font-weight: bold;
 }
 
 .navmenu li {
@@ -17,7 +15,7 @@
 }
 
 .navmenu li + li::before {
-    content: ' >';
+    content: ' > ';
     padding: 0;
 }
 
@@ -109,7 +107,6 @@
     background-color: #228b22; /* Màu nền */
     color: white; /* Màu chữ */
     cursor: pointer;
-    border: 2px solid #228b22; /* Viền cùng màu xanh */
     border-radius: 5px; /* Độ bo tròn ở các góc */
     transition: background-color 0.3s, color 0.3s; /* Hiệu ứng chuyển đổi khi hover */
 }
@@ -205,10 +202,6 @@
 
 .icon {
     margin-top: 10px;
-}
-
-.normal li {
-    margin-left: -20px;
 }
 
 .comment-text {

@@ -11,7 +11,6 @@
 
 .cart-content-wrapper {
     position: relative;
-    flex-wrap: wrap;
 }
 
 .cart-content-header-col {
@@ -26,14 +25,12 @@
 }
 
 .cart-content-product-item-col {
-    
     flex-basis: 40%;
     align-items: left;
-   
+
     width: fit-content;
     min-height: 120px;
     /*justify-content: center;*/
-
 }
 
 .check-box-col {
@@ -74,7 +71,6 @@
 .total-price-col {
     display: flex;
     padding: 5px;
-    flex-basis: 18%;
     align-items: center;
     justify-content: center;
     color: #c00;
@@ -84,7 +80,6 @@
 .remove-icon-col {
     display: flex;
     padding: 5px;
-    flex-basis: 10%;
     align-items: center;
     justify-content: center;
     width: fit-content;
@@ -98,7 +93,7 @@
 .cart-product-item {
     display: flex;
     width: 100%;
-    /*justify-content: space-between;*/  
+    /*justify-content: space-between;*/
     border: 5px solid black;
     padding: 20px 0;
 }
@@ -184,18 +179,16 @@
 .quantity-wrapper {
     display: flex;
     align-items: center;
-    width: 100%;
+    width: 100px;
     border-radius: 5px;
-    border: 1px solid #E0E0E0E0;
+    border: 1px solid #e0e0e0e0;
     justify-content: center;
 }
 
 .quantity-input {
-    max-width: 100%;
-    width: 25px;
+    width: 40px;
     padding-inline: 0;
     padding-block: 0;
-    
 }
 
 #item-quantity-input {
@@ -205,12 +198,4 @@
 
 .quantity-minus .quantity-minus {
     text-align: center;
-}
-
-.border-product {
-    display: block;
-    justify-self: center;
-    height: 1px;
-    width: 95%;
-    border: 0.1px solid rgb(235, 232, 232);
 }

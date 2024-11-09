@@ -1,42 +1,33 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import pages from './routes';
+import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
+import Pages from './routes';
+import { UserContextProvider } from './context/UserContextProvider';
 
 function App() {
     return (
-        <div className="App font-body">
-            <Router>
-                <Routes>
-                    {pages.map((Page, index) => (
-                        <Route key={index} path={Page.path} element={<Page.Component />} />
-                    ))}
-                </Routes>
-            </Router>
-        </div>
+        <UserContextProvider>
+            <div className="App font-body">
+                <Router>
+                    <Routes>
+                        {Pages.map((Page, index) => (
+                            <Route
+                                key={index}
+                                path={Page.path}
+                                element={
+                                    Page.PrivateRoute ? (
+                                        <Page.PrivateRoute>
+                                            <Page.Component />
+                                        </Page.PrivateRoute>
+                                    ) : (
+                                        <Page.Component />
+                                    )
+                                }
+                            />
+                        ))}
+                    </Routes>
+                </Router>
+            </div>
+        </UserContextProvider>
     );
 }
 
 export default App;
-
-/*
-// src/App.js
-import React from 'react';
-import AboutUs from './AboutUs';
-import RefundPolicy from './RefundPolicy';
-import ShoppingGuide from './ShoppingGuide';
-
-function App() {
-    return (
-        <div className="App">
-            <AboutUs />
-        </div>
-        <div className="App">
-            <RefundPolicy />
-        </div>
-        <div className="App">
-            <ShoppingGuide />
-        </div>
-    );
-}
-
-export default App;
-*/

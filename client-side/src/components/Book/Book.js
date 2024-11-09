@@ -25,6 +25,7 @@ function Book({
     cartPopper = false,
     home = false,
     collection = false,
+    className,
 }) {
     const [liked, setLiked] = useState(false);
     const { user } = useContext(UserContext);
@@ -33,7 +34,7 @@ function Book({
 
     return (
         <li
-            className={cx('book', {
+            className={cx('book', className, {
                 home,
                 collection,
             })}
