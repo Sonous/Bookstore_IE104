@@ -11,10 +11,14 @@ import OrderDetail from '~/pages/OrderDetailPage/OrderDetailPage';
 import Login from '~/pages/Login-Register-ForgotPassword/Login';
 import ForgotPassword from '~/pages/Login-Register-ForgotPassword/ForgotPassword';
 import Register from '~/pages/Login-Register-ForgotPassword/Register';
+
+import PayingPage from '~/pages/PayingPage/PayingPage';
+
 import CartPage from '~/pages/CartPage/CartPage';
 import BookDetail from '~/pages/BookDetail/BookDetail';
 import BlogDetail from '~/pages/BlogPage/BlogDetail';
 import PrivateRoute from './PrivateRoute';
+
 
 const pages = [
     { path: routes.home, Component: HomePage },
@@ -34,7 +38,11 @@ const pages = [
     { path: routes.forgotpassword, Component: ForgotPassword },
     { path: routes.cartpage, Component: CartPage, PrivateRoute: PrivateRoute },
 
+
+    { path: routes.paying, Component: PayingPage}
+
     { path: routes.book, Component: BookDetail },
+
 ];
 
 export default pages;

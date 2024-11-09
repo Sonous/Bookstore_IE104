@@ -1,10 +1,14 @@
 const routes = {
     home: '/',
+
+    paying: '/paying',
+
     collections: '/collections/:collection/:genre?',
     results: '/results',
 
     blog: '/blogs/:option',
     blogDetail: '/blogs/:type/:blog_id',
+
 
     aboutus: '/aboutus',
     refundpolicy: '/refundpolicy',
