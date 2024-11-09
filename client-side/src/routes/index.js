@@ -14,6 +14,7 @@ import Register from '~/pages/Login-Register-ForgotPassword/Register';
 import CartPage from '~/pages/CartPage/CartPage';
 import BookDetail from '~/pages/BookDetail/BookDetail';
 import BlogDetail from '~/pages/BlogPage/BlogDetail';
+import PrivateRoute from './PrivateRoute';
 
 const pages = [
     { path: routes.home, Component: HomePage },
@@ -31,7 +32,7 @@ const pages = [
     { path: routes.login, Component: Login },
     { path: routes.register, Component: Register },
     { path: routes.forgotpassword, Component: ForgotPassword },
-    { path: routes.cartpage, Component: CartPage },
+    { path: routes.cartpage, Component: CartPage, PrivateRoute: PrivateRoute },
 
     { path: routes.book, Component: BookDetail },
 ];

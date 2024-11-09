@@ -14,7 +14,7 @@ const routes = {
     orderdetail: '/orderdetail',
     register: '/register',
     forgotpassword: '/forgotpassword',
-    cartpage: '/cartpage',
+    cartpage: '/cart',
 
     book: '/books/:book_name',
 };

@@ -43,7 +43,6 @@ const getCartItems = (req, res) => {
             model: Book,
             attributes: {
                 exclude: [
-                    'book_available',
                     'book_rating_num',
                     'book_description',
                     'book_author',
