@@ -1,15 +1,14 @@
 const { request } = require('~/configs');
 
-const cartApi = {
-    async updateQuantityItem(userId, bookId, quantity) {
-        const token = localStorage.getItem('token');
+const addresApi = {
+    async updateAddress(address, addressId) {
         try {
-            await request.put(
-                '/cart',
+            const token = localStorage.getItem('token');
+
+            await request.post(
+                `/address/${addressId}`,
                 {
-                    userId,
-                    bookId,
-                    quantity,
+                    address,
                 },
                 {
                     headers: {
@@ -23,4 +22,4 @@ const cartApi = {
     },
 };
 
-export default cartApi;
+export default addresApi;

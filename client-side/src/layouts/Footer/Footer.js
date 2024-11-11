@@ -13,9 +13,7 @@ const cx = classNames.bind(styles);
 const footerItems = [
     {
         title: 'Giới thiệu',
-        options: [
-            { name: 'Về Bookstar', path: routes.aboutus },
-        ],
+        options: [{ name: 'Về Bookstar', path: routes.aboutus }],
     },
     {
         title: 'Hỗ trợ',
@@ -28,7 +26,7 @@ const footerItems = [
 
 function Footer() {
     return (
-        <footer className="px-5">
+        <footer className="px-5 border-t-[1px] border-[#b6b6b6]">
             <div className={cx('wrapper')}>
                 <div className="">
                     <div className="flex items-center gap-3 pb-4">

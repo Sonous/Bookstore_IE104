@@ -136,17 +136,16 @@ function Header() {
                                 placement="bottom"
                                 render={() => (
                                     <PopperWrapper className={cx('user-popper')}>
-                                        <div className={cx('menu-item')} onClick={() => navigate('/user')}>
+                                        <div className={cx('menu-item')} onClick={() => navigate('/user/account')}>
                                             <img src={images.userIcon} alt="user icon" />
                                             <span className={cx('title')}>Xem thông tin tài khoản</span>
                                         </div>
-                                        <div className={cx('menu-item')} onClick={() => navigate('/order')}>
+                                        <div className={cx('menu-item')} onClick={() => navigate('/user/order')}>
                                             <img src={images.orderIcon} alt="order icon" />
                                             <span className={cx('title')}>Đơn hàng của tôi</span>
                                         </div>
-                                        <div className={cx('menu-item')} onClick={() => navigate('/favoritebooks')}>
+                                        <div className={cx('menu-item')} onClick={() => navigate('/user/favorite')}>
                                             <img src={images.heartIcon} alt="heart icon" />
-
                                             <span className={cx('title')}>Xem sách yêu thích</span>
                                         </div>
                                         <div className={cx('menu-item', 'logout')} onClick={handleLogout}>
@@ -157,7 +156,7 @@ function Header() {
                                 )}
                                 hideOnClick={false}
                             >
-                                <button className={cx('user-btn')}>
+                                <button className={cx('user-btn')} onClick={() => navigate('/user/account')}>
                                     {user.user_avatar_url ? (
                                         <img
                                             src={`${imageUrl}/${user.user_avatar_url} `}

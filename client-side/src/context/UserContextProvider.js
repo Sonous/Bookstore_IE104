@@ -28,25 +28,24 @@ const UserContextProvider = ({ children }) => {
         });
     };
 
-    const login = () => {
-        const token = localStorage.getItem('token');
-        if (token) {
-            setIsLoading(true);
+    const login = async () => {
+        try {
+            const token = localStorage.getItem('token');
 
-            request
-                .get('/user', {
+            if (token) {
+                setIsLoading(true);
+
+                const userInfo = await request.get('/user', {
                     headers: {
                         'x-access-token': token,
                     },
-                })
-                .then((userInfo) => {
-                    setUser(userInfo);
-                    setIsLoading(false);
-                })
-                .catch((err) => {
-                    alertExpiredLogin();
-                    setIsLoading(false);
                 });
+                setUser(userInfo);
+                setIsLoading(false);
+            }
+        } catch (error) {
+            alertExpiredLogin();
+            setIsLoading(false);
         }
     };
 

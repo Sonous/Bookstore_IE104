@@ -16,6 +16,10 @@ import Book from '~/components/Book/Book';
 import Comment from '~/components/Comment';
 import userApi from '~/apis/userApi';
 import { UserContext } from '~/context/UserContextProvider';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faHeart } from '@fortawesome/free-solid-svg-icons';
+import favoriteApi from '~/apis/favoriteApi';
+import transportApi from '~/apis/transportApi';
 
 function BookDetail() {
     const { book_name } = useParams();
@@ -29,14 +33,31 @@ function BookDetail() {
     const [comment, setComment] = useState('');
     const { user, setIsReloadCart, alertExpiredLogin } = useContext(UserContext);
     const [inputValue, setInputValue] = useState(1);
+    const [isChecked, setIsChecked] = useState(false);
+    const [transportMethod, setTransportMethod] = useState('');
     const commentInputRef = useRef();
     const navigate = useNavigate();
+
+    useEffect(() => {
+        const fetchApi = async () => {
+            const method = await transportApi.getTransportMethodById();
+
+            setTransportMethod(method);
+        };
+
+        fetchApi();
+    }, []);
 
     useEffect(() => {
         const fetchApi = async () => {
             try {
                 const result = await bookApi.getBookByName(book_name);
                 const listBook = await bookApi.getBooksByLimit(6);
+                if (user) {
+                    const isExisted = await favoriteApi.getFavoriteBook(user.user_id, result.book_id);
+
+                    setIsChecked(isExisted);
+                }
 
                 setBook(result);
                 setOtherBooks(listBook);
@@ -163,6 +184,59 @@ function BookDetail() {
         }
     };
 
+    const handleUpdateFavoriteTable = async () => {
+        try {
+            if (!user) {
+                Swal.fire({
+                    toast: true,
+                    position: 'top-right',
+                    timerProgressBar: true,
+                    icon: 'warning',
+                    text: 'Vui lòng đăng nhập!',
+                    timer: 1500,
+                    showConfirmButton: false,
+                });
+
+                return;
+            }
+            await favoriteApi.updateFavoriteTable(user.user_id, book.book_id);
+
+            setIsChecked(!isChecked);
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
+    const handlePurchase = () => {
+        const orderBook = {
+            book_id: book.book_id,
+            book_name: book.book_name,
+            book_cost: book.book_cost,
+            book_discount: book.book_discount,
+            book_end_cost: book.book_end_cost,
+            book_sold: book.book_sold,
+            book_star_rating: book.book_star_rating,
+            book_status: book.book_status,
+            created_at: book.created_at,
+            updated_at: book.updated_at,
+            cart: {
+                quantity: quantity,
+            },
+            bookimages: book.bookimages,
+        };
+
+        const order = {
+            order_books: [orderBook],
+            books_total_prices: parseFloat(book.book_end_cost) * quantity,
+            transport_name: transportMethod.transport_name,
+            transport_cost: transportMethod.transport_cost,
+            order_total_cost: transportMethod.transport_cost + parseFloat(book.book_end_cost) * quantity,
+        };
+
+        localStorage.setItem('order', JSON.stringify(order));
+        navigate('/paying');
+    };
+
     return (
         <>
             {book && otherBooks ? (
@@ -212,6 +286,21 @@ function BookDetail() {
                                                 book.book_status !== 'Còn hàng',
                                         })}
                                         disabled={book.book_status !== 'Còn hàng'}
+                                        onClick={() => {
+                                            if (!user) {
+                                                Swal.fire({
+                                                    toast: true,
+                                                    icon: 'warning',
+                                                    timerProgressBar: true,
+                                                    position: 'top-right',
+                                                    text: 'Vui lòng đăng nhập!',
+                                                    timer: 1500,
+                                                    showConfirmButton: false,
+                                                });
+                                                return;
+                                            }
+                                            handlePurchase();
+                                        }}
                                     >
                                         Mua ngay
                                     </button>
@@ -221,13 +310,44 @@ function BookDetail() {
                                                 book.book_status !== 'Còn hàng',
                                         })}
                                         disabled={book.book_status !== 'Còn hàng'}
-                                        onClick={handleAddBookToCart}
+                                        onClick={() => {
+                                            if (!user) {
+                                                Swal.fire({
+                                                    toast: true,
+                                                    icon: 'warning',
+                                                    position: 'top-right',
+                                                    timerProgressBar: true,
+                                                    text: 'Vui lòng đăng nhập!',
+                                                    timer: 1500,
+                                                    showConfirmButton: false,
+                                                });
+                                                return;
+                                            }
+                                            handleAddBookToCart();
+                                        }}
                                     >
                                         Thêm vào giỏ hàng
                                     </button>
                                 </div>
                             </div>
-                            <div className="bg-white col-span-4 rounded-lg p-10">
+                            <div className="bg-white col-span-4 rounded-lg p-10 relative">
+                                <div
+                                    className={classNames(
+                                        'absolute top-0 right-5 h-[40px] b flex items-center px-1 rounded-b-md bg-primary-color transition-all hover:opacity-80 cursor-pointer',
+                                        {
+                                            'border-x-[2px] border-b-[2px] border-primary-color !bg-white': isChecked,
+                                        },
+                                    )}
+                                    onClick={handleUpdateFavoriteTable}
+                                >
+                                    <span
+                                        className={classNames('text-white', {
+                                            '!text-primary-color': isChecked,
+                                        })}
+                                    >
+                                        <FontAwesomeIcon icon={faHeart} />
+                                    </span>
+                                </div>
                                 <span className="title2">{book.book_name}</span>
                                 <br />
                                 <div className="group1">

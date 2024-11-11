@@ -1,192 +1,121 @@
-import './RegisterForgotPass.css';
-import { useState } from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEye, faEyeSlash, faUserPlus } from '@fortawesome/free-solid-svg-icons';
+import React, { useContext } from 'react';
+import { LockOutlined, UserOutlined } from '@ant-design/icons';
+import { Button, Form, Input } from 'antd';
+import { useNavigate } from 'react-router-dom';
+import authApi from '~/apis/authApi';
+import Swal from 'sweetalert2';
+import { UserContext } from '~/context/UserContextProvider';
+import Header from '~/layouts/Header/Header';
+import Footer from '~/layouts/Footer/Footer';
 
+export default function Register() {
+    const navigate = useNavigate();
 
-function ForgotPassword() {
-  const [email, setEmail] = useState('');
-  const [emailErrorMessage, setEmailErrorMessage] = useState('');
-  const [password, setPassword] = useState('');
-  const [passwordErrorMessage, setPasswordErrorMessage] = useState('');
-  const [verificationCode, setVerificationCode] = useState('');
-  const [verificationCodeErrorMessage, setVerificationCodeErrorMessage] = useState('');
-  const [isEmailValid, setIsEmailValid] = useState(true); // Thêm trạng thái này
-  const [isVerificationValid, setIsVerificationValid] = useState(true);
-  const [isPasswordvalid, setIsPasswordvalid] = useState(true);
-  const [isPasswordVisible, setIsPasswordVisible] = useState(false); 
-  
-  function handleEmailChange(e) {
-    const value = e.target.value;
-    setEmail(value);
-    validateEmail(value);
-  }
+    const { login } = useContext(UserContext);
 
-  function validateEmail(value) {
-    if (value === '') {
-      setEmailErrorMessage('');
-      setIsEmailValid(true); 
-      return;
-    }
+    // const onFinish = async (values) => {
+    //     try {
+    //         const userDetails = {
+    //             user_name: 'new user',
+    //             user_email: values.email,
+    //             user_password: values.password,
+    //             user_phone: '',
+    //             user_avatar_url: '',
+    //         };
+    //         const newUser = await authApi.register(userDetails);
 
-    if (/^\d+$/.test(value)) { 
-      if (value.length < 10 || value.length > 12) {
-        setEmailErrorMessage('Sai định dạng số điện thoại!');
-        setIsEmailValid(false);
-      } else {
-        setEmailErrorMessage('');
-        setIsEmailValid(true);
-      }
-    } else if (value.includes('@')) { 
-      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
-        setEmailErrorMessage('Địa chỉ email không đúng định dạng!');
-        setIsEmailValid(false);
-      } else {
-        setEmailErrorMessage('');
-        setIsEmailValid(true);
-      }
-    } else {
-      setEmailErrorMessage('Vui lòng nhập email hoặc số điện thoại hợp lệ!');
-      setIsEmailValid(false);
-    }
-  }
+    //         const token = await authApi.login(newUser.user_email, newUser.user_password);
 
-  function handlePasswordChange(e) {
-    const value = e.target.value;
-    setPassword(value);
-    validatePassword(value);
-  }
+    //         localStorage.setItem('token', token);
+    //         login();
+    //         navigate('/');
+    //     } catch (error) {
+    //         Swal.fire({
+    //             icon: 'error',
+    //             title: error.message,
+    //             toast: true,
+    //             timer: 2500,
+    //             timerProgressBar: true,
+    //             position: 'top-end',
+    //             showConfirmButton: false,
+    //         });
+    //     }
+    // };
+    return (
+        <>
+            <Header />
+            <div className="flex justify-center items-center h-svh">
+                <div className="shadow-lg px-10 py-5 w-[400px] rounded-xl shadow-neutral-300">
+                    <h1 className="text-center text-2xl pb-5 text-primary-color font-semibold">Quên mật khẩu</h1>
+                    <Form
+                        name="login"
+                        style={{
+                            maxWidth: 360,
+                        }}
+                        // onFinish={onFinish}
+                    >
+                        <Form.Item
+                            name="email"
+                            rules={[
+                                {
+                                    required: true,
+                                    message: 'Vui lòng nhập email',
+                                },
+                                {
+                                    pattern: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+                                    message: 'Email không hợp lệ',
+                                },
+                            ]}
+                        >
+                            <Input prefix={<UserOutlined />} placeholder="Email" />
+                            <div className="flex justify-end">
+                                <span className="hover:text-blue-600 cursor-pointer">Gửi mã OTP</span>
+                            </div>
+                        </Form.Item>
+                        <Form.Item
+                            name="OTP"
+                            rules={[
+                                {
+                                    required: true,
+                                    message: 'Vui lòng nhập OTP',
+                                },
+                            ]}
+                        >
+                            <Input placeholder="Nhập OTP gồm 6 kí tự" disabled />
+                        </Form.Item>
 
-  function validatePassword(value) {
-    if (value === '') {
-      setPasswordErrorMessage('');
-      setIsPasswordvalid(true);
-    } else if (value.length < 8 || !/[a-zA-Z]/.test(value) || !/\d/.test(value)) {
-      setPasswordErrorMessage('Mật khẩu phải có ít nhất 8 ký tự, bao gồm cả chữ và số!');
-      setIsPasswordvalid(false);
-    } else {
-      setPasswordErrorMessage('');
-      setIsPasswordvalid(true);
-    }
-  }
+                        <Form.Item
+                            name="password"
+                            rules={[
+                                {
+                                    required: true,
+                                    message: 'Vui lòng nhập trường password!',
+                                },
+                            ]}
+                        >
+                            <Input.Password prefix={<LockOutlined />} type="password" placeholder="Mật khẩu" disabled />
+                        </Form.Item>
 
-  function handleVerificationCodeChange(e) {
-    const value = e.target.value;
-    // Chỉ cho phép nhập số và giới hạn độ dài là 6
-    if (/^\d{0,6}$/.test(value)) {
-      setVerificationCode(value);
-      // Xóa thông báo lỗi nếu ô mã xác nhận trống
-      if (value === '') {
-        setVerificationCodeErrorMessage('');
-        setIsVerificationValid(true);
-      } else if (value.length !== 6) {
-        setVerificationCodeErrorMessage('Vui lòng nhập mã xác nhận 6 số!');
-        setIsVerificationValid(false);
-      } else {
-        setVerificationCodeErrorMessage('');
-        setIsVerificationValid(true);
-      }
-    }
-  }
-
-  function login() {
-    let valid = true;
-
-    if (!email) {
-      setEmailErrorMessage('Vui lòng nhập email hoặc số điện thoại!');
-      valid = false;
-    }
-    if (!password) {
-      setPasswordErrorMessage('Vui lòng nhập mật khẩu!');
-      valid = false;
-    }
-    if (verificationCode.length !== 6) {
-      setVerificationCodeErrorMessage('Vui lòng nhập mã xác nhận 6 số!');
-      valid = false;
-    }
-
-    if (!valid) return; // Ngừng thực hiện nếu có lỗi
-
-    console.log('Email:', email, 'Password:', password, 'Verification Code:', verificationCode);
-    alert('Cập nhật thành công!');
-    setEmailErrorMessage(''); // Xóa thông báo lỗi nếu cập nhật thành công
-    setPasswordErrorMessage('');
-    setVerificationCodeErrorMessage('');
-  }
-
-  return (
-    <div className="container">
-      <div className="login-container">
-        <h1 className="Title">
-          <strong>Khôi Phục Mật Khẩu</strong>
-        </h1>
-        <div className="inputgroup">
-          <p className="Login"><strong>Email/SĐT*</strong></p>
-          <input
-            className="Inputtext"
-            type="text"
-            placeholder="Nhập email hoặc số điện thoại"
-            value={email}
-            onChange={handleEmailChange} // Gọi hàm xử lý
-            required
-          />
-           <p className="forgot-password">
-           <a href="#">Gửi mã OTP</a>
-           {emailErrorMessage && <p className="error-message">{emailErrorMessage}</p>}
-           <div className="inputgroup">
-          <p className="Login"><strong>Mã xác nhận*</strong></p>
-          <input
-             className="Inputtext"
-             type="number"
-             placeholder="Nhập mã xác nhận"
-             value={verificationCode}
-             onChange={handleVerificationCodeChange}
-             disabled={!isEmailValid}
-             required
-          />
-          {verificationCodeErrorMessage && <p className="error-message">{verificationCodeErrorMessage}</p>}
-          </div>
-          <p className="Login"><strong>Mật khẩu mới*</strong></p>
-          <div style={{ position: 'relative' }}>
-            <input
-              className="Inputtext"
-              type={isPasswordVisible ? 'text' : 'password'}
-              placeholder="Nhập mật khẩu"
-              value={password}
-              onChange={handlePasswordChange} 
-              disabled={!isEmailValid || !isVerificationValid}
-              required
-              style={{
-              
-              }}
-            />
-          <button 
-              type="button" 
-              onClick={() => setIsPasswordVisible(!isPasswordVisible)} 
-              style={{ 
-                position: 'absolute', 
-                right: '10px', 
-                top: '50%', 
-                transform: 'translateY(-50%)', 
-                background: 'none', 
-                border: 'none', 
-                cursor: 'pointer' 
-              }}
-            >
-              <FontAwesomeIcon icon={isPasswordVisible ? faEyeSlash : faEye} />
-            </button>
-          </div>
-          {passwordErrorMessage && <p className="error-message">{passwordErrorMessage}</p>} {/* Hiển thị thông báo lỗi */}
-          </p>
-        </div>
-        <button 
-          className={`LoginButton ${!(isEmailValid && isVerificationValid && isPasswordvalid) ? 'disabled' : ''}`}
-          onClick={login}
-          disabled={!(isEmailValid && isVerificationValid && isPasswordvalid)}>
-          Cập Nhật</button>
-      </div>
-    </div>
-  );
+                        <Form.Item>
+                            <Button
+                                block
+                                type="primary"
+                                htmlType="submit"
+                                style={{ backgroundColor: '#228b22' }}
+                                disabled
+                            >
+                                Xác nhận
+                            </Button>
+                            <div className="flex justify-center">
+                                <span className="cursor-pointer hover:text-blue-500" onClick={() => navigate('/login')}>
+                                    Trở lại
+                                </span>
+                            </div>
+                        </Form.Item>
+                    </Form>
+                </div>
+            </div>
+            <Footer />
+        </>
+    );
 }
-
-export default ForgotPassword;

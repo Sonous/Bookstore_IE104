@@ -4,7 +4,6 @@ import styles from './CartPage.css';
 import Footer from '~/layouts/Footer/Footer';
 import Header from '~/layouts/Header/Header';
 import CartItem from '~/pages/CartPage/CartItem';
-import { searchResult } from '~/dataTemorary';
 import './CartPage.css';
 import userApi from '~/apis/userApi';
 import { UserContext } from '~/context/UserContextProvider';
@@ -12,6 +11,7 @@ import { convertPriceToString } from '~/utils/functions';
 import Loading from '~/components/Loading';
 import transportApi from '~/apis/transportApi';
 import images from '~/assets/images';
+import { useNavigate } from 'react-router-dom';
 
 const cx = classNames.bind(styles);
 
@@ -22,6 +22,7 @@ function CartPage() {
     const [isReload, setIsReload] = useState(false);
     const [transportMethod, setTransportMethod] = useState('');
     const { user } = useContext(UserContext);
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchApi = async () => {
@@ -62,6 +63,25 @@ function CartPage() {
             setCheckedItems((prev) => [...prev, bookId]);
         } else {
             setCheckedItems((prev) => prev.filter((id) => id !== bookId));
+        }
+    };
+
+    const navigateToPayingPage = () => {
+        if (checkedItems.length > 0) {
+            const order = {
+                order_books: cartItems.filter((book) => {
+                    return checkedItems.includes(book.book_id);
+                }),
+                books_total_prices: totalBooksCost,
+                transport_name: transportMethod.transport_name,
+                transport_cost: transportMethod.transport_cost,
+                order_total_cost: transportMethod.transport_cost + totalBooksCost,
+            };
+
+            console.log(order);
+
+            localStorage.setItem('order', JSON.stringify(order));
+            navigate('/paying');
         }
     };
 
@@ -159,7 +179,7 @@ function CartPage() {
                                                         },
                                                     )}
                                                     disabled={checkedItems.length < 1}
-                                                    onClick={() => console.log('fjdsijfi')}
+                                                    onClick={navigateToPayingPage}
                                                 >
                                                     THANH TOÁN
                                                 </button>

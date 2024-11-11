@@ -21,6 +21,7 @@ const Order = sequelize.define(
         transport_cost: DataTypes.DECIMAL(20, 2),
         pay_method_name: DataTypes.STRING,
         order_total_cost: DataTypes.DECIMAL(20, 2),
+        note: DataTypes.TEXT,
         user_id: DataTypes.INTEGER,
         created_at: DataTypes.DATE,
         updated_at: DataTypes.DATE,
