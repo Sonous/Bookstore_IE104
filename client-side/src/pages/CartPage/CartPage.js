@@ -4,7 +4,6 @@ import styles from './CartPage.css';
 import Footer from '~/layouts/Footer/Footer';
 import Header from '~/layouts/Header/Header';
 import CartItem from '~/pages/CartPage/CartItem';
-import { searchResult } from '~/dataTemorary';
 import './CartPage.css';
 import userApi from '~/apis/userApi';
 import { UserContext } from '~/context/UserContextProvider';

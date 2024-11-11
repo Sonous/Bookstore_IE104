@@ -1,234 +1,409 @@
 import './UserPage.css';
-import Footer from '~/layouts/Footer/Footer';
-import Header from '~/layouts/Header/Header';
-import { useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEdit } from '@fortawesome/free-regular-svg-icons';
-
-const initialProfile = {
-    avatar: 'https://via.placeholder.com/100',
-    username: 'ethanwinters2004',
-    name: 'Ethan Winters',
-    email: 'ethanwinters.re8@gmail.com',
-    phone: '0123456789',
-    gender: 'Nam',
-    birthDate: { day: '01', month: '01', year: '1984' },
-};
+import AccountLayout from './AccountLayout';
+import { UserContext } from '~/context/UserContextProvider';
+import { imageUrl } from '~/configs/axios.config';
+import classNames from 'classnames';
+import Swal from 'sweetalert2';
+import userApi from '~/apis/userApi';
+import { Form, Input, Select } from 'antd';
+import axios from 'axios';
+import addresApi from '~/apis/addressApi';
 
 const UserPage = () => {
-    const [profile, setProfile] = useState(initialProfile);
+    const { user, login } = useContext(UserContext);
+    const [avatar, setAvatar] = useState('');
+    const [avatarFile, setAvatarFile] = useState('');
+    const [username, setUsername] = useState('');
+    const [email, setEmail] = useState('');
+    const [phone, setPhone] = useState('');
+    const [address, setAddress] = useState('');
+    const [isDisableButton, setIsDisableButton] = useState(true);
+    const [provinces, setProvinces] = useState([]);
+    const [districts, setDistricts] = useState([]);
+    const [wards, setWards] = useState([]);
+    const [disableSelectList, setDisalbleSelectList] = useState(['districts', 'wards']);
     const [editField, setEditField] = useState(null); // Quản lý trường nào đang được chỉnh sửa
-    const [showSuccessMessage, setShowSuccessMessage] = useState(false); // Quản lý thông báo lưu thành công
+    const [form] = Form.useForm();
 
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        if (name.includes('birthDate')) {
-            setProfile((prevState) => ({
-                ...prevState,
-                birthDate: { ...prevState.birthDate, [name.split('.')[1]]: value },
-            }));
-        } else {
-            setProfile((prevState) => ({
-                ...prevState,
-                [name]: value,
-            }));
+    useEffect(() => {
+        if (user) {
+            const fetchApi = async () => {
+                const address = await userApi.getAddressOfUser(user.user_id);
+                setAddress(() => {
+                    const temp = { ...address.address };
+
+                    delete temp.address_id;
+
+                    return {
+                        address_id: address.address.address_id,
+                        address: temp,
+                    };
+                });
+            };
+            fetchApi();
+            setAvatar(`${imageUrl}/${user.user_avatar_url}`);
+            setUsername(user.user_name);
+            setEmail(user.user_email);
+            setPhone(user.user_phone);
+        }
+    }, [user]);
+
+    useEffect(() => {
+        if (user) {
+            const handelValidData = () => {
+                if (
+                    avatar === `${imageUrl}/${user.user_avatar_url}` &&
+                    username === user.user_name &&
+                    email === user.user_email &&
+                    phone === user.user_phone &&
+                    editField !== 'address'
+                ) {
+                    setIsDisableButton(true);
+                    return;
+                }
+
+                setIsDisableButton(false);
+            };
+
+            handelValidData();
+        }
+    }, [avatar, username, email, phone, editField]);
+
+    useEffect(() => {
+        const fetchApi = async () => {
+            try {
+                const result = await axios.get('https://vapi.vnappmob.com/api/province/');
+
+                setProvinces(() => {
+                    return result.data.results.map((province) => ({
+                        value: province.province_id,
+                        label: province.province_name,
+                    }));
+                });
+            } catch (error) {
+                console.error(error);
+            }
+        };
+
+        fetchApi();
+    }, []);
+
+    const getDistricts = async (id) => {
+        try {
+            const result = await axios.get(`https://vapi.vnappmob.com/api/province/district/${id}`);
+
+            setDistricts(() => {
+                return result.data.results.map((district) => ({
+                    value: district.district_id,
+                    label: district.district_name,
+                }));
+            });
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
+    const getWards = async (id) => {
+        try {
+            const result = await axios.get(`https://vapi.vnappmob.com/api/province/ward/${id}`);
+
+            setWards(() => {
+                return result.data.results.map((ward) => ({
+                    value: ward.ward_id,
+                    label: ward.ward_name,
+                }));
+            });
+        } catch (error) {
+            console.error(error);
         }
     };
 
     const handleAvatarChange = (e) => {
         const file = e.target.files[0];
         if (file) {
-            const reader = new FileReader();
-            reader.onload = () => {
-                setProfile((prevState) => ({
-                    ...prevState,
-                    avatar: reader.result, // Cập nhật ảnh avatar với file được chọn
-                }));
-            };
-            reader.readAsDataURL(file);
+            setAvatar(URL.createObjectURL(file));
+            setAvatarFile(file);
         }
     };
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
+    const handleSubmit = async (e) => {
+        try {
+            // Kiểm tra email hợp lệ
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                alert('Email không hợp lệ');
+                return;
+            }
 
-        // Kiểm tra email hợp lệ
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!emailRegex.test(profile.email)) {
-            alert('Email không hợp lệ');
+            // Kiểm tra số điện thoại hợp lệ
+            const phoneRegex = /^[0-9]{10,11}$/;
+            if (!phoneRegex.test(phone)) {
+                alert('Số điện thoại không hợp lệ');
+                return;
+            }
+
+            const userData = {
+                user_name: username,
+                user_email: email,
+                user_phone: phone,
+            };
+
+            if (avatarFile) {
+                const url = await userApi.uploadAvatar(avatarFile, user.user_id);
+                userData.user_avatar_url = url.name;
+            }
+
+            await userApi.updateUser(user.user_id, {
+                ...userData,
+            });
+
+            await login();
+
+            setEditField(null);
+
+            await Swal.fire({
+                title: 'Thay đổi thành công!',
+                icon: 'success',
+                showConfirmButton: false,
+                timer: 1500,
+            });
+        } catch (error) {
+            console.error(error);
+
+            Swal.fire({
+                title: 'Thay đổi không thành công, xảy ra lỗi!',
+                icon: 'error',
+                showConfirmButton: false,
+                timer: 1500,
+            });
+        }
+    };
+
+    const handleActiveInput = (prev, name) => {
+        return prev === name ? null : name;
+    };
+
+    const getLabelByValue = (list, value) => {
+        const result = list.find((item) => item.value === value);
+
+        return result.label;
+    };
+
+    const handleSubmitInfo = async () => {
+        if (editField === 'address') {
+            form.submit();
+
             return;
         }
 
-        // Kiểm tra số điện thoại hợp lệ
-        const phoneRegex = /^[0-9]{10,11}$/;
-        if (!phoneRegex.test(profile.phone)) {
-            alert('Số điện thoại không hợp lệ');
-            return;
-        }
+        await handleSubmit();
+    };
 
-        // Kiểm tra ngày sinh (tất cả các trường phải điền)
-        if (!profile.birthDate.day || !profile.birthDate.month || !profile.birthDate.year) {
-            alert('Vui lòng nhập đầy đủ ngày sinh');
-            return;
-        }
-
-        setEditField(null); // Reset editing fields
-        setShowSuccessMessage(true);
-        setTimeout(() => setShowSuccessMessage(false), 3000);
+    const onFinish = async (values) => {
+        await addresApi.updateAddress(
+            {
+                address_house_number: values.address,
+                address_ward: getLabelByValue(wards, values.ward),
+                address_district: getLabelByValue(districts, values.district),
+                address_province: getLabelByValue(provinces, values.province),
+            },
+            address.address_id,
+        );
+        await handleSubmit();
     };
 
     return (
         <>
-            <Header />
-            <main className="bg-main-bg-color flex justify-center items-center py-7">
-                <div className="user-page">
-                    <h2 className="user-page-header">Thông tin tài khoản</h2>
-                    <hr className="ursp-hr" />
-                    <form onSubmit={handleSubmit}>
-                        <div className="form-group">
-                            <label>Ảnh đại diện:</label>
-                            <img src={profile.avatar} alt="avatar" className="avatar" />
-                            {editField === 'avatar' && (
-                                <input
-                                    type="file"
-                                    accept="image/*"
-                                    className="avatar-upload"
-                                    onChange={handleAvatarChange}
-                                />
-                            )}
-                            <FontAwesomeIcon
-                                icon={faEdit}
-                                className={`edit-icon ${editField === 'avatar' ? 'editing' : ''}`}
-                                onClick={() => setEditField('avatar')}
-                            />
-                        </div>
+            {user && (
+                <AccountLayout currentPage="Thông tin tài khoản">
+                    <main className="flex items-center w-full">
+                        <div className="user-page flex-1">
+                            <h2 className="user-page-header">Thông tin tài khoản</h2>
+                            <hr className="ursp-hr" />
+                            <div>
+                                <div className="form-group">
+                                    <label>Ảnh đại diện:</label>
+                                    <img src={avatar} alt="avatar" className="avatar" />
+                                    {editField === 'avatar' && (
+                                        <input
+                                            type="file"
+                                            accept="image/*"
+                                            className="avatar-upload"
+                                            onChange={handleAvatarChange}
+                                        />
+                                    )}
+                                    <FontAwesomeIcon
+                                        icon={faEdit}
+                                        className={`edit-icon ${editField === 'avatar' ? 'editing' : ''}`}
+                                        onClick={() => setEditField((prev) => handleActiveInput(prev, 'avatar'))}
+                                    />
+                                </div>
 
-                        <div className="form-group">
-                            <label>Tên đăng nhập:</label>
-                            <input type="text" value={profile.username} name="username" disabled />
-                        </div>
+                                <div className="form-group">
+                                    <label>Họ và tên:</label>
+                                    <input
+                                        type="text"
+                                        value={username}
+                                        name="username"
+                                        disabled={editField !== 'username'}
+                                        onChange={(e) => setUsername(e.target.value)}
+                                    />
+                                    <FontAwesomeIcon
+                                        icon={faEdit}
+                                        className={`edit-icon ${editField === 'username' ? 'editing' : ''}`}
+                                        onClick={() => setEditField((prev) => handleActiveInput(prev, 'username'))}
+                                    />
+                                </div>
 
-                        <div className="form-group">
-                            <label>Tên:</label>
-                            <input
-                                type="text"
-                                value={profile.name}
-                                name="name"
-                                onChange={handleChange}
-                                disabled={editField !== 'name'}
-                            />
-                            <FontAwesomeIcon
-                                icon={faEdit}
-                                className={`edit-icon ${editField === 'name' ? 'editing' : ''}`}
-                                onClick={() => setEditField('name')}
-                            />
-                        </div>
+                                <div className="form-group">
+                                    <label>Email:</label>
+                                    <input
+                                        type="email"
+                                        value={email}
+                                        name="email"
+                                        onChange={(e) => setEmail(e.target.value)}
+                                        disabled={editField !== 'email'}
+                                    />
+                                    <FontAwesomeIcon
+                                        icon={faEdit}
+                                        className={`edit-icon ${editField === 'email' ? 'editing' : ''}`}
+                                        onClick={() => setEditField((prev) => handleActiveInput(prev, 'email'))}
+                                    />
+                                </div>
 
-                        <div className="form-group">
-                            <label>Email:</label>
-                            <input
-                                type="email"
-                                value={profile.email}
-                                name="email"
-                                onChange={handleChange}
-                                disabled={editField !== 'email'}
-                            />
-                            <FontAwesomeIcon
-                                icon={faEdit}
-                                className={`edit-icon ${editField === 'email' ? 'editing' : ''}`}
-                                onClick={() => setEditField('email')}
-                            />
-                        </div>
+                                <div className="form-group">
+                                    <label>Số điện thoại:</label>
+                                    <input
+                                        type="text"
+                                        value={phone}
+                                        name="phone"
+                                        onChange={(e) => setPhone(e.target.value)}
+                                        disabled={editField !== 'phone'}
+                                    />
+                                    <FontAwesomeIcon
+                                        icon={faEdit}
+                                        className={`edit-icon ${editField === 'phone' ? 'editing' : ''}`}
+                                        onClick={() => setEditField((prev) => handleActiveInput(prev, 'phone'))}
+                                    />
+                                </div>
 
-                        <div className="form-group">
-                            <label>Số điện thoại:</label>
-                            <input
-                                type="text"
-                                value={profile.phone}
-                                name="phone"
-                                onChange={handleChange}
-                                disabled={editField !== 'phone'}
-                            />
-                            <FontAwesomeIcon
-                                icon={faEdit}
-                                className={`edit-icon ${editField === 'phone' ? 'editing' : ''}`}
-                                onClick={() => setEditField('phone')}
-                            />
-                        </div>
+                                <div className="form-group">
+                                    <label>Địa chỉ giao hàng:</label>
+                                    <input
+                                        type="text"
+                                        value={address ? Object.values(address.address).join(', ') : ''}
+                                        name="address"
+                                        disabled={editField !== 'address'}
+                                    />
+                                    <FontAwesomeIcon
+                                        icon={faEdit}
+                                        className={`edit-icon ${editField === 'address' ? 'editing' : ''}`}
+                                        onClick={() =>
+                                            setEditField((prev) => {
+                                                setDisalbleSelectList(['districts', 'wards']);
+                                                return handleActiveInput(prev, 'address');
+                                            })
+                                        }
+                                    />
+                                </div>
 
-                        <div className="form-group">
-                            <label>Ngày sinh:</label>
-                            <div className="date-group">
-                                <input
-                                    type="text"
-                                    placeholder="Ngày"
-                                    name="birthDate.day"
-                                    value={profile.birthDate.day}
-                                    onChange={handleChange}
-                                    disabled={editField !== 'birthDate'}
-                                />
-                                <input
-                                    type="text"
-                                    placeholder="Tháng"
-                                    name="birthDate.month"
-                                    value={profile.birthDate.month}
-                                    onChange={handleChange}
-                                    disabled={editField !== 'birthDate'}
-                                />
-                                <input
-                                    type="text"
-                                    placeholder="Năm"
-                                    name="birthDate.year"
-                                    value={profile.birthDate.year}
-                                    onChange={handleChange}
-                                    disabled={editField !== 'birthDate'}
-                                />
+                                {editField === 'address' && (
+                                    <Form
+                                        form={form}
+                                        layout="vertical"
+                                        clearOnDestroy={() => {
+                                            return true;
+                                        }}
+                                        onFinish={onFinish}
+                                    >
+                                        <Form.Item
+                                            label="Tỉnh/Thành Phố:"
+                                            name={'province'}
+                                            rules={[
+                                                {
+                                                    required: true,
+                                                    message: 'Vui lòng chọn tỉnh/thành phố',
+                                                },
+                                            ]}
+                                        >
+                                            <Select
+                                                options={provinces}
+                                                placeholder="Chọn tỉnh/thành phố"
+                                                onChange={async (id) => {
+                                                    await getDistricts(id);
+                                                    setDisalbleSelectList(['wards']);
+                                                }}
+                                            />
+                                        </Form.Item>
+                                        <Form.Item
+                                            label="Quận/Huyện:"
+                                            name={'district'}
+                                            rules={[
+                                                {
+                                                    required: true,
+                                                    message: 'Vui lòng chọn quận/huyện',
+                                                },
+                                            ]}
+                                        >
+                                            <Select
+                                                options={districts}
+                                                placeholder="Chọn quận/huyện"
+                                                disabled={disableSelectList.includes('districts')}
+                                                onChange={async (id) => {
+                                                    await getWards(id);
+                                                    setDisalbleSelectList([]);
+                                                }}
+                                            />
+                                        </Form.Item>
+                                        <Form.Item
+                                            label="Phường/Xã:"
+                                            name={'ward'}
+                                            rules={[
+                                                {
+                                                    required: true,
+                                                    message: 'Vui lòng chọn phường/xã',
+                                                },
+                                            ]}
+                                        >
+                                            <Select
+                                                options={wards}
+                                                placeholder="Chọn phường/xã"
+                                                disabled={disableSelectList.includes('wards')}
+                                            />
+                                        </Form.Item>
+                                        <Form.Item
+                                            label="Địa chỉ nhận hàng:"
+                                            name={'address'}
+                                            rules={[
+                                                {
+                                                    required: true,
+                                                    message: 'Vui lòng nhập địa chỉ nhận hàng',
+                                                },
+                                            ]}
+                                        >
+                                            <Input placeholder="Nhập địa chỉ nhận hàng" />
+                                        </Form.Item>
+                                    </Form>
+                                )}
+
+                                <button
+                                    type="submit"
+                                    className={classNames('save-btn', {
+                                        'opacity-50 !cursor-not-allowed': isDisableButton,
+                                    })}
+                                    onClick={handleSubmitInfo}
+                                    disabled={isDisableButton}
+                                >
+                                    Lưu
+                                </button>
                             </div>
-                            <FontAwesomeIcon
-                                icon={faEdit}
-                                className={`edit-icon ${editField === 'birthDate' ? 'editing' : ''}`}
-                                onClick={() => setEditField('birthDate')}
-                            />
                         </div>
-
-                        <div className="form-group">
-                            <label>Giới tính:</label>
-                            <div className="radio-group">
-                                <input
-                                    type="radio"
-                                    value="Nam"
-                                    checked={profile.gender === 'Nam'}
-                                    name="gender"
-                                    onChange={handleChange}
-                                />
-                                <label>Nam</label>
-                                <input
-                                    type="radio"
-                                    value="Nữ"
-                                    checked={profile.gender === 'Nữ'}
-                                    name="gender"
-                                    onChange={handleChange}
-                                />
-                                <label>Nữ</label>
-                                <input
-                                    type="radio"
-                                    value="Khác"
-                                    checked={profile.gender === 'Khác'}
-                                    name="gender"
-                                    onChange={handleChange}
-                                />
-                                <label>Khác</label>
-                            </div>
-                        </div>
-
-                        <button type="submit" className="save-btn">
-                            Lưu
-                        </button>
-                        {showSuccessMessage && <span className="success-message">Lưu thành công</span>}
-                    </form>
-                </div>
-            </main>
-            <Footer />
+                    </main>
+                </AccountLayout>
+            )}
         </>
     );
 };

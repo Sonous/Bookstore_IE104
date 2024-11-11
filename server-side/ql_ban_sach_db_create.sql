@@ -190,6 +190,7 @@ CREATE TABLE `Order` (
     transport_cost decimal(20,2)  NOT NULL,
     pay_method_name nvarchar(255) NOT NULL,
     order_total_cost decimal(20,2)  NOT NULL,
+    note text,
     created_at datetime DEFAULT CURRENT_TIMESTAMP NOT NULL,
     updated_at datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP NOT NULL,
     user_id int  NOT NULL,

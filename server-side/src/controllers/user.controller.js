@@ -5,6 +5,9 @@ import User from '../models/user.model.js';
 import Cart from '../models/cart.model.js';
 import RatingBook from '../models/ratingBook.model.js';
 import Address from '../models/address.model.js';
+import Order from '../models/order.model.js';
+import { Op } from 'sequelize';
+import FavoriteBook from '../models/favoriteBook.model.js';
 
 const getUserById = (req, res) => {
     User.findByPk(req.params.userId)
@@ -156,9 +159,6 @@ const getAddressOfUser = (req, res) => {
         attributes: ['user_name', 'user_phone'],
         include: {
             model: Address,
-            attributes: {
-                exclude: ['address_id', 'address_description'],
-            },
             required: true,
         },
     })
@@ -210,4 +210,114 @@ const addComment = async (req, res) => {
     }
 };
 
-export { getUserById, getUserByToken, getCartItems, addBookToCart, updateUser, getAddressOfUser, addComment };
+const getOrdersByUser = async (req, res) => {
+    try {
+        const { userId } = req.params;
+        const { status } = req.query;
+
+        const whereClause = {
+            user_id: userId,
+        };
+
+        if (status !== 'Tất Cả') {
+            whereClause.order_status = status;
+            if (status === 'Đang xử lý') {
+                whereClause.order_status = {
+                    [Op.in]: ['Đang xử lý', 'Đang xác nhận'],
+                };
+            }
+        }
+
+        const userOrders = await Order.findAll({
+            where: whereClause,
+            order: [['order_id', 'DESC']],
+        });
+
+        res.status(200).json(userOrders);
+    } catch (error) {
+        console.error('Error fetching user order:', error);
+        res.status(500).json({ error: error.message });
+    }
+};
+
+export const checkPassword = async (req, res) => {
+    try {
+        const { password } = req.query;
+        const { userId } = req.params;
+
+        const user = await User.findOne({
+            where: {
+                user_id: userId,
+                user_password: password,
+            },
+        });
+
+        if (user) {
+            res.status(200).json({
+                message: 'password is true',
+            });
+        } else {
+            res.status(404).json({
+                message: 'user does not exist',
+            });
+        }
+    } catch (error) {
+        res.status(404).json({ error: error.message });
+    }
+};
+
+export const getAllFavoriteBooks = async (req, res) => {
+    try {
+        const { userId } = req.params;
+
+        const books = await User.findOne({
+            where: {
+                user_id: userId,
+            },
+            attributes: [],
+            include: {
+                model: Book,
+                through: {
+                    attributes: [],
+                },
+                include: {
+                    model: BookImage,
+                    attributes: ['book_image_url'],
+                    limit: 1,
+                },
+                as: 'FavoriteBook',
+            },
+        });
+
+        res.status(200).json(books);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
+export const deleteAllFavoriteBooks = async (req, res) => {
+    try {
+        const { userId } = req.params;
+
+        await FavoriteBook.destroy({
+            where: {
+                user_id: userId,
+            },
+        });
+
+        res.status(200).json('success');
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
+export {
+    getUserById,
+    getUserByToken,
+    getCartItems,
+    addBookToCart,
+    updateUser,
+    getAddressOfUser,
+    addComment,
+    getOrdersByUser,
+};

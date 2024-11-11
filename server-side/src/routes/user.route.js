@@ -11,6 +11,15 @@ userRouter.route('/:userId/cart/:bookId?').get(UserController.getCartItems).post
 
 userRouter.route('/:userId/address').get(UserController.getAddressOfUser);
 
+userRouter
+    .route('/:userId/favorite')
+    .get(UserController.getAllFavoriteBooks)
+    .delete(UserController.deleteAllFavoriteBooks);
+
 userRouter.route('/:userId/rating').post(UserController.addComment);
+
+userRouter.route('/:userId/order').get(UserController.getOrdersByUser);
+
+userRouter.route('/:userId/check').get(UserController.checkPassword);
 
 export default userRouter;

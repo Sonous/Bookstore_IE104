@@ -1,115 +1,115 @@
 .user-page {
-  width: 80%;
-  max-width: 800px;
-  padding: 20px;
-  background-color: #fff;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    /* width: 80%;
+    max-width: 800px; */
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .user-page-header {
-  font-weight: bold;
-  font-size: 28px;
-  text-align: center;
-  color: #228B22;
-  margin-bottom: 20px;
+    font-weight: bold;
+    font-size: 28px;
+    text-align: center;
+    color: #228b22;
+    margin-bottom: 20px;
 }
 
 .form-group {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 20px;
-  margin-top: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    margin-top: 20px;
 }
 
 .form-group label {
-  font-weight: bold;
-  width: 150px; /* Align labels consistently */
+    font-weight: bold;
+    width: 150px; /* Align labels consistently */
 }
 
-.form-group input[type="text"],
-.form-group input[type="email"] {
-  flex-grow: 1;
-  padding: 10px;
-  border: 1px solid #f0f0f0;
-  border-radius: 4px;
-  margin-right: 10px;
+.form-group input[type='text'],
+.form-group input[type='email'] {
+    flex-grow: 1;
+    padding: 10px;
+    border: 1px solid #f0f0f0;
+    border-radius: 4px;
+    margin-right: 10px;
 }
 
- .form-group .edit-icon {
-  cursor: pointer;
-  color: #228B22;
-  transition: transform 0.3s ease, color 0.3s ease;
+.form-group .edit-icon {
+    cursor: pointer;
+    color: #228b22;
+    transition: transform 0.3s ease, color 0.3s ease;
 }
 
 .form-group .edit-icon:hover {
-  transform: scale(1.1);
-  color: #2ecc71;
+    transform: scale(1.1);
+    color: #2ecc71;
 }
 
 .form-group .edit-icon:active {
-  transform: scale(0.9);
-  color: #27ae60;
+    transform: scale(0.9);
+    color: #27ae60;
 }
 
 .form-group .edit-icon.editing {
-  color: #3498db;
+    color: #3498db;
 }
 
 .avatar {
-  display: block;
-  width: 100px;
-  height: 100px;
-  border-radius: 50%;
-  object-fit: cover;
-  margin-right: 100px;
+    display: block;
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-right: 100px;
 }
 
 .avatar-upload {
-  display: block;
+    display: block;
 }
 
 .radio-group {
-  display: flex;
-  justify-content: space-around;
+    display: flex;
+    justify-content: space-around;
 }
 
 .radio-group label {
-  font-weight: normal;
-  margin-left: 10px;
+    font-weight: normal;
+    margin-left: 10px;
 }
 
 .date-group {
-  display: flex;
-  justify-content: space-between;
-  margin-left: 15px;
+    display: flex;
+    justify-content: space-between;
+    margin-left: 15px;
 }
 
 .date-group input {
-  width: calc(33% - 5px);
-  padding: 10px;
-  margin: 0 20px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
+    width: calc(33% - 5px);
+    padding: 10px;
+    margin: 0 20px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
 }
 
 .save-btn {
-  width: 100%;
-  padding: 12px;
-  background-color: #228B22;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
+    width: 100%;
+    padding: 12px;
+    background-color: #228b22;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
 }
 
 .save-btn:hover {
-  background-color: #1e7e1e;
+    background-color: #1e7e1e;
 }
 
 .success-message {
-  color: green;
-  font-size: 14px;
-  text-align: center;
-} 
+    color: green;
+    font-size: 14px;
+    text-align: center;
+}
