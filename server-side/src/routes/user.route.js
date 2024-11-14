@@ -9,7 +9,7 @@ userRouter.route('/:userId').get(UserController.getUserById).put(UserController.
 
 userRouter.route('/:userId/cart/:bookId?').get(UserController.getCartItems).post(UserController.addBookToCart);
 
-userRouter.route('/:userId/address').get(UserController.getAddressOfUser);
+userRouter.route('/:userId/address').get(UserController.getAddressOfUser).post(UserController.createAddress);
 
 userRouter
     .route('/:userId/favorite')

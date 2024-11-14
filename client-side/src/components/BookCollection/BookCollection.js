@@ -8,11 +8,10 @@ import { useEffect, useState } from 'react';
 import { request } from '~/configs';
 import { useNavigate } from 'react-router-dom';
 
-
 const cx = classNames.bind(styles);
 
-function BookCollection({ topic = '' }) {
-    const [books, setBooks] = useState([]);
+function BookCollection({ topic = '', data = [], className = '' }) {
+    const [books, setBooks] = useState(data);
     const [windowWidth, setWindowWidth] = useState(window.innerWidth);
     const navigate = useNavigate();
 
@@ -26,7 +25,11 @@ function BookCollection({ topic = '' }) {
                         limit: 10,
                     },
                 })
-                .then((res) => setBooks(res))
+                .then((res) => {
+                    if (res.length > 0) {
+                        setBooks(res);
+                    }
+                })
                 .catch((err) => console.log(err.message));
         };
         fetchApi();
@@ -39,7 +42,7 @@ function BookCollection({ topic = '' }) {
     });
 
     return (
-        <section className={cx('container')}>
+        <section className={cx('container', className)}>
             <span className={cx('topic')}>{topic}</span>
             <div className={cx('wrapper')}>
                 <Carousel dots={false} draggable slidesToShow={sildes} slidesToScroll={sildes - 1} infinite={false}>
@@ -48,11 +51,13 @@ function BookCollection({ topic = '' }) {
                     })}
                 </Carousel>
             </div>
-            <div className={cx('more')}>
-                <span className={cx('more-btn')} onClick={() => navigate(`/collections/${topic}`)}>
-                    Xem thêm &gt;&gt;
-                </span>
-            </div>
+            {data.length === 0 && (
+                <div className={cx('more')}>
+                    <span className={cx('more-btn')} onClick={() => navigate(`/collections/${topic}`)}>
+                        Xem thêm &gt;&gt;
+                    </span>
+                </div>
+            )}
         </section>
     );
 }

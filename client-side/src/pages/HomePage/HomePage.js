@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import classNames from 'classnames/bind';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCalendar } from '@fortawesome/free-regular-svg-icons';
@@ -8,8 +8,6 @@ import BannerSlider from '~/layouts/BannerSlider/BannerSlider';
 import Footer from '~/layouts/Footer/Footer';
 import Header from '~/layouts/Header/Header';
 import BookCollection from '~/components/BookCollection/BookCollection';
-import images from '~/assets/images';
-import { UserContext } from '~/context/UserContextProvider';
 import blogApi from '~/apis/blogApi';
 import { formatDate } from '~/utils/functions';
 import Loading from '~/components/Loading';

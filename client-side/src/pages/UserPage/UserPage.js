@@ -33,6 +33,10 @@ const UserPage = () => {
             const fetchApi = async () => {
                 const address = await userApi.getAddressOfUser(user.user_id);
                 setAddress(() => {
+                    if (!address) {
+                        return '';
+                    }
+
                     const temp = { ...address.address };
 
                     delete temp.address_id;
