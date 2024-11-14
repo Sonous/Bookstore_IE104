@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import styles from './PayingPage.module.css';
 import Header from '~/layouts/Header/Header';
 import Footer from '~/layouts/Footer/Footer';
-import { Checkbox, Form, Input, Radio, Select, Space } from 'antd';
+import { Button, Checkbox, Form, Input, Radio, Select, Space } from 'antd';
 import { UserContext } from '~/context/UserContextProvider';
 import userApi from '~/apis/userApi';
 import axios from 'axios';
@@ -25,6 +25,7 @@ const PayingPage = () => {
     const [payingMethodList, setPayingMethodList] = useState([]);
     const [showNote, setShowNote] = useState(false);
     const [note, setNote] = useState('');
+    const [isReload, setIsReload] = useState(false);
     const [form] = Form.useForm();
     const { user, setIsReloadCart } = useContext(UserContext);
     const { TextArea } = Input;
@@ -37,11 +38,17 @@ const PayingPage = () => {
             const payingMethods = await payingApi.getMethods();
 
             setPayingMethodList(payingMethods);
-            setAddressInfo(address);
+            if (address) {
+                setAddressInfo(() => {
+                    delete address.address.address_id;
+
+                    return address;
+                });
+            }
         };
 
         if (user) fetchApi();
-    }, [user]);
+    }, [user, isReload]);
 
     useEffect(() => {
         const fetchApi = async () => {
@@ -146,7 +153,7 @@ const PayingPage = () => {
     };
 
     const handleSubmitOrder = async () => {
-        if (selectedAddress === 1) {
+        if (selectedAddress === 1 || !addressInfo) {
             form.submit();
             return;
         }
@@ -155,6 +162,23 @@ const PayingPage = () => {
     };
 
     const onFinish = async (values) => {
+        if (!addressInfo) {
+            await userApi.createAddress(
+                {
+                    user_name: values.username,
+                    user_phone: values.phonenumber,
+                    address: {
+                        address_house_number: values.address,
+                        address_ward: getLabelByValue(wards, values.ward),
+                        address_district: getLabelByValue(districts, values.district),
+                        address_province: getLabelByValue(provinces, values.province),
+                    },
+                },
+                user.user_id,
+            );
+            setIsReload((prev) => !prev);
+            return;
+        }
         await submitOrder({
             user_name: values.username,
             user_phone: values.phonenumber,
@@ -166,6 +190,8 @@ const PayingPage = () => {
             },
         });
     };
+
+    console.log(addressInfo);
 
     return (
         <div className={styles.container}>
@@ -190,7 +216,7 @@ const PayingPage = () => {
                         </Radio.Group>
                     )}
 
-                    {selectedAddress === 1 && (
+                    {(selectedAddress === 1 || !addressInfo) && (
                         <Form
                             form={form}
                             layout="vertical"
@@ -290,6 +316,11 @@ const PayingPage = () => {
                             >
                                 <Input placeholder="Nhập địa chỉ nhận hàng" />
                             </Form.Item>
+                            {!addressInfo && (
+                                <Button htmlType="submit" type="primary">
+                                    Lưu địa chỉ
+                                </Button>
+                            )}
                         </Form>
                     )}
                 </div>

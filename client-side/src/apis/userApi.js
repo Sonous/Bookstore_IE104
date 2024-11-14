@@ -67,6 +67,26 @@ const userApi = {
         }
     },
 
+    async createAddress(address, userId) {
+        try {
+            const token = localStorage.getItem('token');
+
+            await request.post(
+                `/user/${userId}/address`,
+                {
+                    address,
+                },
+                {
+                    headers: {
+                        'x-access-token': token,
+                    },
+                },
+            );
+        } catch (error) {
+            throw error;
+        }
+    },
+
     async getOrdersByUser(userId, status) {
         try {
             const token = localStorage.getItem('token');

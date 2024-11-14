@@ -14,14 +14,9 @@ import Loading from '~/components/Loading';
 import { formatDate } from '~/utils/functions';
 
 const cx = classNames.bind(styles);
-const topics = [
-    { name: 'Hoạt động', path: '/blog/activities' },
-    { name: 'Tin sách', path: '/blog/news' },
-    { name: 'Sự kiện', path: '/blog/events' },
-];
+const topics = ['Hoạt động', 'Tin sách', 'Sự kiện'];
 
 function BlogPage() {
-
     const { option } = useParams();
     const [currentTab, setCurrentTab] = useState(option);
     const [blogs, setBlogs] = useState();
@@ -56,7 +51,6 @@ function BlogPage() {
                         <span className="text-gray-500">{currentTab}</span>
                     </nav>
 
-
                     <main className={cx('main-content')}>
                         <div className={cx('section-tabs', 'w-full', 'mb-4')}>
                             <ul className="flex justify-center gap-8 bg-gray-100 p-4 rounded-md">
@@ -75,7 +69,6 @@ function BlogPage() {
                             </ul>
                         </div>
 
-
                         <div className="flex flex-col gap-6">
                             <div className="w-full grid grid-cols-1 gap-6">
                                 {blogs.data.map((blog, index) => {
@@ -85,7 +78,6 @@ function BlogPage() {
                                             className="flex rounded-lg bg-white shadow-lg h-56 p-4 w-full cursor-pointer"
                                             onClick={() => navigate(`/blogs/${option}/${blog.blog_id}`)}
                                         >
-
                                             <img
                                                 src={blog.blog_thumbnail}
                                                 alt=""

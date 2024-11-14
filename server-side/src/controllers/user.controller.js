@@ -311,6 +311,40 @@ export const deleteAllFavoriteBooks = async (req, res) => {
     }
 };
 
+export const createAddress = async (req, res) => {
+    try {
+        const { address } = req.body;
+        const { userId } = req.params;
+
+        await Address.create({
+            ...address.address,
+        });
+
+        const newAddress = await Address.findOne({
+            where: {
+                ...address.address,
+            },
+        });
+
+        const user = await User.update(
+            {
+                user_name: address.user_name,
+                user_phone: address.user_phone,
+                address_id: newAddress.address_id,
+            },
+            {
+                where: {
+                    user_id: userId,
+                },
+            },
+        );
+
+        res.status(200).json(user);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
 export {
     getUserById,
     getUserByToken,
