@@ -10,6 +10,7 @@ import Footer from '~/layouts/Footer/Footer';
 
 export default function Login() {
     const navigate = useNavigate();
+    const [form] = Form.useForm();
 
     const { login } = useContext(UserContext);
 
@@ -21,15 +22,18 @@ export default function Login() {
             login();
             navigate('/');
         } catch (error) {
-            Swal.fire({
-                icon: 'error',
-                title: error.message,
-                toast: true,
-                timer: 2500,
-                timerProgressBar: true,
-                position: 'top-end',
-                showConfirmButton: false,
-            });
+            if (error.response.status === 400) {
+                form.setFields([
+                    {
+                        name: 'username',
+                        errors: [error.response.data.message],
+                    },
+                    {
+                        name: 'password',
+                        errors: [error.response.data.message],
+                    },
+                ]);
+            }
         }
     };
     return (
@@ -40,6 +44,7 @@ export default function Login() {
                     <h1 className="text-center text-2xl pb-5 text-primary-color font-semibold">Đăng nhập</h1>
                     <Form
                         name="login"
+                        form={form}
                         style={{
                             maxWidth: 360,
                         }}

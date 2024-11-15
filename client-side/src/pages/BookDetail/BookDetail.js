@@ -37,7 +37,7 @@ function BookDetail() {
     const [isChecked, setIsChecked] = useState(false);
     const [transportMethod, setTransportMethod] = useState('');
     const [limit, setLimit] = useState(10);
-    const commentInputRef = useRef();
+    const textareaRef = useRef();
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -150,10 +150,6 @@ function BookDetail() {
         }
     };
 
-    const focusCommentInput = () => {
-        commentInputRef.current.focus();
-    };
-
     const handleAddBookToCart = async () => {
         try {
             if (quantity > book.book_available) {
@@ -239,8 +235,8 @@ function BookDetail() {
         navigate('/paying');
     };
 
-    // window.addEventListener('resize', () => {
-    //     console.log(window.innerWidth);
+    // window.addEventListener('scroll', () => {
+    //     console.log(window.scrollY);
     // });
 
     return (
@@ -401,7 +397,16 @@ function BookDetail() {
                                             value={book.book_star_rating}
                                         />
                                         <span className="dot2">.</span>
-                                        <span className="normal3" onClick={focusCommentInput}>
+                                        <span
+                                            className="normal3"
+                                            onClick={() => {
+                                                window.scroll({
+                                                    top: 700,
+                                                    behavior: 'smooth',
+                                                });
+                                                // textareaRef.current.focus();
+                                            }}
+                                        >
                                             {book.ratingbooks.length} bình luận
                                         </span>
                                     </div>
@@ -448,6 +453,7 @@ function BookDetail() {
                                             onChange={(value) => setRating(value)}
                                         />
                                         <TextArea
+                                            ref={textareaRef}
                                             value={comment}
                                             onChange={(e) => setComment(e.target.value)}
                                             style={{

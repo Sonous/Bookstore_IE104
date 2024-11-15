@@ -189,6 +189,34 @@ const userApi = {
             throw error;
         }
     },
+
+    async checkEmail(email) {
+        try {
+            const result = await request.get('/forgotPassword', {
+                params: {
+                    email,
+                },
+            });
+
+            if (result.message === 'Existed') return result.userId;
+            else return false;
+        } catch (error) {
+            throw error;
+        }
+    },
+
+    async changePasswardNoToken(userId, updatedUserData) {
+        try {
+            const response = await request.put(`/forgotPassword`, {
+                userId,
+                updatedUserData,
+            });
+
+            return response.data;
+        } catch (error) {
+            throw error;
+        }
+    },
 };
 
 export default userApi;
