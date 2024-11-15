@@ -1,46 +1,49 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import { LockOutlined, UserOutlined } from '@ant-design/icons';
 import { Button, Form, Input } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import authApi from '~/apis/authApi';
 import Swal from 'sweetalert2';
+import { v4 as uuidv4 } from 'uuid';
 import { UserContext } from '~/context/UserContextProvider';
 import Header from '~/layouts/Header/Header';
 import Footer from '~/layouts/Footer/Footer';
+import userApi from '~/apis/userApi';
 
 export default function Register() {
     const navigate = useNavigate();
+    const [otp, setOtp] = useState('');
+    const [disabledInput, setDisabledInput] = useState(['otp', 'password']);
+    const [isValidEmail, setIsValidEmail] = useState(false);
+    const [userId, setUserId] = useState();
 
-    const { login } = useContext(UserContext);
+    const onFinish = async (values) => {
+        try {
+            await userApi.changePasswardNoToken(userId, {
+                user_password: values.password,
+            });
 
-    // const onFinish = async (values) => {
-    //     try {
-    //         const userDetails = {
-    //             user_name: 'new user',
-    //             user_email: values.email,
-    //             user_password: values.password,
-    //             user_phone: '',
-    //             user_avatar_url: '',
-    //         };
-    //         const newUser = await authApi.register(userDetails);
+            await Swal.fire({
+                icon: 'success',
+                text: 'Thay đổi thành công',
+                timer: 1500,
+                showConfirmButton: false,
+            });
 
-    //         const token = await authApi.login(newUser.user_email, newUser.user_password);
+            navigate('/login');
+        } catch (error) {
+            Swal.fire({
+                icon: 'error',
+                title: error.message,
+                toast: true,
+                timer: 2500,
+                timerProgressBar: true,
+                position: 'top-end',
+                showConfirmButton: false,
+            });
+        }
+    };
 
-    //         localStorage.setItem('token', token);
-    //         login();
-    //         navigate('/');
-    //     } catch (error) {
-    //         Swal.fire({
-    //             icon: 'error',
-    //             title: error.message,
-    //             toast: true,
-    //             timer: 2500,
-    //             timerProgressBar: true,
-    //             position: 'top-end',
-    //             showConfirmButton: false,
-    //         });
-    //     }
-    // };
     return (
         <>
             <Header />
@@ -52,7 +55,7 @@ export default function Register() {
                         style={{
                             maxWidth: 360,
                         }}
-                        // onFinish={onFinish}
+                        onFinish={onFinish}
                     >
                         <Form.Item
                             name="email"
@@ -62,30 +65,74 @@ export default function Register() {
                                     message: 'Vui lòng nhập email',
                                 },
                                 {
-                                    pattern: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
-                                    message: 'Email không hợp lệ',
+                                    validator: async (_, value) => {
+                                        if (!value) return Promise.resolve();
+                                        const regex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+                                        if (regex.test(value)) {
+                                            const checkEmail = await userApi.checkEmail(value);
+
+                                            if (checkEmail) {
+                                                setIsValidEmail(true);
+                                                setUserId(checkEmail);
+                                                return Promise.resolve();
+                                            } else return Promise.reject('Email không tồn tại');
+                                        }
+                                        setIsValidEmail(false);
+
+                                        return Promise.reject('Email không hợp lệ');
+                                    },
                                 },
                             ]}
                         >
-                            <Input prefix={<UserOutlined />} placeholder="Email" />
-                            <div className="flex justify-end">
-                                <span className="hover:text-blue-600 cursor-pointer">Gửi mã OTP</span>
+                            <div>
+                                <Input prefix={<UserOutlined />} placeholder="Email" />
+                                <div className="flex justify-end">
+                                    <span
+                                        className="hover:text-blue-600 cursor-pointer"
+                                        onClick={() => {
+                                            if (!isValidEmail) {
+                                                Swal.fire({
+                                                    toast: true,
+                                                    icon: 'error',
+                                                    text: 'Vui lòng nhập đúng trường email',
+                                                    timer: 1500,
+                                                    position: 'top-right',
+                                                    showConfirmButton: false,
+                                                    timerProgressBar: true,
+                                                });
+                                                return;
+                                            }
+
+                                            const otp = uuidv4().slice(0, 6);
+                                            console.log(otp);
+                                            setDisabledInput(['password']);
+                                            setOtp(otp);
+                                        }}
+                                    >
+                                        Gửi mã OTP
+                                    </span>
+                                </div>
                             </div>
                         </Form.Item>
+
                         <Form.Item
                             name="OTP"
+                            dependencies={['email']}
                             rules={[
                                 {
-                                    required: true,
-                                    message: 'Vui lòng nhập OTP',
+                                    validator: (_, value) => {
+                                        if (value === otp) setDisabledInput([]);
+                                        return value === otp ? Promise.resolve() : Promise.reject('Nhập sai OTP');
+                                    },
                                 },
                             ]}
                         >
-                            <Input placeholder="Nhập OTP gồm 6 kí tự" disabled />
+                            <Input placeholder="Nhập OTP gồm 6 kí tự" disabled={disabledInput.includes('otp')} />
                         </Form.Item>
 
                         <Form.Item
                             name="password"
+                            dependencies={['OTP']}
                             rules={[
                                 {
                                     required: true,
@@ -93,7 +140,12 @@ export default function Register() {
                                 },
                             ]}
                         >
-                            <Input.Password prefix={<LockOutlined />} type="password" placeholder="Mật khẩu" disabled />
+                            <Input.Password
+                                prefix={<LockOutlined />}
+                                type="password"
+                                placeholder="Mật khẩu"
+                                disabled={disabledInput.includes('password')}
+                            />
                         </Form.Item>
 
                         <Form.Item>
@@ -102,7 +154,7 @@ export default function Register() {
                                 type="primary"
                                 htmlType="submit"
                                 style={{ backgroundColor: '#228b22' }}
-                                disabled
+                                disabled={disabledInput.length > 0}
                             >
                                 Xác nhận
                             </Button>

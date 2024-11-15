@@ -10,7 +10,7 @@ const authApi = {
             });
             return data.token;
         } catch (error) {
-            throw new Error(error.message);
+            throw error;
         }
     },
 
@@ -19,7 +19,7 @@ const authApi = {
             const data = await request.post('/auth/register', userDetails);
             return data.user;
         } catch (error) {
-            throw new Error(error.message);
+            throw error;
         }
     },
 };

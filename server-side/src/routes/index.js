@@ -12,6 +12,8 @@ import orderRouter from './order.route.js';
 import upload from '../middleware/storeImage.js';
 import addressRouter from './address.route.js';
 import favoriteRouter from './favorite.route.js';
+import User from '../models/user.model.js';
+import forgotRouter from './forgot.route.js';
 
 export default function routes(server) {
     server.use('/api/book', bookRouter);
@@ -26,6 +28,7 @@ export default function routes(server) {
     server.use('/api/order', verifyToken, orderRouter);
     server.use('/api/address', verifyToken, addressRouter);
     server.use('/api/favorite', verifyToken, favoriteRouter);
+    server.use('/api/forgotPassword', forgotRouter);
     server.use('/api/upload', upload.single('image'), async (req, res) => {
         try {
             res.status(200).json({
