@@ -27,19 +27,12 @@ function Book({
     collection = false,
     className,
 }) {
-    const [liked, setLiked] = useState(false);
-    const { user } = useContext(UserContext);
-    const [loading, setLoading] = useState(false);
-    const [showLike, setShowLike] = useState(false);
-
     return (
         <li
             className={cx('book', className, {
                 home,
                 collection,
             })}
-            onMouseOver={() => setShowLike(true)}
-            onMouseLeave={() => setShowLike(false)}
         >
             {book_status !== 'Còn hàng' && (
                 <div className="border rounded-md px-3 font-bold text-center bg-blue-100 text-blue-500 absolute left-0 top-0">
@@ -57,6 +50,7 @@ function Book({
                 <div>
                     <span className={cx('current-price')}>{convertPriceToString(book_end_cost)}</span>
                     <span className="text-xs ml-3 line-through opacity-80">{convertPriceToString(book_cost)}</span>
+
                     {cartPopper && <span className={cx('quantity')}>x{cart.quantity}</span>}
                 </div>
                 {collection && <Rate className={cx('rate')} disabled value={book_star_rating} />}

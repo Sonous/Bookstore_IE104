@@ -385,10 +385,13 @@ function BookDetail() {
                                         </div>
                                         <span className="normal">{`Còn ${book.book_available} quyển trong kho`}</span>
                                     </div>
-                                    <div className="group2">
+                                    <div className="group2 flex items-center">
                                         <span className="price">{convertPriceToString(book.book_end_cost)}</span>
                                         <span className="text-neutral-400 line-through">
                                             {convertPriceToString(book.book_cost)}
+                                        </span>
+                                        <span className="bg-primary-color !text-white p-1 rounded-lg text-sm">
+                                            -{book.book_discount * 100}%
                                         </span>
                                         <span>|</span>
                                         <Rate
