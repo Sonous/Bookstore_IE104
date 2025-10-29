@@ -177,6 +177,12 @@ function Header() {
                             >
                                 Đăng nhập
                             </span>
+                            <span
+                                className="mr-2 py-2 px-5 text-primary-color rounded-lg font-bold cursor-pointer border-2 border-primary-color hover:opacity-85"
+                                onClick={() => navigate('/register')}
+                            >
+                                Đăng kí
+                            </span>
                         </div>
                     )}
                 </div>

@@ -29,6 +29,7 @@ function CartPage() {
             try {
                 const items = await userApi.getCartItems(user.user_id);
 
+                setCheckedItems((prev) => prev.filter((id) => items.find((book) => book.book_id === id)));
                 setCartItems(items);
             } catch (error) {
                 console.error(error);
@@ -38,15 +39,21 @@ function CartPage() {
         if (user) fetchApi();
     }, [user, isReload]);
 
-    useEffect(() => {
-        setTotalBooksCost(
-            checkedItems.reduce((total, currId) => {
-                const current = cartItems.find((book) => book.book_id === currId);
+    // console.log(cartItems);
 
-                return (total += parseFloat(current.book_end_cost * current.cart.quantity)) && total;
-            }, 0),
-        );
-    }, [checkedItems, isReload, cartItems]);
+    useEffect(() => {
+        if (cartItems && cartItems?.length > 0) {
+            console.log(checkedItems);
+
+            setTotalBooksCost(
+                checkedItems.reduce((total, currId) => {
+                    const current = cartItems.find((book) => book.book_id === currId);
+
+                    return (total += parseFloat(current.book_end_cost * current.cart.quantity)) && total;
+                }, 0),
+            );
+        }
+    }, [checkedItems, cartItems]);
 
     useEffect(() => {
         const fetchApi = async () => {
@@ -174,14 +181,14 @@ function CartPage() {
                                                     className={classNames(
                                                         'p-3 bg-primary-color w-full rounded-md text-white font-medium hover:opacity-80',
                                                         {
-                                                            'bg-neutral-400 hover:cursor-not-allowed hover:!opacity-100':
+                                                            '!bg-neutral-400 hover:cursor-not-allowed hover:!opacity-100':
                                                                 checkedItems.length < 1,
                                                         },
                                                     )}
                                                     disabled={checkedItems.length < 1}
                                                     onClick={navigateToPayingPage}
                                                 >
-                                                    THANH TOÁN
+                                                    Tiến hành đặt hàng
                                                 </button>
                                             </div>
                                         </div>

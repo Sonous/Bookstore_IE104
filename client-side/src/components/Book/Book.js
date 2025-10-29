@@ -5,9 +5,6 @@ import { convertPriceToString } from '~/utils/functions';
 import { Rate } from 'antd';
 import { memo, useState, useContext, useEffect } from 'react';
 import { imageUrl } from '~/configs/axios.config';
-import { FaRegHeart } from 'react-icons/fa';
-import { FaHeart } from 'react-icons/fa6';
-import { UserContext } from '~/context/UserContextProvider';
 
 const cx = classNames.bind(styles);
 
@@ -45,7 +42,9 @@ function Book({
             </Link>
             <div className={cx('info')}>
                 <Link to={enable ? `/books/${book_name}` : null}>
-                    <span className={cx('title')}>{book_name}</span>
+                    <span className={cx('title')}>
+                        {book_name.slice(0, 45)} {book_name.length > 45 && '.....'}
+                    </span>
                 </Link>
                 <div>
                     <span className={cx('current-price')}>{convertPriceToString(book_end_cost)}</span>

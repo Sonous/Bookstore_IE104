@@ -60,7 +60,7 @@ function Search({ className }) {
         searchRef.current.classList.remove(cx('active'));
     };
     const handleNavigateToSearchPage = (e) => {
-        if (e.key === 'Enter') {
+        if (e.key === 'Enter' && searchValue) {
             setSearchValue('');
             setSearchResult([]);
             navigate(`/results?q=${searchValue}`);

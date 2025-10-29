@@ -26,7 +26,7 @@ const footerItems = [
 
 function Footer() {
     return (
-        <footer className="px-5 border-t-[1px] border-[#b6b6b6]">
+        <footer className="px-5">
             <div className={cx('wrapper')}>
                 <div className="">
                     <div className="flex items-center gap-3 pb-4">
