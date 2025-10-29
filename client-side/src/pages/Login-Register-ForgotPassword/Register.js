@@ -4,41 +4,55 @@ import { Button, Form, Input } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import authApi from '~/apis/authApi';
 import Swal from 'sweetalert2';
-import { UserContext } from '~/context/UserContextProvider';
+// import { UserContext } from '~/context/UserContextProvider';
 import Header from '~/layouts/Header/Header';
 import Footer from '~/layouts/Footer/Footer';
+import { MdEmail, MdOutlineMailOutline } from 'react-icons/md';
 
 export default function Register() {
     const navigate = useNavigate();
 
-    const { login } = useContext(UserContext);
+    // const { login } = useContext(UserContext);
 
     const onFinish = async (values) => {
         try {
             const userDetails = {
-                user_name: 'new user',
+                user_name: values.name,
                 user_email: values.email,
                 user_password: values.password,
                 user_phone: '',
                 user_avatar_url: '',
             };
-            const newUser = await authApi.register(userDetails);
+            await authApi.register(userDetails);
 
-            const token = await authApi.login(newUser.user_email, newUser.user_password);
-
-            localStorage.setItem('token', token);
-            login();
-            navigate('/');
-        } catch (error) {
-            Swal.fire({
-                icon: 'error',
-                title: error.message,
-                toast: true,
-                timer: 2500,
+            await Swal.fire({
+                icon: 'success',
+                text: 'Đăng kí thành công',
+                timer: 1500,
                 timerProgressBar: true,
-                position: 'top-end',
                 showConfirmButton: false,
             });
+
+            // const token = await authApi.login(newUser.user_email, newUser.user_password);
+
+            // localStorage.setItem('token', token);
+            // login();
+            navigate('/login');
+        } catch (error) {
+            console.log(error);
+            if (error.status === 400) {
+                Swal.fire({
+                    icon: 'error',
+                    title: error.response.data.message,
+                    toast: true,
+                    timer: 2500,
+                    timerProgressBar: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                });
+            } else {
+                console.log(error);
+            }
         }
     };
     return (
@@ -67,7 +81,18 @@ export default function Register() {
                                 },
                             ]}
                         >
-                            <Input prefix={<UserOutlined />} placeholder="Email" />
+                            <Input prefix={<MdOutlineMailOutline />} placeholder="Email" />
+                        </Form.Item>
+                        <Form.Item
+                            name="name"
+                            rules={[
+                                {
+                                    required: true,
+                                    message: 'Vui lòng nhập tên của bạn ',
+                                },
+                            ]}
+                        >
+                            <Input prefix={<UserOutlined />} placeholder="Nhập tên của bạn" />
                         </Form.Item>
                         <Form.Item
                             name="password"
@@ -87,6 +112,7 @@ export default function Register() {
                             rules={[
                                 {
                                     required: true,
+                                    message: 'Vui lòng nhập lại password',
                                 },
                                 ({ getFieldValue }) => ({
                                     validator(_, value) {
