@@ -17,7 +17,6 @@
 
 ## LIÊN KẾT & TÀI NGUYÊN
 
-- **Github Repository:** [Bookstore_IE104](https://github.com/Sonous/Bookstore_IE104)
 - **Figma Design:** [Thiết kế giao diện website bán sách](https://www.figma.com/design/MXLgDDLxqJKobmXGYxmRoy/Thi%E1%BA%BFt-k%E1%BA%BF-giao-di%E1%BB%87n-website-b%C3%A1n-s%C3%A1ch?node-id=0-1&t=SloHttcu6hYrRaej-1)
 - **Video báo cáo:** [Playlist trên YouTube](https://www.youtube.com/playlist?list=PLE2z-be-Kr9ZHImhfiE_vN02TYEQpRq8z)
 
